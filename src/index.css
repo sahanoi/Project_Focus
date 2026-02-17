@@ -1,0 +1,322 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================
+   Habit Tracker - Global Styles
+   Sharp colors, no gradients, dark mode ready
+   ========================================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: #111318;
+  /* Default to dark bg */
+  color: #E5E7EB;
+  /* Default to light text */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Force dark styles by default even without .dark class on html, 
+   but keep the class structure for toggling if needed (though user implies always dark) */
+body,
+.dark body {
+  background-color: #111318;
+  color: #E5E7EB;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* ==========================================
+   Custom Utilities - Light + Dark
+   ========================================== */
+
+@layer components {
+
+  /* ---- Cards ---- */
+  .card {
+    @apply bg-white rounded-xl border-2 border-gray-200 p-5;
+    box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 0.08);
+  }
+
+  .dark .card {
+    @apply bg-[#1C1F26] border-[#2A2E37] text-gray-200;
+    box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 0.25);
+  }
+
+  .card-flat {
+    @apply bg-white rounded-lg border border-gray-200 p-4;
+  }
+
+  .dark .card-flat {
+    @apply bg-[#1C1F26] border-[#2A2E37] text-gray-200;
+  }
+
+  .chart-card {
+    @apply bg-white rounded-xl border-2 border-gray-200 p-6;
+    box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 0.06);
+  }
+
+  .dark .chart-card {
+    @apply bg-[#1C1F26] border-[#2A2E37] text-gray-200;
+    box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 0.25);
+  }
+
+  /* ---- Buttons ---- */
+  .btn-primary {
+    @apply bg-primary text-white font-semibold px-5 py-2.5 rounded-lg hover:bg-primary-dark active:scale-95 transition-all duration-150;
+  }
+
+  .btn-secondary {
+    @apply bg-gray-100 text-dark font-medium px-5 py-2.5 rounded-lg border border-gray-300 hover:bg-gray-200 active:scale-95 transition-all duration-150;
+  }
+
+  .dark .btn-secondary {
+    @apply bg-[#23272F] text-gray-200 border-[#2A2E37] hover:bg-[#2A2E37];
+  }
+
+  .btn-danger {
+    @apply bg-danger text-white font-semibold px-5 py-2.5 rounded-lg hover:bg-danger-dark active:scale-95 transition-all duration-150;
+  }
+
+  .btn-success {
+    @apply bg-success text-white font-semibold px-5 py-2.5 rounded-lg hover:bg-success-dark active:scale-95 transition-all duration-150;
+  }
+
+  .btn-icon {
+    @apply p-2 rounded-lg hover:bg-gray-100 active:scale-95 transition-all duration-150;
+  }
+
+  .dark .btn-icon {
+    @apply hover:bg-[#23272F];
+  }
+
+  /* ---- Inputs ---- */
+  .input-field {
+    @apply w-full px-4 py-2.5 rounded-lg border-2 border-gray-200 bg-white text-dark font-medium placeholder-gray-400 focus:border-primary focus:outline-none transition-colors;
+  }
+
+  .dark .input-field {
+    @apply bg-[#23272F] border-[#2A2E37] text-gray-200 placeholder-gray-500;
+  }
+
+  .select-field {
+    @apply w-full px-4 py-2.5 rounded-lg border-2 border-gray-200 bg-white text-dark font-medium focus:border-primary focus:outline-none transition-colors appearance-none cursor-pointer;
+  }
+
+  .dark .select-field {
+    @apply bg-[#23272F] border-[#2A2E37] text-gray-200;
+  }
+
+  /* ---- Badges ---- */
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider;
+  }
+
+  .stat-number {
+    @apply text-3xl font-bold font-mono tabular-nums;
+  }
+
+  .section-title {
+    @apply text-lg font-bold text-dark tracking-tight;
+  }
+
+  .dark .section-title {
+    @apply text-gray-100;
+  }
+
+  /* ---- Tabs ---- */
+  .tab-active {
+    @apply text-primary border-b-2 border-primary font-semibold;
+  }
+
+  .tab-inactive {
+    @apply text-gray-500 border-b-2 border-transparent hover:text-dark font-medium;
+  }
+
+  .dark .tab-inactive {
+    @apply text-gray-400 hover:text-gray-200;
+  }
+
+  /* ---- Progress ---- */
+  .progress-bar {
+    @apply h-3 rounded-full bg-gray-200 overflow-hidden;
+  }
+
+  .dark .progress-bar {
+    @apply bg-[#23272F];
+  }
+
+  .progress-fill {
+    @apply h-full rounded-full transition-all duration-500;
+  }
+
+  /* ---- Modal ---- */
+  .modal-overlay {
+    @apply fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4;
+  }
+
+  .modal-content {
+    @apply bg-white rounded-2xl border-2 border-gray-200 w-full max-w-lg max-h-[90vh] overflow-y-auto;
+    box-shadow: 8px 8px 0px 0px rgba(0, 0, 0, 0.1);
+  }
+
+  .dark .modal-content {
+    @apply bg-[#1C1F26] border-[#2A2E37] text-gray-200;
+    box-shadow: 8px 8px 0px 0px rgba(0, 0, 0, 0.35);
+  }
+
+  /* ---- Streak / Challenge ---- */
+  .streak-badge {
+    @apply inline-flex items-center gap-1 px-3 py-1 rounded-full bg-warning text-dark font-bold text-sm;
+  }
+
+  .challenge-timer {
+    @apply inline-flex items-center gap-1 px-3 py-1 rounded-full bg-purple text-white font-bold text-sm;
+  }
+}
+
+/* ==========================================
+   Dark Mode - Override text colors
+   ========================================== */
+
+.dark .text-dark {
+  color: #E5E7EB !important;
+}
+
+
+
+
+.dark .bg-surface,
+html.dark .bg-surface {
+  background-color: #111318 !important;
+}
+
+.dark .bg-white {
+  background-color: #1C1F26 !important;
+}
+
+.dark .bg-gray-50 {
+  background-color: #1C1F26 !important;
+}
+
+.dark .bg-gray-100 {
+  background-color: #23272F !important;
+}
+
+.dark .border-gray-200 {
+  border-color: #2A2E37 !important;
+}
+
+.dark .border-gray-100 {
+  border-color: #23272F !important;
+}
+
+.dark .border-gray-300 {
+  border-color: #2A2E37 !important;
+}
+
+.dark .hover\:bg-gray-50:hover {
+  background-color: #23272F !important;
+}
+
+.dark .hover\:bg-gray-100:hover {
+  background-color: #2A2E37 !important;
+}
+
+.dark .hover\:bg-gray-200:hover {
+  background-color: #2A2E37 !important;
+}
+
+/* Special dark bg overrides for colored backgrounds */
+.dark .bg-green-50 {
+  background-color: rgba(16, 185, 129, 0.1) !important;
+}
+
+.dark .bg-red-50 {
+  background-color: rgba(239, 68, 68, 0.1) !important;
+}
+
+.dark .bg-blue-50 {
+  background-color: rgba(37, 99, 235, 0.1) !important;
+}
+
+.dark .bg-purple-50 {
+  background-color: rgba(139, 92, 246, 0.1) !important;
+}
+
+/* ==========================================
+   Scrollbar Styling
+   ========================================== */
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #D1D5DB;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #9CA3AF;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #374151;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #4B5563;
+}
+
+/* ==========================================
+   Heat Map Calendar Cells
+   ========================================== */
+
+.heatmap-cell {
+  @apply rounded-sm transition-all duration-150;
+}
+
+.heatmap-cell:hover {
+  transform: scale(1.3);
+}
+
+/* ==========================================
+   Number Input Spinner Hide
+   ========================================== */
+
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+/* ==========================================
+   Dark Mode Toggle Switch
+   ========================================== */
+
+.toggle-switch {
+  @apply relative inline-flex h-6 w-11 items-center rounded-full cursor-pointer transition-colors;
+}
+
+.toggle-switch-knob {
+  @apply inline-block h-5 w-5 rounded-full bg-white transition-transform shadow-sm;
+}
