@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { format, subDays } from 'date-fns';
 
 // ==========================================
-// Dummy Data Generator
+// Demo Data Generator — Clean, Realistic
 // ==========================================
 
 function dateStr(d: Date): string {
@@ -11,7 +11,7 @@ function dateStr(d: Date): string {
 }
 
 function randomBetween(min: number, max: number): number {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+    return Math.round((Math.random() * (max - min) + min) * 10) / 10; // supports decimals
 }
 
 function generateCompletions(
@@ -44,119 +44,118 @@ function generateCompletions(
 
 export function generateDummyHabits(): Habit[] {
     const now = new Date();
-    const todayStr = dateStr(now);
 
     const habits: Habit[] = [
-        // 1. Drink Water — numerical, daily, high consistency
+        // 1. Study Hours — numerical, daily, the main one with big goal
         {
             id: uuidv4(),
-            name: 'Drink Water 💧',
+            name: 'Study',
             type: 'numerical',
-            category: 'health',
+            category: 'learning',
             color: '#2563EB',
-            icon: '💧',
+            icon: '📚',
             schedule: { type: 'daily' },
-            dailyTarget: 6,
-            goalValue: 8,
-            unit: 'glasses',
-            completions: generateCompletions(60, 0.85, 'numerical', 4, 10),
-            createdAt: dateStr(subDays(now, 60)),
+            dailyTarget: 2,
+            goalValue: 4,
+            unit: 'hours',
+            completions: generateCompletions(90, 0.82, 'numerical', 0.5, 5),
+            createdAt: dateStr(subDays(now, 90)),
             archived: false,
         },
-        // 2. Morning Run — numerical, MWF
+        // 2. Running — numerical, MWF
         {
             id: uuidv4(),
-            name: 'Morning Run 🏃',
+            name: 'Running',
             type: 'numerical',
             category: 'fitness',
             color: '#F59E0B',
             icon: '🏃',
             schedule: { type: 'weekly', daysOfWeek: [1, 3, 5] },
-            dailyTarget: 2,
-            goalValue: 5,
+            dailyTarget: 3,
+            goalValue: 7,
             unit: 'km',
-            completions: generateCompletions(90, 0.7, 'numerical', 2, 7),
-            createdAt: dateStr(subDays(now, 90)),
+            completions: generateCompletions(75, 0.68, 'numerical', 1.5, 8),
+            createdAt: dateStr(subDays(now, 75)),
             archived: false,
         },
-        // 3. Read 30 min — numerical, daily
+        // 3. Reading — numerical, daily
         {
             id: uuidv4(),
-            name: 'Read 30 min 📚',
+            name: 'Reading',
             type: 'numerical',
             category: 'learning',
             color: '#8B5CF6',
-            icon: '📚',
+            icon: '📖',
             schedule: { type: 'daily' },
-            dailyTarget: 15,
-            goalValue: 30,
+            dailyTarget: 20,
+            goalValue: 40,
             unit: 'min',
-            completions: generateCompletions(45, 0.75, 'numerical', 10, 45),
-            createdAt: dateStr(subDays(now, 45)),
+            completions: generateCompletions(60, 0.73, 'numerical', 10, 50),
+            createdAt: dateStr(subDays(now, 60)),
             archived: false,
         },
-        // 4. Meditate — numerical, daily
+        // 4. Meditation — numerical, daily
         {
             id: uuidv4(),
-            name: 'Meditate 🧘‍♂️',
+            name: 'Meditation',
             type: 'numerical',
             category: 'mindfulness',
             color: '#14B8A6',
-            icon: '🧘‍♂️',
+            icon: '🧘',
             schedule: { type: 'daily' },
             dailyTarget: 5,
             goalValue: 15,
             unit: 'min',
-            completions: generateCompletions(30, 0.65, 'numerical', 3, 20),
-            createdAt: dateStr(subDays(now, 30)),
+            completions: generateCompletions(45, 0.62, 'numerical', 3, 20),
+            createdAt: dateStr(subDays(now, 45)),
             archived: false,
         },
-        // 5. Take Vitamins — regular, daily, very consistent
+        // 5. Take Vitamins — regular, daily
         {
             id: uuidv4(),
-            name: 'Take Vitamins 💊',
+            name: 'Take Vitamins',
             type: 'regular',
             category: 'health',
             color: '#10B981',
             icon: '💊',
             schedule: { type: 'daily' },
-            completions: generateCompletions(75, 0.9, 'boolean'),
-            createdAt: dateStr(subDays(now, 75)),
+            completions: generateCompletions(80, 0.88, 'boolean'),
+            createdAt: dateStr(subDays(now, 80)),
             archived: false,
         },
         // 6. No Social Media — infinite, daily
         {
             id: uuidv4(),
-            name: 'No Social Media 📱',
+            name: 'No Social Media',
             type: 'infinite',
             category: 'productivity',
             color: '#EF4444',
-            icon: '📱',
+            icon: '📵',
             schedule: { type: 'daily' },
-            completions: generateCompletions(40, 0.6, 'boolean'),
+            completions: generateCompletions(40, 0.58, 'boolean'),
             createdAt: dateStr(subDays(now, 40)),
             archived: false,
         },
-        // 7. Push-ups — numerical, daily
+        // 7. Workout — numerical, daily
         {
             id: uuidv4(),
-            name: 'Push-ups 💪',
+            name: 'Workout',
             type: 'numerical',
             category: 'fitness',
             color: '#EC4899',
             icon: '💪',
             schedule: { type: 'daily' },
-            dailyTarget: 20,
-            goalValue: 50,
-            unit: 'reps',
-            completions: generateCompletions(50, 0.72, 'numerical', 15, 60),
-            createdAt: dateStr(subDays(now, 50)),
+            dailyTarget: 30,
+            goalValue: 60,
+            unit: 'min',
+            completions: generateCompletions(55, 0.7, 'numerical', 15, 75),
+            createdAt: dateStr(subDays(now, 55)),
             archived: false,
         },
-        // 8. 30-Day Cold Shower Challenge
+        // 8. Cold Shower Challenge — 30 days
         {
             id: uuidv4(),
-            name: '30-Day Cold Shower ❄️',
+            name: 'Cold Shower Challenge',
             type: 'challenge',
             category: 'health',
             color: '#06B6D4',
@@ -171,20 +170,20 @@ export function generateDummyHabits(): Habit[] {
         // 9. Plan Tomorrow — regular, daily
         {
             id: uuidv4(),
-            name: 'Plan Tomorrow 📝',
+            name: 'Plan Tomorrow',
             type: 'regular',
             category: 'productivity',
             color: '#F97316',
             icon: '📝',
             schedule: { type: 'daily' },
-            completions: generateCompletions(35, 0.78, 'boolean'),
-            createdAt: dateStr(subDays(now, 35)),
+            completions: generateCompletions(50, 0.76, 'boolean'),
+            createdAt: dateStr(subDays(now, 50)),
             archived: false,
         },
         // 10. Call Family — regular, weekends
         {
             id: uuidv4(),
-            name: 'Call Family 📞',
+            name: 'Call Family',
             type: 'regular',
             category: 'social',
             color: '#EC4899',
@@ -194,30 +193,33 @@ export function generateDummyHabits(): Habit[] {
             createdAt: dateStr(subDays(now, 60)),
             archived: false,
         },
-        // 11. Skincare AM — regular, daily (for Skincare routine)
+        // 11. Drink Water — numerical, daily
         {
             id: uuidv4(),
-            name: 'Skincare AM ☀️',
-            type: 'regular',
+            name: 'Drink Water',
+            type: 'numerical',
             category: 'health',
-            color: '#F59E0B',
-            icon: '☀️',
+            color: '#3B82F6',
+            icon: '💧',
             schedule: { type: 'daily' },
-            completions: generateCompletions(30, 0.82, 'boolean'),
-            createdAt: dateStr(subDays(now, 30)),
+            dailyTarget: 6,
+            goalValue: 10,
+            unit: 'glasses',
+            completions: generateCompletions(70, 0.85, 'numerical', 3, 12),
+            createdAt: dateStr(subDays(now, 70)),
             archived: false,
         },
-        // 12. Skincare PM — regular, daily (for Skincare routine)
+        // 12. Journaling — regular, daily
         {
             id: uuidv4(),
-            name: 'Skincare PM 🌙',
+            name: 'Journaling',
             type: 'regular',
-            category: 'health',
-            color: '#8B5CF6',
-            icon: '🌙',
+            category: 'mindfulness',
+            color: '#A855F7',
+            icon: '📓',
             schedule: { type: 'daily' },
-            completions: generateCompletions(30, 0.75, 'boolean'),
-            createdAt: dateStr(subDays(now, 30)),
+            completions: generateCompletions(35, 0.65, 'boolean'),
+            createdAt: dateStr(subDays(now, 35)),
             archived: false,
         },
     ];
@@ -227,17 +229,46 @@ export function generateDummyHabits(): Habit[] {
 
 export function generateDummyGoals(habits: Habit[]): Goal[] {
     const goals: Goal[] = [];
-    const numericalHabits = habits.filter(h => h.type === 'numerical' && h.goalValue);
 
-    for (const h of numericalHabits) {
+    // Find the "Study" habit for a big 1000hr goal
+    const studyHabit = habits.find(h => h.name === 'Study');
+    if (studyHabit) {
         goals.push({
             id: uuidv4(),
-            habitId: h.id,
-            name: `${h.name} Goal`,
-            targetValue: (h.goalValue || 100) * 30, // Monthly target
-            unit: h.unit || '',
+            habitId: studyHabit.id,
+            name: '1000 Hours of Study',
+            targetValue: 1000,
+            unit: 'hours',
             achieved: false,
-            createdAt: h.createdAt,
+            createdAt: studyHabit.createdAt,
+        });
+    }
+
+    // Running goal
+    const runHabit = habits.find(h => h.name === 'Running');
+    if (runHabit) {
+        goals.push({
+            id: uuidv4(),
+            habitId: runHabit.id,
+            name: 'Run 500km',
+            targetValue: 500,
+            unit: 'km',
+            achieved: false,
+            createdAt: runHabit.createdAt,
+        });
+    }
+
+    // Workout goal
+    const workoutHabit = habits.find(h => h.name === 'Workout');
+    if (workoutHabit) {
+        goals.push({
+            id: uuidv4(),
+            habitId: workoutHabit.id,
+            name: 'Workout 200 Hours',
+            targetValue: 12000,
+            unit: 'min',
+            achieved: false,
+            createdAt: workoutHabit.createdAt,
         });
     }
 
@@ -245,24 +276,23 @@ export function generateDummyGoals(habits: Habit[]): Goal[] {
 }
 
 export function generateDummyRoutines(habits: Habit[]): Routine[] {
-    // Helper to find habit by name substring
-    const findHabit = (namePart: string) => habits.find(h => h.name.toLowerCase().includes(namePart.toLowerCase()));
+    const findHabit = (name: string) =>
+        habits.find(h => h.name.toLowerCase() === name.toLowerCase());
 
     const routines: Routine[] = [];
 
-    // 1. Morning Routine
+    // Morning Routine
     const morningHabits = [
         findHabit('Take Vitamins'),
-        findHabit('Meditate'),
+        findHabit('Meditation'),
         findHabit('Drink Water'),
-        findHabit('Skincare AM'),
     ].filter(Boolean) as Habit[];
 
     if (morningHabits.length > 0) {
         routines.push({
             id: uuidv4(),
             name: 'Morning Ritual',
-            description: 'Start every day with energy and intention',
+            description: 'Start every day with intention',
             icon: '🌅',
             habitIds: morningHabits.map(h => h.id),
             bonusXp: 150,
@@ -270,60 +300,41 @@ export function generateDummyRoutines(habits: Habit[]): Routine[] {
         });
     }
 
-    // 2. Bedtime Routine
-    const bedtimeHabits = [
+    // Evening Routine
+    const eveningHabits = [
         findHabit('Plan Tomorrow'),
-        findHabit('Read 30 min'),
-        findHabit('Skincare PM'),
+        findHabit('Reading'),
+        findHabit('Journaling'),
     ].filter(Boolean) as Habit[];
 
-    if (bedtimeHabits.length > 0) {
+    if (eveningHabits.length > 0) {
         routines.push({
             id: uuidv4(),
-            name: 'Bedtime Wind-Down',
-            description: 'Prepare mind and body for deep recovery',
+            name: 'Evening Wind-Down',
+            description: 'Prepare for deep recovery',
             icon: '🌙',
-            habitIds: bedtimeHabits.map(h => h.id),
+            habitIds: eveningHabits.map(h => h.id),
             bonusXp: 120,
             completionTime: 45,
         });
     }
 
-    // 3. Skincare Routine
-    const skincareHabits = [
-        findHabit('Skincare AM'),
-        findHabit('Skincare PM'),
+    // Fitness Stack
+    const fitnessHabits = [
+        findHabit('Running'),
+        findHabit('Workout'),
     ].filter(Boolean) as Habit[];
 
-    if (skincareHabits.length > 0) {
+    if (fitnessHabits.length > 0) {
         routines.push({
             id: uuidv4(),
-            name: 'Skincare Protocol',
-            description: 'Daily AM/PM skincare for healthy skin',
-            icon: '🧴',
-            habitIds: skincareHabits.map(h => h.id),
-            bonusXp: 80,
-            completionTime: 10,
-        });
-    }
-
-    // 4. Weekly Care
-    const weeklyHabits = [
-        findHabit('Call Family'),
-        findHabit('Morning Run'),
-    ].filter(Boolean) as Habit[];
-
-    if (weeklyHabits.length > 0) {
-        routines.push({
-            id: uuidv4(),
-            name: 'Weekly Check-In',
-            description: 'Stay connected and stay moving',
-            icon: '📋',
-            habitIds: weeklyHabits.map(h => h.id),
+            name: 'Fitness Stack',
+            description: 'Build strength and endurance',
+            icon: '🏋️',
+            habitIds: fitnessHabits.map(h => h.id),
             bonusXp: 200,
         });
     }
 
     return routines;
 }
-

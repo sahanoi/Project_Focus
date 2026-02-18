@@ -120,7 +120,7 @@ export default function HabitCard({ habit, date, onEdit }: HabitCardProps) {
     };
 
     const handleNumericalInput = (val: number) => {
-        const newVal = Math.max(0, val);
+        const newVal = Math.max(0, Math.round(val * 100) / 100);
         setNumericalValue(habit.id, date, newVal);
     };
 
@@ -128,7 +128,7 @@ export default function HabitCard({ habit, date, onEdit }: HabitCardProps) {
 
     return (
         <div
-            className={`card-flat relative group transition-all duration-200 hover:shadow-md cursor-pointer ${isCompleted ? 'border-l-4' : 'border-l-4 border-l-gray-200'
+            className={`rounded-lg border border-[#2A2E37] bg-[#1C1F26] p-4 relative group transition-all duration-200 hover:shadow-md cursor-pointer ${isCompleted ? 'border-l-4' : 'border-l-4 border-l-gray-700'
                 }`}
             style={isCompleted ? { borderLeftColor: habit.color } : undefined}
             onClick={() => setSelectedHabitId(habit.id)}
@@ -139,8 +139,8 @@ export default function HabitCard({ habit, date, onEdit }: HabitCardProps) {
                     {habit.type === 'numerical' ? (
                         <div
                             className={`w-7 h-7 rounded-lg border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition-all duration-200 ${isCompleted
-                                    ? 'text-white border-transparent'
-                                    : 'border-gray-200 text-gray-300'
+                                ? 'text-white border-transparent'
+                                : 'border-gray-600 text-gray-500'
                                 }`}
                             style={isCompleted ? { backgroundColor: habit.color } : undefined}
                         >
@@ -151,7 +151,7 @@ export default function HabitCard({ habit, date, onEdit }: HabitCardProps) {
                             onClick={handleCheckToggle}
                             className={`w-7 h-7 rounded-lg border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition-all duration-200 ${isCompleted
                                 ? 'text-white border-transparent'
-                                : 'border-gray-300 hover:border-gray-400'
+                                : 'border-gray-600 hover:border-gray-500'
                                 }`}
                             style={isCompleted ? { backgroundColor: habit.color } : undefined}
                         >
@@ -214,12 +214,33 @@ export default function HabitCard({ habit, date, onEdit }: HabitCardProps) {
                             </span>
                         )}
 
-                        {/* Daily target indicator */}
+                        {/* Daily target / inline numerical entry */}
                         {habit.dailyTarget && habit.type === 'numerical' && (
-                            <span className={`text-[10px] font-bold ${currentNumValue >= habit.dailyTarget ? 'text-success' : 'text-gray-400'
-                                }`}>
-                                {currentNumValue >= habit.dailyTarget ? '🟢' : '⚪'} {currentNumValue}/{habit.dailyTarget}
-                            </span>
+                            <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
+                                <button
+                                    onClick={() => handleNumericalInput(currentNumValue - 0.5)}
+                                    className="w-5 h-5 rounded bg-gray-700/50 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-600 transition-colors"
+                                >
+                                    <Minus size={10} />
+                                </button>
+                                <input
+                                    type="number"
+                                    step="0.1"
+                                    min="0"
+                                    value={currentNumValue}
+                                    onChange={(e) => handleNumericalInput(parseFloat(e.target.value) || 0)}
+                                    className="w-14 text-center text-[11px] font-bold bg-gray-800/50 rounded px-1 py-0.5 text-gray-200 outline-none border border-gray-700 focus:border-indigo-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                />
+                                <button
+                                    onClick={() => handleNumericalInput(currentNumValue + 0.5)}
+                                    className="w-5 h-5 rounded bg-gray-700/50 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-600 transition-colors"
+                                >
+                                    <Plus size={10} />
+                                </button>
+                                <span className={`text-[10px] font-bold ${currentNumValue >= habit.dailyTarget ? 'text-success' : 'text-gray-400'}`}>
+                                    /{habit.dailyTarget}
+                                </span>
+                            </div>
                         )}
 
                         {/* Challenge countdown */}
@@ -237,7 +258,7 @@ export default function HabitCard({ habit, date, onEdit }: HabitCardProps) {
                         {/* Level progress bar (tiny) */}
                         {levelInfo.level < 10 && (
                             <div className="flex items-center gap-1.5 ml-auto">
-                                <div className="w-16 h-1 bg-gray-100 rounded-full overflow-hidden">
+                                <div className="w-16 h-1 bg-gray-700 rounded-full overflow-hidden">
                                     <div
                                         className="h-full rounded-full transition-all"
                                         style={{ width: `${levelInfo.progressToNext}%`, backgroundColor: levelColor }}
@@ -261,29 +282,29 @@ export default function HabitCard({ habit, date, onEdit }: HabitCardProps) {
                     {showMenu && (
                         <>
                             <div className="fixed inset-0 z-10" onClick={() => setShowMenu(false)} />
-                            <div ref={menuRef} className="absolute right-0 top-8 bg-white border-2 border-gray-200 rounded-lg shadow-lg z-20 py-1 min-w-[150px]">
+                            <div ref={menuRef} className="absolute right-0 top-8 bg-[#1C1F26] border border-[#2A2E37] rounded-lg shadow-lg z-20 py-1 min-w-[150px]">
                                 <button
                                     onClick={() => { onEdit(habit); setShowMenu(false); }}
-                                    className="flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-gray-50 text-left"
+                                    className="flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-gray-800 text-left text-gray-200"
                                 >
                                     <Edit3 size={14} /> ✏️ Edit
                                 </button>
                                 <button
                                     onClick={() => { duplicateHabit(habit.id); setShowMenu(false); }}
-                                    className="flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-gray-50 text-left"
+                                    className="flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-gray-800 text-left text-gray-200"
                                 >
                                     <Copy size={14} /> 📋 Duplicate
                                 </button>
                                 <button
                                     onClick={() => { archiveHabit(habit.id); setShowMenu(false); }}
-                                    className="flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-gray-50 text-left"
+                                    className="flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-gray-800 text-left text-gray-200"
                                 >
                                     <Archive size={14} /> 📦 {habit.archived ? 'Unarchive' : 'Archive'}
                                 </button>
-                                <hr className="my-1 border-gray-200" />
+                                <hr className="my-1 border-gray-700" />
                                 <button
                                     onClick={() => { deleteHabit(habit.id); setShowMenu(false); }}
-                                    className="flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-red-50 text-danger text-left"
+                                    className="flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-red-500/10 text-red-400 text-left"
                                 >
                                     <Trash2 size={14} /> 🗑️ Delete
                                 </button>

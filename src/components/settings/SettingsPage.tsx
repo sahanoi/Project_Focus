@@ -1,9 +1,11 @@
 import React, { useRef, useState } from 'react';
 import { useHabitStore } from '../../store/habitStore';
-import { Download, Upload, Trash2, AlertTriangle, Info, Moon, Sun, Database } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
+import { Download, Upload, Trash2, AlertTriangle, Info, Moon, Sun, Database, LogOut, User } from 'lucide-react';
 
 export default function SettingsPage() {
     const { habits, goals, importData, clearAllData, darkMode, toggleDarkMode, loadDummyData } = useHabitStore();
+    const { user, signOut } = useAuth();
     const [showClearConfirm, setShowClearConfirm] = useState(false);
     const [importStatus, setImportStatus] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -190,12 +192,35 @@ export default function SettingsPage() {
                 </div>
             </div>
 
+            {/* Account */}
+            <div className="card space-y-4">
+                <h3 className="section-title flex items-center gap-2">
+                    <User size={18} className="text-primary" />
+                    Account
+                </h3>
+
+                <div className="flex items-center justify-between">
+                    <div>
+                        <p className="font-semibold text-sm">Signed in as</p>
+                        <p className="text-xs text-gray-500">{user?.email}</p>
+                    </div>
+                </div>
+
+                <button
+                    onClick={signOut}
+                    className="btn-danger flex items-center gap-2 w-full justify-center opacity-80 hover:opacity-100"
+                >
+                    <LogOut size={18} />
+                    Sign Out
+                </button>
+            </div>
+
             {/* About */}
             <div className="card">
                 <h3 className="section-title mb-2">ℹ️ About</h3>
                 <p className="text-sm text-gray-500">
-                    Habit Tracker v2.0 — Track your habits, set goals, and visualize your progress.
-                    Built with React, TypeScript, Recharts, and Zustand. 🚀
+                    Project Focus v3.0 — Your life companion. Track habits, finances, goals, and more.
+                    Sharp · Hard · Fun 🚀
                 </p>
             </div>
         </div>

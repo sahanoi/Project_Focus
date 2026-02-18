@@ -5,6 +5,7 @@ import { Habit, Goal, HabitType, HabitCategory, TabView, StatsFilter, Completion
 import { today } from '../utils/dateUtils';
 import { generateDummyHabits, generateDummyGoals, generateDummyRoutines } from '../data/dummyData';
 import { calculateCharacterStats } from '../utils/gamificationUtils';
+import { supabase } from '../lib/supabase';
 
 // ==========================================
 // Store Interface
@@ -23,6 +24,7 @@ interface HabitStore {
     detailViewHabitId: string | null; // For Full Detail Page
     showModal: boolean;               // For Add/Edit Modal
     darkMode: boolean;
+    isLoading: boolean;
 
     // Habit Actions
     addHabit: (habit: Omit<Habit, 'id' | 'completions' | 'createdAt' | 'archived'>) => string;
@@ -61,13 +63,133 @@ interface HabitStore {
     clearAllData: () => void;
     loadDummyData: () => void;
 
+    // Supabase sync
+    fetchAllData: () => Promise<void>;
+
     // Internal
     recalculateStats: () => void;
 }
 
 // ==========================================
+// Supabase Helper: Convert DB rows → Habit with completions
+// ==========================================
+
+interface DbHabit {
+    id: string;
+    user_id: string;
+    name: string;
+    description: string | null;
+    category: string;
+    schedule: HabitSchedule;
+    created_at: string;
+    archived: boolean;
+    // These fields are stored in the habit row as extra JSON or separate columns
+    // We'll map them from the DB
+    type?: HabitType;
+    color?: string;
+    icon?: string;
+    difficulty?: 'easy' | 'medium' | 'hard';
+    daily_target?: number;
+    goal_value?: number;
+    unit?: string;
+    start_date?: string;
+    end_date?: string;
+}
+
+interface DbCompletion {
+    id: string;
+    habit_id: string;
+    completed_date: string;
+    value: number | null;
+    completed: boolean;
+}
+
+interface DbGoal {
+    id: string;
+    user_id: string;
+    habit_id: string;
+    description: string;
+    target_value: number;
+    current_value: number;
+    deadline: string | null;
+    achieved: boolean;
+    created_at: string;
+}
+
+interface DbRoutine {
+    id: string;
+    user_id: string;
+    name: string;
+    description: string | null;
+    time_of_day: string;
+    habit_ids: string[];
+    created_at: string;
+}
+
+function dbHabitToHabit(dbHabit: DbHabit, completions: DbCompletion[]): Habit {
+    const completionMap: Record<string, Completion> = {};
+    completions.forEach(c => {
+        completionMap[c.completed_date] = {
+            date: c.completed_date,
+            completed: c.completed,
+            value: c.value ?? undefined,
+        };
+    });
+
+    return {
+        id: dbHabit.id,
+        name: dbHabit.name,
+        type: (dbHabit.type as HabitType) || 'regular',
+        category: (dbHabit.category as HabitCategory) || 'other',
+        color: dbHabit.color || '#2563EB',
+        icon: dbHabit.icon || '✅',
+        difficulty: dbHabit.difficulty,
+        schedule: dbHabit.schedule || { type: 'daily' },
+        dailyTarget: dbHabit.daily_target,
+        goalValue: dbHabit.goal_value,
+        unit: dbHabit.unit,
+        startDate: dbHabit.start_date,
+        endDate: dbHabit.end_date,
+        completions: completionMap,
+        createdAt: dbHabit.created_at?.split('T')[0] || today(),
+        archived: dbHabit.archived || false,
+    };
+}
+
+function dbGoalToGoal(dbGoal: DbGoal): Goal {
+    return {
+        id: dbGoal.id,
+        habitId: dbGoal.habit_id,
+        name: dbGoal.description,
+        targetValue: dbGoal.target_value,
+        unit: '',
+        deadline: dbGoal.deadline || undefined,
+        achieved: dbGoal.achieved,
+        createdAt: dbGoal.created_at?.split('T')[0] || today(),
+    };
+}
+
+function dbRoutineToRoutine(dbRoutine: DbRoutine): Routine {
+    return {
+        id: dbRoutine.id,
+        name: dbRoutine.name,
+        description: dbRoutine.description || undefined,
+        icon: '📋',
+        habitIds: dbRoutine.habit_ids || [],
+        bonusXp: 50,
+    };
+}
+
+// ==========================================
 // Store Implementation
 // ==========================================
+
+const DEFAULT_STATS: CharacterStats = {
+    level: 1,
+    xp: 0,
+    nextLevelXp: 1000,
+    attributes: { ovr: 60, dsc: 60, foc: 60, stk: 60, bal: 60, grt: 60, vit: 60 }
+};
 
 export const useHabitStore = create<HabitStore>()(
     persist(
@@ -76,12 +198,7 @@ export const useHabitStore = create<HabitStore>()(
             habits: [],
             goals: [],
             routines: [],
-            stats: {
-                level: 1,
-                xp: 0,
-                nextLevelXp: 1000,
-                attributes: { ovr: 60, dsc: 60, foc: 60, stk: 60, bal: 60, grt: 60, vit: 60 }
-            },
+            stats: { ...DEFAULT_STATS },
             selectedDate: today(),
             activeTab: 'dashboard',
             statsFilter: {
@@ -93,6 +210,71 @@ export const useHabitStore = create<HabitStore>()(
             detailViewHabitId: null,
             showModal: false,
             darkMode: false,
+            isLoading: false,
+
+            // ==========================================
+            // Supabase Sync — Fetch all data on login
+            // ==========================================
+
+            fetchAllData: async () => {
+                set({ isLoading: true });
+
+                try {
+                    const { data: { user } } = await supabase.auth.getUser();
+                    if (!user) {
+                        set({ isLoading: false });
+                        return;
+                    }
+
+                    // Fetch habits
+                    const { data: dbHabits, error: habitsErr } = await supabase
+                        .from('habits')
+                        .select('*')
+                        .eq('user_id', user.id);
+
+                    if (habitsErr) throw habitsErr;
+
+                    // Fetch all completions for this user
+                    const { data: dbCompletions, error: compErr } = await supabase
+                        .from('habit_completions')
+                        .select('*')
+                        .eq('user_id', user.id);
+
+                    if (compErr) throw compErr;
+
+                    // Fetch goals
+                    const { data: dbGoals, error: goalsErr } = await supabase
+                        .from('goals')
+                        .select('*')
+                        .eq('user_id', user.id);
+
+                    if (goalsErr) throw goalsErr;
+
+                    // Fetch routines
+                    const { data: dbRoutines, error: routinesErr } = await supabase
+                        .from('routines')
+                        .select('*')
+                        .eq('user_id', user.id);
+
+                    if (routinesErr) throw routinesErr;
+
+                    // Convert DB rows to app types
+                    const habits = (dbHabits || []).map((h: any) => {
+                        const habitCompletions = (dbCompletions || []).filter((c: any) => c.habit_id === h.id);
+                        return dbHabitToHabit(h, habitCompletions);
+                    });
+
+                    const goals = (dbGoals || []).map((g: any) => dbGoalToGoal(g));
+                    const routines = (dbRoutines || []).map((r: any) => dbRoutineToRoutine(r));
+                    const stats = calculateCharacterStats(habits);
+
+                    set({ habits, goals, routines, stats, isLoading: false });
+                } catch (err) {
+                    console.error('Failed to fetch data from Supabase:', err);
+                    set({ isLoading: false });
+                    // Falls back to cached Zustand data from localStorage
+                }
+            },
 
             // ==========================================
             // Internal Helper
@@ -118,6 +300,8 @@ export const useHabitStore = create<HabitStore>()(
                     archived: false,
                     schedule: habitData.schedule || { type: 'daily' },
                 };
+
+                // Optimistic update
                 set((state) => {
                     const newHabits = [...state.habits, newHabit];
                     return {
@@ -125,10 +309,37 @@ export const useHabitStore = create<HabitStore>()(
                         stats: calculateCharacterStats(newHabits)
                     };
                 });
+
+                // Sync to Supabase (fire-and-forget)
+                (async () => {
+                    const { data: { user } } = await supabase.auth.getUser();
+                    if (!user) return;
+
+                    await supabase.from('habits').insert({
+                        id,
+                        user_id: user.id,
+                        name: newHabit.name,
+                        description: null,
+                        category: newHabit.category,
+                        schedule: newHabit.schedule,
+                        archived: false,
+                        type: newHabit.type,
+                        color: newHabit.color,
+                        icon: newHabit.icon,
+                        difficulty: newHabit.difficulty,
+                        daily_target: newHabit.dailyTarget,
+                        goal_value: newHabit.goalValue,
+                        unit: newHabit.unit,
+                        start_date: newHabit.startDate,
+                        end_date: newHabit.endDate,
+                    });
+                })();
+
                 return id;
             },
 
             updateHabit: (id, updates) => {
+                // Optimistic update
                 set((state) => {
                     const newHabits = state.habits.map((h) =>
                         h.id === id ? { ...h, ...updates } : h
@@ -138,15 +349,35 @@ export const useHabitStore = create<HabitStore>()(
                         stats: calculateCharacterStats(newHabits)
                     };
                 });
+
+                // Sync to Supabase
+                (async () => {
+                    const dbUpdates: Record<string, any> = {};
+                    if (updates.name !== undefined) dbUpdates.name = updates.name;
+                    if (updates.category !== undefined) dbUpdates.category = updates.category;
+                    if (updates.schedule !== undefined) dbUpdates.schedule = updates.schedule;
+                    if (updates.archived !== undefined) dbUpdates.archived = updates.archived;
+                    if (updates.type !== undefined) dbUpdates.type = updates.type;
+                    if (updates.color !== undefined) dbUpdates.color = updates.color;
+                    if (updates.icon !== undefined) dbUpdates.icon = updates.icon;
+                    if (updates.difficulty !== undefined) dbUpdates.difficulty = updates.difficulty;
+                    if (updates.dailyTarget !== undefined) dbUpdates.daily_target = updates.dailyTarget;
+                    if (updates.goalValue !== undefined) dbUpdates.goal_value = updates.goalValue;
+                    if (updates.unit !== undefined) dbUpdates.unit = updates.unit;
+
+                    if (Object.keys(dbUpdates).length > 0) {
+                        await supabase.from('habits').update(dbUpdates).eq('id', id);
+                    }
+                })();
             },
 
             deleteHabit: (id) => {
+                // Optimistic update
                 set((state) => {
                     const newHabits = state.habits.filter((h) => h.id !== id);
                     return {
                         habits: newHabits,
                         goals: state.goals.filter((g) => g.habitId !== id),
-                        // Also remove from routines
                         routines: state.routines.map(r => ({
                             ...r,
                             habitIds: r.habitIds.filter(hid => hid !== id)
@@ -154,14 +385,27 @@ export const useHabitStore = create<HabitStore>()(
                         stats: calculateCharacterStats(newHabits)
                     };
                 });
+
+                // Sync to Supabase (cascade deletes completions & goals via FK)
+                (async () => {
+                    await supabase.from('habits').delete().eq('id', id);
+                })();
             },
 
             archiveHabit: (id) => {
+                const habit = get().habits.find(h => h.id === id);
+                if (!habit) return;
+                const newArchived = !habit.archived;
+
                 set((state) => ({
                     habits: state.habits.map((h) =>
-                        h.id === id ? { ...h, archived: !h.archived } : h
+                        h.id === id ? { ...h, archived: newArchived } : h
                     ),
                 }));
+
+                (async () => {
+                    await supabase.from('habits').update({ archived: newArchived }).eq('id', id);
+                })();
             },
 
             duplicateHabit: (id) => {
@@ -176,6 +420,7 @@ export const useHabitStore = create<HabitStore>()(
                     completions: {},
                     createdAt: today(),
                 };
+
                 set((state) => {
                     const newHabits = [...state.habits, duplicate];
                     return {
@@ -183,6 +428,32 @@ export const useHabitStore = create<HabitStore>()(
                         stats: calculateCharacterStats(newHabits)
                     };
                 });
+
+                // Sync to Supabase
+                (async () => {
+                    const { data: { user } } = await supabase.auth.getUser();
+                    if (!user) return;
+
+                    await supabase.from('habits').insert({
+                        id: newId,
+                        user_id: user.id,
+                        name: duplicate.name,
+                        description: null,
+                        category: duplicate.category,
+                        schedule: duplicate.schedule,
+                        archived: false,
+                        type: duplicate.type,
+                        color: duplicate.color,
+                        icon: duplicate.icon,
+                        difficulty: duplicate.difficulty,
+                        daily_target: duplicate.dailyTarget,
+                        goal_value: duplicate.goalValue,
+                        unit: duplicate.unit,
+                        start_date: duplicate.startDate,
+                        end_date: duplicate.endDate,
+                    });
+                })();
+
                 return newId;
             },
 
@@ -199,6 +470,21 @@ export const useHabitStore = create<HabitStore>()(
                 set((state) => ({
                     routines: [...state.routines, newRoutine]
                 }));
+
+                (async () => {
+                    const { data: { user } } = await supabase.auth.getUser();
+                    if (!user) return;
+
+                    await supabase.from('routines').insert({
+                        id,
+                        user_id: user.id,
+                        name: newRoutine.name,
+                        description: newRoutine.description || null,
+                        time_of_day: 'morning',
+                        habit_ids: newRoutine.habitIds,
+                    });
+                })();
+
                 return id;
             },
 
@@ -208,12 +494,27 @@ export const useHabitStore = create<HabitStore>()(
                         r.id === id ? { ...r, ...updates } : r
                     ),
                 }));
+
+                (async () => {
+                    const dbUpdates: Record<string, any> = {};
+                    if (updates.name !== undefined) dbUpdates.name = updates.name;
+                    if (updates.description !== undefined) dbUpdates.description = updates.description;
+                    if (updates.habitIds !== undefined) dbUpdates.habit_ids = updates.habitIds;
+
+                    if (Object.keys(dbUpdates).length > 0) {
+                        await supabase.from('routines').update(dbUpdates).eq('id', id);
+                    }
+                })();
             },
 
             deleteRoutine: (id) => {
                 set((state) => ({
                     routines: state.routines.filter((r) => r.id !== id),
                 }));
+
+                (async () => {
+                    await supabase.from('routines').delete().eq('id', id);
+                })();
             },
 
             // ==========================================
@@ -221,10 +522,14 @@ export const useHabitStore = create<HabitStore>()(
             // ==========================================
 
             toggleCompletion: (habitId, date) => {
+                const habit = get().habits.find(h => h.id === habitId);
+                if (!habit) return;
+                const existing = habit.completions[date];
+                const isCompleting = !existing?.completed;
+
                 set((state) => {
                     const newHabits = state.habits.map((h) => {
                         if (h.id !== habitId) return h;
-                        const existing = h.completions[date];
                         const newCompletions = { ...h.completions };
 
                         if (existing?.completed) {
@@ -245,6 +550,27 @@ export const useHabitStore = create<HabitStore>()(
                         stats: calculateCharacterStats(newHabits)
                     };
                 });
+
+                // Sync to Supabase
+                (async () => {
+                    const { data: { user } } = await supabase.auth.getUser();
+                    if (!user) return;
+
+                    if (isCompleting) {
+                        await supabase.from('habit_completions').upsert({
+                            user_id: user.id,
+                            habit_id: habitId,
+                            completed_date: date,
+                            completed: true,
+                            value: existing?.value ?? null,
+                        }, { onConflict: 'habit_id,completed_date' });
+                    } else {
+                        await supabase.from('habit_completions')
+                            .delete()
+                            .eq('habit_id', habitId)
+                            .eq('completed_date', date);
+                    }
+                })();
             },
 
             setNumericalValue: (habitId, date, value) => {
@@ -265,6 +591,20 @@ export const useHabitStore = create<HabitStore>()(
                         stats: calculateCharacterStats(newHabits)
                     };
                 });
+
+                // Sync to Supabase
+                (async () => {
+                    const { data: { user } } = await supabase.auth.getUser();
+                    if (!user) return;
+
+                    await supabase.from('habit_completions').upsert({
+                        user_id: user.id,
+                        habit_id: habitId,
+                        completed_date: date,
+                        completed: value > 0,
+                        value,
+                    }, { onConflict: 'habit_id,completed_date' });
+                })();
             },
 
             // ==========================================
@@ -282,6 +622,23 @@ export const useHabitStore = create<HabitStore>()(
                 set((state) => ({
                     goals: [...state.goals, newGoal],
                 }));
+
+                (async () => {
+                    const { data: { user } } = await supabase.auth.getUser();
+                    if (!user) return;
+
+                    await supabase.from('goals').insert({
+                        id,
+                        user_id: user.id,
+                        habit_id: newGoal.habitId,
+                        description: newGoal.name,
+                        target_value: newGoal.targetValue,
+                        current_value: 0,
+                        deadline: newGoal.deadline || null,
+                        achieved: false,
+                    });
+                })();
+
                 return id;
             },
 
@@ -291,12 +648,28 @@ export const useHabitStore = create<HabitStore>()(
                         g.id === id ? { ...g, ...updates } : g
                     ),
                 }));
+
+                (async () => {
+                    const dbUpdates: Record<string, any> = {};
+                    if (updates.name !== undefined) dbUpdates.description = updates.name;
+                    if (updates.targetValue !== undefined) dbUpdates.target_value = updates.targetValue;
+                    if (updates.achieved !== undefined) dbUpdates.achieved = updates.achieved;
+                    if (updates.deadline !== undefined) dbUpdates.deadline = updates.deadline;
+
+                    if (Object.keys(dbUpdates).length > 0) {
+                        await supabase.from('goals').update(dbUpdates).eq('id', id);
+                    }
+                })();
             },
 
             deleteGoal: (id) => {
                 set((state) => ({
                     goals: state.goals.filter((g) => g.id !== id),
                 }));
+
+                (async () => {
+                    await supabase.from('goals').delete().eq('id', id);
+                })();
             },
 
             // ==========================================
@@ -329,9 +702,8 @@ export const useHabitStore = create<HabitStore>()(
                 set({
                     habits: data.habits,
                     goals: data.goals,
-                    routines: data.routines || [], // Handle legacy imports
+                    routines: data.routines || [],
                 });
-                // Recalculate stats after import
                 get().recalculateStats();
             },
 
@@ -340,16 +712,22 @@ export const useHabitStore = create<HabitStore>()(
                     habits: [],
                     goals: [],
                     routines: [],
-                    stats: {
-                        level: 1,
-                        xp: 0,
-                        nextLevelXp: 1000,
-                        attributes: { ovr: 60, dsc: 60, foc: 60, stk: 60, bal: 60, grt: 60, vit: 60 }
-                    },
+                    stats: { ...DEFAULT_STATS },
                     selectedDate: today(),
                     activeTab: 'dashboard',
                     selectedHabitId: null,
                 });
+
+                // Also clear from Supabase
+                (async () => {
+                    const { data: { user } } = await supabase.auth.getUser();
+                    if (!user) return;
+
+                    await supabase.from('habit_completions').delete().eq('user_id', user.id);
+                    await supabase.from('goals').delete().eq('user_id', user.id);
+                    await supabase.from('routines').delete().eq('user_id', user.id);
+                    await supabase.from('habits').delete().eq('user_id', user.id);
+                })();
             },
 
             loadDummyData: () => {

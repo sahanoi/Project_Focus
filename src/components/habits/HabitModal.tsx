@@ -30,7 +30,7 @@ const DAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const DAY_EMOJIS = ['🌞', '🔵', '🟢', '🟡', '🟠', '🔴', '🟣'];
 
 export default function HabitModal({ isOpen, onClose, editHabit }: HabitModalProps) {
-    const { addHabit, updateHabit, addGoal } = useHabitStore();
+    const { addHabit, updateHabit, addGoal, updateGoal, goals } = useHabitStore();
 
     const [name, setName] = useState('');
     const [type, setType] = useState<HabitType>('regular');
@@ -50,6 +50,9 @@ export default function HabitModal({ isOpen, onClose, editHabit }: HabitModalPro
     const [selectedDays, setSelectedDays] = useState<number[]>([]);
     const [selectedMonthDays, setSelectedMonthDays] = useState<number[]>([]);
     const [customInterval, setCustomInterval] = useState<number>(2);
+
+    // Goal linking
+    const [linkedGoalId, setLinkedGoalId] = useState<string>('');
 
     useEffect(() => {
         if (editHabit) {
@@ -91,6 +94,7 @@ export default function HabitModal({ isOpen, onClose, editHabit }: HabitModalPro
         setCustomInterval(2);
         setShowEmojiPicker(false);
         setShowTemplates(false);
+        setLinkedGoalId('');
     };
 
     const buildSchedule = (): HabitSchedule => {
@@ -124,9 +128,16 @@ export default function HabitModal({ isOpen, onClose, editHabit }: HabitModalPro
 
         if (editHabit) {
             updateHabit(editHabit.id, habitData);
+            // Link/unlink goal if changed
+            if (linkedGoalId) {
+                updateGoal(linkedGoalId, { habitId: editHabit.id });
+            }
         } else {
             const habitId = addHabit(habitData);
-            if (type === 'numerical' && goalValue > 0) {
+            // Link existing goal to new habit
+            if (linkedGoalId) {
+                updateGoal(linkedGoalId, { habitId });
+            } else if (type === 'numerical' && goalValue > 0) {
                 addGoal({
                     habitId,
                     name: `${name} Goal`,
@@ -343,8 +354,8 @@ export default function HabitModal({ isOpen, onClose, editHabit }: HabitModalPro
                                             type="button"
                                             onClick={() => toggleDay(i)}
                                             className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all ${selectedDays.includes(i)
-                                                    ? 'bg-primary text-white'
-                                                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                                ? 'bg-primary text-white'
+                                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                                                 }`}
                                         >
                                             {day}
@@ -362,8 +373,8 @@ export default function HabitModal({ isOpen, onClose, editHabit }: HabitModalPro
                                             type="button"
                                             onClick={() => toggleMonthDay(d)}
                                             className={`w-8 h-8 rounded-md text-xs font-bold transition-all ${selectedMonthDays.includes(d)
-                                                    ? 'bg-primary text-white'
-                                                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                                ? 'bg-primary text-white'
+                                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                                                 }`}
                                         >
                                             {d}
@@ -428,6 +439,33 @@ export default function HabitModal({ isOpen, onClose, editHabit }: HabitModalPro
                                 ))}
                             </div>
                         </div>
+
+                        {/* Link to Existing Goal */}
+                        {(() => {
+                            // Only show goals that are unlinked (no habitId or empty habitId), or linked to this habit
+                            const availableGoals = goals.filter(g => !g.habitId || g.habitId === '' || (editHabit && g.habitId === editHabit.id));
+                            if (availableGoals.length === 0) return null;
+                            return (
+                                <div>
+                                    <label className="block text-sm font-semibold text-dark mb-1.5">
+                                        🎯 Link to Goal
+                                    </label>
+                                    <select
+                                        value={linkedGoalId}
+                                        onChange={(e) => setLinkedGoalId(e.target.value)}
+                                        className="select-field"
+                                    >
+                                        <option value="">None (no goal linked)</option>
+                                        {availableGoals.map((g) => (
+                                            <option key={g.id} value={g.id}>
+                                                {g.name} — {g.targetValue} {g.unit}{g.deadline ? ` (by ${g.deadline})` : ''}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <p className="text-[11px] text-gray-500 mt-1">Link this habit to a S.M.A.R.T. goal you've already created</p>
+                                </div>
+                            );
+                        })()}
 
                         {/* Daily Target */}
                         {(type === 'numerical') && (

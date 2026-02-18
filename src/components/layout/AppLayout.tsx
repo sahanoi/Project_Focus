@@ -16,7 +16,7 @@ export default function AppLayout({ children, onAddHabit }: AppLayoutProps) {
     };
 
     return (
-        <div className="flex min-h-screen bg-[#111318]">
+        <div className="flex h-screen bg-[#111318] overflow-hidden">
             <Sidebar
                 activeTab={activeTab}
                 setActiveTab={handleTabChange}
@@ -24,8 +24,8 @@ export default function AppLayout({ children, onAddHabit }: AppLayoutProps) {
             />
 
             {/* Main Content Wrapper */}
-            <main className="flex-1 pl-64">
-                <div className="h-full">
+            <main className="flex-1 pl-64 h-screen overflow-hidden">
+                <div className="h-full overflow-y-auto">
                     {children}
                 </div>
             </main>
