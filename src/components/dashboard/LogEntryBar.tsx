@@ -3,7 +3,7 @@ import { useHabitStore } from '../../store/habitStore';
 import { Search, Zap, Check } from 'lucide-react';
 
 export default function LogEntryBar() {
-    const { habits, selectedDate, toggleCompletion, setNumericalValue } = useHabitStore();
+    const { habits, selectedDate, toggleCompletion, setNumericalValue, setSelectedHabitId } = useHabitStore();
     const [search, setSearch] = useState('');
     const [showDropdown, setShowDropdown] = useState(false);
 
@@ -40,7 +40,7 @@ export default function LogEntryBar() {
     };
 
     const handleSelectHabit = (habitId: string) => {
-        handleQuickToggle(habitId);
+        setSelectedHabitId(habitId); // Open Quick Log Modal
         setSearch('');
         setShowDropdown(false);
     };

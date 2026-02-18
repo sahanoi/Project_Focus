@@ -12,33 +12,27 @@ export default function XPProgress({ stats }: XPProgressProps) {
     const xpProgress = (xp % 1000) / 1000 * 100; // Assuming 1000 XP per level
 
     return (
-        <div className="w-full bg-gray-900 rounded-xl p-4 border border-gray-800 shadow-lg relative overflow-hidden group">
-            <div className="flex justify-between items-end mb-2 relative z-10">
-                <div className="flex flex-col">
-                    <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Season Progress</span>
-                    <span className="text-xl font-black text-white">Level {level}</span>
-                </div>
-                <div className="text-right">
-                    <span className="text-sm font-bold text-cyan-400">{Math.floor(xp)} XP</span>
-                    <span className="text-xs text-gray-500 ml-1">/ {nextLevelXp}</span>
-                </div>
+        <div className="flex items-center gap-3 bg-gray-900/80 rounded-lg px-4 py-2 border border-gray-800 shadow-sm h-10 w-full max-w-sm ml-auto">
+            {/* Level Badge */}
+            <div className="flex flex-col leading-none">
+                <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Lvl</span>
+                <span className="text-sm font-black text-white">{level}</span>
             </div>
 
             {/* Progress Bar Container */}
-            <div className="h-4 w-full bg-gray-800 rounded-full overflow-hidden relative border border-gray-700">
-                {/* Progress Fill */}
-                <div
-                    className="h-full bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-600 transition-all duration-1000 ease-out relative"
-                    style={{ width: `${xpProgress}%` }}
-                >
-                    {/* Shimmer effect */}
-                    <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12 animate-shimmer"></div>
+            <div className="flex-1 flex flex-col justify-center gap-1">
+                <div className="flex justify-between items-end">
+                    <span className="text-[9px] font-bold text-cyan-400">Season Progress</span>
+                    <span className="text-[9px] text-gray-500">{Math.floor(xp)} / {nextLevelXp} XP</span>
                 </div>
-            </div>
-
-            {/* Background decoration */}
-            <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
-                <span className="text-6xl">🏆</span>
+                <div className="h-1.5 w-full bg-gray-800 rounded-full overflow-hidden border border-gray-700/50 relative">
+                    <div
+                        className="h-full bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-600 shadow-[0_0_10px_rgba(6,182,212,0.5)] relative"
+                        style={{ width: `${xpProgress}%` }}
+                    >
+                        <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
+                    </div>
+                </div>
             </div>
         </div>
     );

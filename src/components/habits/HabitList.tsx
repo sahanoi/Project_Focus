@@ -128,7 +128,7 @@ export default function HabitList({ onEditHabit, onAddHabit }: HabitListProps) {
     return (
         <div>
             {/* Daily Progress Summary */}
-            <div className="card mb-6">
+            <div className="rounded-xl border border-[#2A2E37] bg-[#1C1F26] p-5 mb-6" style={{ boxShadow: '4px 4px 0px 0px rgba(0, 0, 0, 0.25)' }}>
                 <div className="flex items-center justify-between mb-3">
                     <h2 className="section-title">📊 Today's Progress</h2>
                     <span className="stat-number text-xl" style={{ color: completionPercent === 100 ? '#10B981' : '#2563EB' }}>

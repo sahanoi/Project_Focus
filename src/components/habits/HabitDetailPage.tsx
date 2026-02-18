@@ -5,6 +5,7 @@ import {
     calculateCurrentStreak, calculateLongestStreak,
     calculateCompletionRate, getBestPerformingDays,
     aggregateNumericalProgress, getDailyCompletionData,
+    getTotalNumericalValue,
 } from '../../utils/statsUtils';
 import { getDateRange, formatShortDate, formatDisplayDate } from '../../utils/dateUtils';
 import {
@@ -16,6 +17,7 @@ import {
     ArrowLeft, Edit3, Flame, Trophy, Target, Calendar,
     TrendingUp, BarChart3, Heart,
 } from 'lucide-react';
+import { parseISO } from 'date-fns';
 
 interface HabitDetailPageProps {
     habitId: string;
@@ -31,8 +33,31 @@ const SCHED_LABELS: Record<string, string> = {
     custom: '🔄 Custom Interval',
 };
 
+/**
+ * Darken a hex color by mixing it toward black.
+ */
+function darkenColor(hex: string, amount: number): string {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    const nr = Math.round(r * (1 - amount));
+    const ng = Math.round(g * (1 - amount));
+    const nb = Math.round(b * (1 - amount));
+    return `#${nr.toString(16).padStart(2, '0')}${ng.toString(16).padStart(2, '0')}${nb.toString(16).padStart(2, '0')}`;
+}
+
+/**
+ * Brighten a hex color toward neon by increasing saturation and lightness.
+ */
+function neonColor(hex: string): string {
+    const r = Math.min(255, parseInt(hex.slice(1, 3), 16) + 80);
+    const g = Math.min(255, parseInt(hex.slice(3, 5), 16) + 80);
+    const b = Math.min(255, parseInt(hex.slice(5, 7), 16) + 80);
+    return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+}
+
 export default function HabitDetailPage({ habitId, onBack, onEdit }: HabitDetailPageProps) {
-    const { habits, darkMode } = useHabitStore();
+    const { habits, goals, darkMode } = useHabitStore();
     const habit = habits.find((h) => h.id === habitId);
 
     if (!habit) {
@@ -56,33 +81,68 @@ export default function HabitDetailPage({ habitId, onBack, onEdit }: HabitDetail
         [habit, monthRange]
     );
 
+    // Find linked goal
+    const linkedGoal = useMemo(
+        () => goals.find(g => g.habitId === habit.id),
+        [goals, habit.id]
+    );
+    const totalNumerical = useMemo(
+        () => habit.type === 'numerical' ? getTotalNumericalValue(habit) : 0,
+        [habit]
+    );
+
     // Daily value data for Life Line chart (last 30 days)
+    // With color coding: below life = dark, between goal/crazy = normal, above crazy = neon
     const dailyValueData = useMemo(() => {
         const range = getDateRange('month');
-        const data: { date: string; label: string; value: number; completed: boolean }[] = [];
+        const data: { date: string; label: string; value: number; completed: boolean; fillColor: string }[] = [];
         const start = new Date(range.start);
         const end = new Date(range.end);
+        const lifeTarget = habit.dailyTarget || 0;
+        const goalTarget = habit.goalValue || 0;
+        const crazyTarget = goalTarget > 0 ? goalTarget * 1.5 : 0;
+
         for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
             const dateStr = d.toISOString().split('T')[0];
             const completion = habit.completions[dateStr];
+            const value = completion?.value ?? (completion?.completed ? 1 : 0);
+
+            // Color coding
+            let fillColor = habit.color;
+            if (habit.type === 'numerical' && lifeTarget > 0) {
+                if (value < lifeTarget) {
+                    fillColor = darkenColor(habit.color, 0.5);
+                } else if (crazyTarget > 0 && value >= crazyTarget) {
+                    fillColor = neonColor(habit.color);
+                }
+                // between life and crazy → default habit color
+            }
+
             data.push({
                 date: dateStr,
                 label: formatShortDate(dateStr),
-                value: completion?.value ?? (completion?.completed ? 1 : 0),
+                value,
                 completed: completion?.completed ?? false,
+                fillColor,
             });
         }
         return data;
     }, [habit]);
 
-    // Weekly pattern
+    // Weekly pattern — FIXED: use parseISO to avoid timezone-related day-of-week shift
     const weeklyPattern = useMemo(() => {
         const counts = [0, 0, 0, 0, 0, 0, 0];
         const totals = [0, 0, 0, 0, 0, 0, 0];
         Object.entries(habit.completions).forEach(([date, c]) => {
-            const d = new Date(date).getDay();
+            const parsed = parseISO(date);
+            const d = parsed.getDay();
             totals[d]++;
-            if (c.completed) counts[d]++;
+            if (habit.type === 'numerical') {
+                // For numerical habits, count as completed if value > 0
+                if ((c.value ?? 0) > 0) counts[d]++;
+            } else {
+                if (c.completed) counts[d]++;
+            }
         });
         return DAY_LABELS.map((day, i) => ({
             day,
@@ -97,7 +157,7 @@ export default function HabitDetailPage({ habitId, onBack, onEdit }: HabitDetail
         return aggregateNumericalProgress(habit, quarterRange.start, quarterRange.end);
     }, [habit, quarterRange]);
 
-    // Calendar month grid
+    // Calendar month grid — FIXED: use value > 0 for numerical habits
     const calendarData = useMemo(() => {
         const now = new Date();
         const year = now.getFullYear();
@@ -106,15 +166,17 @@ export default function HabitDetailPage({ habitId, onBack, onEdit }: HabitDetail
         const daysInMonth = new Date(year, month + 1, 0).getDate();
         const cells: { day: number | null; completed: boolean; value?: number; date: string }[] = [];
 
-        // Padding
         for (let i = 0; i < firstDay; i++) cells.push({ day: null, completed: false, date: '' });
 
         for (let d = 1; d <= daysInMonth; d++) {
             const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
             const c = habit.completions[dateStr];
+            const isCompleted = habit.type === 'numerical'
+                ? (c?.value ?? 0) > 0
+                : c?.completed ?? false;
             cells.push({
                 day: d,
-                completed: c?.completed ?? false,
+                completed: isCompleted,
                 value: c?.value,
                 date: dateStr,
             });
@@ -141,6 +203,10 @@ export default function HabitDetailPage({ habitId, onBack, onEdit }: HabitDetail
 
     const chartTextColor = darkMode ? '#9CA3AF' : '#6B7280';
     const gridColor = darkMode ? '#2A2E37' : '#E5E7EB';
+
+    // Goal / Crazy line values for chart
+    const goalLineValue = habit.goalValue || 0;
+    const crazyLineValue = goalLineValue > 0 ? Math.round(goalLineValue * 1.5 * 10) / 10 : 0;
 
     return (
         <div className="max-w-4xl mx-auto px-4 py-6">
@@ -191,16 +257,30 @@ export default function HabitDetailPage({ habitId, onBack, onEdit }: HabitDetail
                 </div>
             </div>
 
-            {/* Life Line Chart — the key feature */}
+            {/* Life Line Chart with Goal & Crazy Lines */}
             <div className="chart-card mb-6">
                 <h3 className="section-title mb-1 flex items-center gap-2">
                     <TrendingUp size={18} className="text-success" />
                     {habit.type === 'numerical' ? 'Daily Value & Life Line' : 'Completion Trend'}
                 </h3>
-                {habit.dailyTarget ? (
-                    <p className="text-xs text-gray-500 mb-3">
-                        🟢 <strong>Life Line</strong> = {habit.dailyTarget} {habit.unit || 'completions'}/day — stay above the green line to keep the habit alive!
-                    </p>
+                {habit.type === 'numerical' && (habit.dailyTarget || goalLineValue) ? (
+                    <div className="flex flex-wrap gap-3 text-[10px] font-bold mb-3">
+                        {habit.dailyTarget && (
+                            <span className="text-green-400">
+                                🟢 Life Line: {habit.dailyTarget} {habit.unit || ''}/day
+                            </span>
+                        )}
+                        {goalLineValue > 0 && (
+                            <span className="text-amber-400">
+                                🎯 Goal Line: {goalLineValue} {habit.unit || ''}/day
+                            </span>
+                        )}
+                        {crazyLineValue > 0 && (
+                            <span className="text-red-400">
+                                🔥 Crazy Line: {crazyLineValue} {habit.unit || ''}/day
+                            </span>
+                        )}
+                    </div>
                 ) : (
                     <p className="text-xs text-gray-500 mb-3">
                         Daily progress over the last 30 days
@@ -231,7 +311,7 @@ export default function HabitDetailPage({ habitId, onBack, onEdit }: HabitDetail
                             activeDot={{ r: 5, fill: habit.color, stroke: '#fff', strokeWidth: 2 }}
                             name={habit.unit || 'Value'}
                         />
-                        {/* 🟢 THE LIFE LINE — green reference line for minimum daily target */}
+                        {/* 🟢 LIFE LINE — minimum daily target */}
                         {habit.dailyTarget && (
                             <ReferenceLine
                                 y={habit.dailyTarget}
@@ -239,10 +319,42 @@ export default function HabitDetailPage({ habitId, onBack, onEdit }: HabitDetail
                                 strokeWidth={2.5}
                                 strokeDasharray="8 4"
                                 label={{
-                                    value: `⚡ Life Line (${habit.dailyTarget})`,
+                                    value: `⚡ Life (${habit.dailyTarget})`,
                                     position: 'insideTopRight',
                                     fill: '#10B981',
                                     fontSize: 11,
+                                    fontWeight: 700,
+                                }}
+                            />
+                        )}
+                        {/* 🎯 GOAL LINE — the daily goal value */}
+                        {goalLineValue > 0 && (
+                            <ReferenceLine
+                                y={goalLineValue}
+                                stroke="#F59E0B"
+                                strokeWidth={2}
+                                strokeDasharray="6 3"
+                                label={{
+                                    value: `🎯 Goal (${goalLineValue})`,
+                                    position: 'insideTopLeft',
+                                    fill: '#F59E0B',
+                                    fontSize: 10,
+                                    fontWeight: 700,
+                                }}
+                            />
+                        )}
+                        {/* 🔥 CRAZY LINE — 1.5x the goal */}
+                        {crazyLineValue > 0 && (
+                            <ReferenceLine
+                                y={crazyLineValue}
+                                stroke="#EF4444"
+                                strokeWidth={2}
+                                strokeDasharray="4 2"
+                                label={{
+                                    value: `🔥 Crazy (${crazyLineValue})`,
+                                    position: 'insideTopLeft',
+                                    fill: '#EF4444',
+                                    fontSize: 10,
                                     fontWeight: 700,
                                 }}
                             />
@@ -254,7 +366,7 @@ export default function HabitDetailPage({ habitId, onBack, onEdit }: HabitDetail
             {/* Two-column layout */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
 
-                {/* Calendar */}
+                {/* Calendar — FIXED for numerical habits */}
                 <div className="chart-card">
                     <h3 className="section-title mb-3 flex items-center gap-2">
                         <Calendar size={18} className="text-primary" />
@@ -269,16 +381,29 @@ export default function HabitDetailPage({ habitId, onBack, onEdit }: HabitDetail
                         {calendarData.map((cell, i) => {
                             if (cell.day === null) return <div key={i} />;
                             const isToday = cell.date === new Date().toISOString().split('T')[0];
+
+                            // Color coding for numerical habits based on value vs targets
+                            let cellBg = habit.color;
+                            if (cell.completed && habit.type === 'numerical' && cell.value !== undefined) {
+                                const lifeTarget = habit.dailyTarget || 0;
+                                const crazyTarget = (habit.goalValue || 0) * 1.5;
+                                if (lifeTarget > 0 && cell.value < lifeTarget) {
+                                    cellBg = darkenColor(habit.color, 0.4);
+                                } else if (crazyTarget > 0 && cell.value >= crazyTarget) {
+                                    cellBg = neonColor(habit.color);
+                                }
+                            }
+
                             return (
                                 <div
                                     key={i}
                                     className={`aspect-square rounded-lg flex items-center justify-center text-xs font-bold transition-all ${cell.completed
-                                            ? 'text-white'
-                                            : isToday
-                                                ? 'ring-2 ring-primary text-dark'
-                                                : 'bg-gray-100 text-gray-400'
+                                        ? 'text-white'
+                                        : isToday
+                                            ? 'ring-2 ring-primary text-dark'
+                                            : 'bg-gray-100 text-gray-400'
                                         }`}
-                                    style={cell.completed ? { backgroundColor: habit.color } : undefined}
+                                    style={cell.completed ? { backgroundColor: cellBg } : undefined}
                                     title={cell.value !== undefined ? `${cell.value} ${habit.unit || ''}` : cell.completed ? 'Done ✅' : 'Missed'}
                                 >
                                     {cell.day}
@@ -288,7 +413,7 @@ export default function HabitDetailPage({ habitId, onBack, onEdit }: HabitDetail
                     </div>
                 </div>
 
-                {/* Weekly Pattern */}
+                {/* Weekly Pattern — FIXED with parseISO */}
                 <div className="chart-card">
                     <h3 className="section-title mb-3 flex items-center gap-2">
                         <BarChart3 size={18} className="text-teal" />
@@ -321,13 +446,25 @@ export default function HabitDetailPage({ habitId, onBack, onEdit }: HabitDetail
                 </div>
             </div>
 
-            {/* Numerical Progress Over Time */}
+            {/* Cumulative Progress Over Time — Task 8: show total goal + current total */}
             {habit.type === 'numerical' && progressData.length > 0 && (
                 <div className="chart-card mb-6">
-                    <h3 className="section-title mb-3 flex items-center gap-2">
-                        <TrendingUp size={18} className="text-purple" />
-                        📈 Cumulative Progress (3 Months)
-                    </h3>
+                    <div className="flex items-center justify-between mb-3">
+                        <h3 className="section-title flex items-center gap-2">
+                            <TrendingUp size={18} className="text-purple" />
+                            📈 Cumulative Progress (3 Months)
+                        </h3>
+                        <div className="flex items-center gap-3 text-sm">
+                            <span className="font-bold" style={{ color: habit.color }}>
+                                {Math.round(totalNumerical * 10) / 10} {habit.unit || ''}
+                            </span>
+                            {linkedGoal && (
+                                <span className="text-gray-400 text-xs">
+                                    / {linkedGoal.targetValue} {linkedGoal.unit} ({Math.round((totalNumerical / linkedGoal.targetValue) * 100)}%)
+                                </span>
+                            )}
+                        </div>
+                    </div>
                     <ResponsiveContainer width="100%" height={250}>
                         <LineChart data={progressData}>
                             <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
@@ -350,15 +487,15 @@ export default function HabitDetailPage({ habitId, onBack, onEdit }: HabitDetail
                                 activeDot={{ r: 5, fill: habit.color }}
                                 name={`Total ${habit.unit || ''}`}
                             />
-                            {/* Goal line if exists */}
-                            {habit.goalValue && (
+                            {/* Total Goal reference line (from linked goal) */}
+                            {linkedGoal && (
                                 <ReferenceLine
-                                    y={habit.goalValue * 90}
+                                    y={linkedGoal.targetValue}
                                     stroke="#F59E0B"
                                     strokeDasharray="6 3"
                                     strokeWidth={2}
                                     label={{
-                                        value: '🎯 90-Day Goal',
+                                        value: `🎯 ${linkedGoal.name} (${linkedGoal.targetValue} ${linkedGoal.unit})`,
                                         position: 'insideTopRight',
                                         fill: '#F59E0B',
                                         fontSize: 11,
@@ -397,6 +534,14 @@ export default function HabitDetailPage({ habitId, onBack, onEdit }: HabitDetail
                         <div className="flex justify-between">
                             <span className="text-gray-500">🎯 Daily Goal</span>
                             <span className="font-bold">{habit.goalValue} {habit.unit || ''}</span>
+                        </div>
+                    )}
+                    {linkedGoal && (
+                        <div className="flex justify-between">
+                            <span className="text-gray-500">🏆 Total Goal</span>
+                            <span className="font-bold text-amber-400">
+                                {linkedGoal.name}: {totalNumerical}/{linkedGoal.targetValue} {linkedGoal.unit}
+                            </span>
                         </div>
                     )}
                     <div className="flex justify-between">

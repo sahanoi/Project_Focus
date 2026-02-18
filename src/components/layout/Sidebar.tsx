@@ -1,5 +1,6 @@
 import React from 'react';
 import { useHabitStore } from '../../store/habitStore';
+import { useAuth } from '../../contexts/AuthContext';
 import { LayoutDashboard, BarChart2, Settings, User, LogOut, Plus } from 'lucide-react';
 
 interface SidebarProps {
@@ -9,6 +10,7 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ activeTab, setActiveTab, onAddHabit }: SidebarProps) {
+    const { user, signOut } = useAuth();
     const navItems = [
         { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
         { id: 'statistics', label: 'Stastics', icon: BarChart2 }, // "Reports" in reference
@@ -37,8 +39,8 @@ export default function Sidebar({ activeTab, setActiveTab, onAddHabit }: Sidebar
                             key={item.id}
                             onClick={() => setActiveTab(item.id)}
                             className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group ${isActive
-                                    ? 'bg-[#1e1b4b] text-indigo-300 shadow-sm border border-indigo-500/20'
-                                    : 'text-gray-400 hover:bg-gray-800/50 hover:text-gray-200'
+                                ? 'bg-[#1e1b4b] text-indigo-300 shadow-sm border border-indigo-500/20'
+                                : 'text-gray-400 hover:bg-gray-800/50 hover:text-gray-200'
                                 }`}
                         >
                             <Icon size={20} className={isActive ? 'text-indigo-400' : 'text-gray-500 group-hover:text-gray-300'} />
@@ -58,17 +60,25 @@ export default function Sidebar({ activeTab, setActiveTab, onAddHabit }: Sidebar
             </nav>
 
             {/* User Profile / Bottom */}
-            <div className="p-4 border-t border-gray-800 bg-[#0a0a0c]">
-                <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-800/50 cursor-pointer transition-colors">
+            <div className="p-4 border-t border-gray-800 bg-[#0a0a0c] space-y-2">
+                <div className="flex items-center gap-3 p-2 rounded-lg">
                     <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center text-gray-300">
                         <User size={16} />
                     </div>
                     <div className="flex-1 min-w-0">
-                        <div className="text-sm font-bold text-gray-200 truncate">User</div>
-                        <div className="text-xs text-gray-500 truncate">Level 5 Pro</div>
+                        <div className="text-sm font-bold text-gray-200 truncate">{user?.email?.split('@')[0] || 'User'}</div>
+                        <div className="text-xs text-gray-500 truncate">{user?.email || 'Level 5 Pro'}</div>
                     </div>
                 </div>
+                <button
+                    onClick={signOut}
+                    className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs font-medium text-red-400 hover:bg-red-500/10 hover:text-red-300 border border-red-500/10 transition-all"
+                >
+                    <LogOut size={14} />
+                    Sign Out
+                </button>
             </div>
         </aside>
     );
 }
+
