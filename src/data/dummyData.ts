@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { format, subDays } from 'date-fns';
 
 // ==========================================
-// Demo Data Generator — Clean, Realistic
+// Demo Data Generator — Persona: Leo (CS Student & Runner)
 // ==========================================
 
 function dateStr(d: Date): string {
@@ -11,7 +11,7 @@ function dateStr(d: Date): string {
 }
 
 function randomBetween(min: number, max: number): number {
-    return Math.round((Math.random() * (max - min) + min) * 10) / 10; // supports decimals
+    return Math.round((Math.random() * (max - min) + min) * 10) / 10;
 }
 
 function generateCompletions(
@@ -19,12 +19,13 @@ function generateCompletions(
     probability: number,
     type: 'boolean' | 'numerical',
     minVal = 0,
-    maxVal = 10
+    maxVal = 10,
+    endOffset = 0
 ): Record<string, Completion> {
     const completions: Record<string, Completion> = {};
     const now = new Date();
 
-    for (let i = 0; i < daysBack; i++) {
+    for (let i = endOffset; i < daysBack + endOffset; i++) {
         const d = subDays(now, i);
         const date = dateStr(d);
         const shouldComplete = Math.random() < probability;
@@ -38,7 +39,6 @@ function generateCompletions(
             }
         }
     }
-
     return completions;
 }
 
@@ -46,229 +46,171 @@ export function generateDummyHabits(): Habit[] {
     const now = new Date();
 
     const habits: Habit[] = [
-        // 1. Study Hours — numerical, daily, the main one with big goal
         {
             id: uuidv4(),
-            name: 'Study',
+            name: 'LeetCode Daily',
             type: 'numerical',
             category: 'learning',
-            color: '#2563EB',
-            icon: '📚',
+            color: '#F59E0B',
+            icon: '💻',
+            difficulty: 'hard',
             schedule: { type: 'daily' },
-            dailyTarget: 2,
-            goalValue: 4,
-            unit: 'hours',
-            completions: generateCompletions(90, 0.82, 'numerical', 0.5, 5),
+            dailyTarget: 1,
+            goalValue: 3,
+            unit: 'problems',
+            completions: generateCompletions(120, 0.75, 'numerical', 1, 4),
+            createdAt: dateStr(subDays(now, 120)),
+            archived: false,
+        },
+        {
+            id: uuidv4(),
+            name: 'Half-Marathon Prep',
+            type: 'numerical',
+            category: 'fitness',
+            color: '#EF4444',
+            icon: '🏃',
+            difficulty: 'hard',
+            schedule: { type: 'weekly', daysOfWeek: [1, 3, 5, 6] },
+            dailyTarget: 5,
+            goalValue: 15,
+            unit: 'km',
+            completions: generateCompletions(90, 0.85, 'numerical', 5, 18),
             createdAt: dateStr(subDays(now, 90)),
             archived: false,
         },
-        // 2. Running — numerical, MWF
         {
             id: uuidv4(),
-            name: 'Running',
+            name: 'Deep Work (Thesis)',
             type: 'numerical',
-            category: 'fitness',
-            color: '#F59E0B',
-            icon: '🏃',
-            schedule: { type: 'weekly', daysOfWeek: [1, 3, 5] },
-            dailyTarget: 3,
-            goalValue: 7,
-            unit: 'km',
-            completions: generateCompletions(75, 0.68, 'numerical', 1.5, 8),
-            createdAt: dateStr(subDays(now, 75)),
-            archived: false,
-        },
-        // 3. Reading — numerical, daily
-        {
-            id: uuidv4(),
-            name: 'Reading',
-            type: 'numerical',
-            category: 'learning',
-            color: '#8B5CF6',
-            icon: '📖',
+            category: 'productivity',
+            color: '#6E44FF',
+            icon: '🧠',
+            difficulty: 'medium',
             schedule: { type: 'daily' },
-            dailyTarget: 20,
-            goalValue: 40,
-            unit: 'min',
-            completions: generateCompletions(60, 0.73, 'numerical', 10, 50),
+            dailyTarget: 2,
+            goalValue: 6,
+            unit: 'hours',
+            completions: generateCompletions(60, 0.65, 'numerical', 1, 5),
             createdAt: dateStr(subDays(now, 60)),
             archived: false,
         },
-        // 4. Meditation — numerical, daily
         {
             id: uuidv4(),
-            name: 'Meditation',
-            type: 'numerical',
-            category: 'mindfulness',
-            color: '#14B8A6',
-            icon: '🧘',
-            schedule: { type: 'daily' },
-            dailyTarget: 5,
-            goalValue: 15,
-            unit: 'min',
-            completions: generateCompletions(45, 0.62, 'numerical', 3, 20),
-            createdAt: dateStr(subDays(now, 45)),
-            archived: false,
-        },
-        // 5. Take Vitamins — regular, daily
-        {
-            id: uuidv4(),
-            name: 'Take Vitamins',
+            name: 'Stretching & Mobility',
             type: 'regular',
             category: 'health',
             color: '#10B981',
-            icon: '💊',
+            icon: '🧘‍♂️',
+            difficulty: 'easy',
             schedule: { type: 'daily' },
-            completions: generateCompletions(80, 0.88, 'boolean'),
-            createdAt: dateStr(subDays(now, 80)),
+            completions: generateCompletions(100, 0.90, 'boolean'),
+            createdAt: dateStr(subDays(now, 100)),
             archived: false,
         },
-        // 6. No Social Media — infinite, daily
         {
             id: uuidv4(),
-            name: 'No Social Media',
-            type: 'infinite',
-            category: 'productivity',
-            color: '#EF4444',
-            icon: '📵',
-            schedule: { type: 'daily' },
-            completions: generateCompletions(40, 0.58, 'boolean'),
-            createdAt: dateStr(subDays(now, 40)),
-            archived: false,
-        },
-        // 7. Workout — numerical, daily
-        {
-            id: uuidv4(),
-            name: 'Workout',
+            name: 'Read SysDesign Book',
             type: 'numerical',
-            category: 'fitness',
-            color: '#EC4899',
-            icon: '💪',
+            category: 'learning',
+            color: '#3B82F6',
+            icon: '📖',
+            difficulty: 'medium',
             schedule: { type: 'daily' },
-            dailyTarget: 30,
-            goalValue: 60,
-            unit: 'min',
-            completions: generateCompletions(55, 0.7, 'numerical', 15, 75),
-            createdAt: dateStr(subDays(now, 55)),
+            dailyTarget: 15,
+            goalValue: 30,
+            unit: 'pages',
+            completions: generateCompletions(45, 0.8, 'numerical', 10, 40),
+            createdAt: dateStr(subDays(now, 45)),
             archived: false,
         },
-        // 8. Cold Shower Challenge — 30 days
         {
             id: uuidv4(),
-            name: 'Cold Shower Challenge',
-            type: 'challenge',
+            name: 'No Junk Food',
+            type: 'infinite',
             category: 'health',
-            color: '#06B6D4',
-            icon: '❄️',
+            color: '#EC4899',
+            icon: '🍔',
+            difficulty: 'hard',
             schedule: { type: 'daily' },
-            startDate: dateStr(subDays(now, 15)),
-            endDate: dateStr(subDays(now, -15)),
-            completions: generateCompletions(15, 0.8, 'boolean'),
-            createdAt: dateStr(subDays(now, 15)),
-            archived: false,
-        },
-        // 9. Plan Tomorrow — regular, daily
-        {
-            id: uuidv4(),
-            name: 'Plan Tomorrow',
-            type: 'regular',
-            category: 'productivity',
-            color: '#F97316',
-            icon: '📝',
-            schedule: { type: 'daily' },
-            completions: generateCompletions(50, 0.76, 'boolean'),
+            completions: generateCompletions(50, 0.60, 'boolean'),
             createdAt: dateStr(subDays(now, 50)),
             archived: false,
         },
-        // 10. Call Family — regular, weekends
         {
             id: uuidv4(),
-            name: 'Call Family',
-            type: 'regular',
-            category: 'social',
-            color: '#EC4899',
-            icon: '📞',
-            schedule: { type: 'weekly', daysOfWeek: [0, 6] },
-            completions: generateCompletions(60, 0.55, 'boolean'),
-            createdAt: dateStr(subDays(now, 60)),
-            archived: false,
-        },
-        // 11. Drink Water — numerical, daily
-        {
-            id: uuidv4(),
-            name: 'Drink Water',
+            name: 'Hydration',
             type: 'numerical',
             category: 'health',
-            color: '#3B82F6',
+            color: '#06B6D4',
             icon: '💧',
+            difficulty: 'easy',
             schedule: { type: 'daily' },
-            dailyTarget: 6,
-            goalValue: 10,
-            unit: 'glasses',
-            completions: generateCompletions(70, 0.85, 'numerical', 3, 12),
-            createdAt: dateStr(subDays(now, 70)),
+            dailyTarget: 2.5,
+            goalValue: 4,
+            unit: 'liters',
+            completions: generateCompletions(120, 0.95, 'numerical', 1.5, 3.5),
+            createdAt: dateStr(subDays(now, 120)),
             archived: false,
         },
-        // 12. Journaling — regular, daily
         {
             id: uuidv4(),
-            name: 'Journaling',
+            name: '7+ Hours Sleep',
             type: 'regular',
-            category: 'mindfulness',
-            color: '#A855F7',
-            icon: '📓',
+            category: 'health',
+            color: '#8B5CF6',
+            icon: '💤',
+            difficulty: 'medium',
             schedule: { type: 'daily' },
-            completions: generateCompletions(35, 0.65, 'boolean'),
-            createdAt: dateStr(subDays(now, 35)),
+            completions: generateCompletions(80, 0.70, 'boolean'),
+            createdAt: dateStr(subDays(now, 80)),
             archived: false,
         },
     ];
 
+    // Ensure today is somewhat realistic (maybe some done, some not)
+    // We generated back from today.
     return habits;
 }
 
 export function generateDummyGoals(habits: Habit[]): Goal[] {
     const goals: Goal[] = [];
 
-    // Find the "Study" habit for a big 1000hr goal
-    const studyHabit = habits.find(h => h.name === 'Study');
-    if (studyHabit) {
+    const leetcode = habits.find(h => h.name === 'LeetCode Daily');
+    if (leetcode) {
         goals.push({
             id: uuidv4(),
-            habitId: studyHabit.id,
-            name: '1000 Hours of Study',
-            targetValue: 1000,
-            unit: 'hours',
+            habitId: leetcode.id,
+            name: 'Solve 150 Problems',
+            targetValue: 150,
+            unit: 'problems',
             achieved: false,
-            createdAt: studyHabit.createdAt,
+            createdAt: leetcode.createdAt,
         });
     }
 
-    // Running goal
-    const runHabit = habits.find(h => h.name === 'Running');
-    if (runHabit) {
+    const run = habits.find(h => h.name === 'Half-Marathon Prep');
+    if (run) {
         goals.push({
             id: uuidv4(),
-            habitId: runHabit.id,
-            name: 'Run 500km',
-            targetValue: 500,
+            habitId: run.id,
+            name: 'Run 250km Total',
+            targetValue: 250,
             unit: 'km',
             achieved: false,
-            createdAt: runHabit.createdAt,
+            createdAt: run.createdAt,
         });
     }
 
-    // Workout goal
-    const workoutHabit = habits.find(h => h.name === 'Workout');
-    if (workoutHabit) {
+    const thesis = habits.find(h => h.name === 'Deep Work (Thesis)');
+    if (thesis) {
         goals.push({
             id: uuidv4(),
-            habitId: workoutHabit.id,
-            name: 'Workout 200 Hours',
-            targetValue: 12000,
-            unit: 'min',
+            habitId: thesis.id,
+            name: '100 Hours of Deep Work',
+            targetValue: 100,
+            unit: 'hours',
             achieved: false,
-            createdAt: workoutHabit.createdAt,
+            createdAt: thesis.createdAt,
         });
     }
 
@@ -281,58 +223,39 @@ export function generateDummyRoutines(habits: Habit[]): Routine[] {
 
     const routines: Routine[] = [];
 
-    // Morning Routine
-    const morningHabits = [
-        findHabit('Take Vitamins'),
-        findHabit('Meditation'),
-        findHabit('Drink Water'),
+    const morningRunStack = [
+        findHabit('Hydration'),
+        findHabit('Half-Marathon Prep'),
+        findHabit('Stretching & Mobility'),
     ].filter(Boolean) as Habit[];
 
-    if (morningHabits.length > 0) {
+    if (morningRunStack.length > 0) {
         routines.push({
             id: uuidv4(),
-            name: 'Morning Ritual',
-            description: 'Start every day with intention',
+            name: 'Morning Run Stack',
+            description: 'Fuel up, run far, recover smart.',
             icon: '🌅',
-            habitIds: morningHabits.map(h => h.id),
-            bonusXp: 150,
-            completionTime: 30,
+            habitIds: morningRunStack.map(h => h.id),
+            bonusXp: 300,
+            completionTime: 90,
         });
     }
 
-    // Evening Routine
-    const eveningHabits = [
-        findHabit('Plan Tomorrow'),
-        findHabit('Reading'),
-        findHabit('Journaling'),
+    const studyBlock = [
+        findHabit('Deep Work (Thesis)'),
+        findHabit('LeetCode Daily'),
+        findHabit('Read SysDesign Book'),
     ].filter(Boolean) as Habit[];
 
-    if (eveningHabits.length > 0) {
+    if (studyBlock.length > 0) {
         routines.push({
             id: uuidv4(),
-            name: 'Evening Wind-Down',
-            description: 'Prepare for deep recovery',
-            icon: '🌙',
-            habitIds: eveningHabits.map(h => h.id),
-            bonusXp: 120,
-            completionTime: 45,
-        });
-    }
-
-    // Fitness Stack
-    const fitnessHabits = [
-        findHabit('Running'),
-        findHabit('Workout'),
-    ].filter(Boolean) as Habit[];
-
-    if (fitnessHabits.length > 0) {
-        routines.push({
-            id: uuidv4(),
-            name: 'Fitness Stack',
-            description: 'Build strength and endurance',
-            icon: '🏋️',
-            habitIds: fitnessHabits.map(h => h.id),
-            bonusXp: 200,
+            name: 'Deep Work Block',
+            description: 'Laser focus for computer science.',
+            icon: '⚡',
+            habitIds: studyBlock.map(h => h.id),
+            bonusXp: 400,
+            completionTime: 180,
         });
     }
 

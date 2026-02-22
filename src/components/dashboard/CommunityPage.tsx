@@ -1,0 +1,193 @@
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { DUMMY_FRIENDS, DUMMY_FEED, SocialUser } from '../../utils/dummySocialData';
+import { useHabitStore } from '../../store/habitStore';
+import { Users, Globe, Trophy, ArrowUp, ArrowDown, Activity, ChevronRight, Shield, Flame } from 'lucide-react';
+import { formatDistanceToNow } from 'date-fns';
+import PublicProfileModal from './PublicProfileModal';
+import { useAuth } from '../../contexts/AuthContext';
+
+export default function CommunityPage() {
+    const { stats } = useHabitStore();
+    const { user } = useAuth();
+    const [selectedUser, setSelectedUser] = useState<SocialUser | null>(null);
+
+    // Combine player with friends for leaderboard
+    const allUsers = [
+        ...DUMMY_FRIENDS,
+        {
+            id: 'self',
+            name: user?.email?.split('@')[0] || 'You',
+            avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=You&backgroundColor=E6DDF2',
+            level: stats.level,
+            xpThisWeek: stats.xp % 5000, // mock weekly XP for current user
+            stats: stats,
+            badges: [], // omitted for brevity on self row
+            activeStreaks: []
+        }
+    ].sort((a, b) => b.xpThisWeek - a.xpThisWeek);
+
+    // Find rank movement (mocked)
+    const getMovement = (id: string, idx: number) => {
+        if (id === 'user_3') return <ArrowUp size={14} className="text-success" />;
+        if (id === 'user_1') return <ArrowDown size={14} className="text-red-400" />;
+        return <div className="w-3.5 h-[2px] bg-gray-300 rounded-full" />;
+    };
+
+    return (
+        <div className="h-full flex flex-col bg-surface overflow-hidden">
+            {/* Header */}
+            <header className="flex-shrink-0 bg-white border-b border-[#E6DDF2] px-6 lg:px-8 py-6">
+                <div className="max-w-6xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-4">
+                    <div>
+                        <div className="flex items-center gap-3 mb-2">
+                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-primary flex items-center justify-center text-white shadow-lg shadow-indigo-500/20">
+                                <Globe size={20} />
+                            </div>
+                            <h1 className="text-3xl font-black text-dark tracking-tight">Community</h1>
+                        </div>
+                        <p className="text-dark-lighter">Compete, share, and stay accountable with friends.</p>
+                    </div>
+
+                    <div className="flex items-center gap-4 bg-surface-dark px-4 py-3 rounded-2xl border border-[#E6DDF2] shadow-inner">
+                        <div className="text-right">
+                            <p className="text-[10px] font-bold text-dark-lighter uppercase tracking-wider mb-0.5">Season 1 Ends</p>
+                            <p className="text-dark font-black tracking-tight">4 Days, 12 Hrs</p>
+                        </div>
+                        <div className="w-[1px] h-8 bg-[#E6DDF2] mx-2" />
+                        <div className="text-left">
+                            <p className="text-[10px] font-bold text-dark-lighter uppercase tracking-wider mb-0.5">Global Rank</p>
+                            <p className="text-primary font-black tracking-tight flex items-center gap-1">
+                                <Trophy size={14} /> Top 5%
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            {/* Scrollable Content */}
+            <div className="flex-1 overflow-y-auto">
+                <div className="max-w-6xl mx-auto px-6 lg:px-8 py-8">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+                        {/* LEFT COLUMN: ACTIVITY FEED */}
+                        <div className="lg:col-span-7 space-y-6">
+                            <div className="flex items-center justify-between mb-4">
+                                <h2 className="text-lg font-black text-dark tracking-wide flex items-center gap-2">
+                                    <Activity size={18} className="text-primary" />
+                                    Live Feed
+                                </h2>
+                                <button className="text-sm font-bold text-primary hover:text-primary-dark transition-colors">
+                                    Refresh
+                                </button>
+                            </div>
+
+                            <div className="space-y-4">
+                                {DUMMY_FEED.map((item, idx) => (
+                                    <motion.div
+                                        key={item.id}
+                                        initial={{ opacity: 0, x: -20 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        transition={{ delay: idx * 0.1 }}
+                                        className="bg-white p-5 rounded-3xl border border-[#E6DDF2] shadow-sm hover:shadow-md transition-shadow flex items-start gap-4 group"
+                                    >
+                                        <div className="w-12 h-12 rounded-2xl bg-surface flex items-center justify-center text-2xl shadow-inner flex-shrink-0 group-hover:scale-110 transition-transform">
+                                            {item.icon}
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <div className="flex items-center justify-between gap-4 mb-1">
+                                                <p className="text-sm font-bold text-dark truncate">
+                                                    {item.message}
+                                                </p>
+                                                <span className="text-xs text-dark-lighter whitespace-nowrap">
+                                                    {formatDistanceToNow(new Date(item.timestamp), { addSuffix: true })}
+                                                </span>
+                                            </div>
+                                            {item.details && (
+                                                <p className="text-xs text-dark-lighter">{item.details}</p>
+                                            )}
+                                        </div>
+                                    </motion.div>
+                                ))}
+
+                                {/* End of feed message */}
+                                <div className="text-center py-6 text-dark-lighter text-sm font-medium flex items-center justify-center gap-2 opacity-60">
+                                    <Shield size={16} />
+                                    You're all caught up!
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* RIGHT COLUMN: LEADERBOARD */}
+                        <div className="lg:col-span-5 space-y-6">
+                            <div className="flex items-center justify-between mb-4">
+                                <h2 className="text-lg font-black text-dark tracking-wide flex items-center gap-2">
+                                    <Users size={18} className="text-indigo-500" />
+                                    Weekly Leaderboard
+                                </h2>
+                            </div>
+
+                            <div className="bg-white rounded-3xl border border-[#E6DDF2] shadow-sm overflow-hidden">
+                                {allUsers.map((u, idx) => {
+                                    const isSelf = u.id === 'self';
+                                    return (
+                                        <div
+                                            key={u.id}
+                                            onClick={() => !isSelf && setSelectedUser(u as SocialUser)}
+                                            className={`p-4 flex items-center gap-4 transition-colors border-b border-[#E6DDF2]/50 last:border-0 ${isSelf ? 'bg-primary/5' : 'hover:bg-surface cursor-pointer'
+                                                }`}
+                                        >
+                                            {/* Rank */}
+                                            <div className="w-8 flex flex-col items-center justify-center gap-1">
+                                                <span className={`text-sm font-black ${idx < 3 ? 'text-primary' : 'text-dark-lighter'}`}>
+                                                    #{idx + 1}
+                                                </span>
+                                                {getMovement(u.id, idx)}
+                                            </div>
+
+                                            {/* Avatar */}
+                                            <div className="relative">
+                                                <img src={u.avatarUrl} alt={u.name} className="w-10 h-10 rounded-full bg-surface border border-[#E6DDF2]" />
+                                                <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-dark text-white text-[9px] font-bold rounded-full flex items-center justify-center border-2 border-white">
+                                                    {u.level}
+                                                </div>
+                                            </div>
+
+                                            {/* Info */}
+                                            <div className="flex-1 min-w-0">
+                                                <p className={`text-sm font-bold truncate ${isSelf ? 'text-primary-dark' : 'text-dark'}`}>
+                                                    {u.name} {isSelf && '(You)'}
+                                                </p>
+                                                <div className="flex items-center gap-2 mt-0.5">
+                                                    <span className="text-[10px] uppercase font-bold text-dark-lighter">OVR {u.stats.attributes?.ovr || 0}</span>
+                                                    {!isSelf && u.activeStreaks.length > 0 && (
+                                                        <span className="text-[10px] flex items-center gap-0.5 text-orange-500 font-bold bg-orange-50 px-1.5 rounded-sm">
+                                                            <Flame size={10} /> {Math.max(...u.activeStreaks.map(s => s.days))}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </div>
+
+                                            {/* Score */}
+                                            <div className="text-right flex items-center gap-3">
+                                                <div className="flex flex-col">
+                                                    <span className="text-sm font-black text-dark">{u.xpThisWeek.toLocaleString()}</span>
+                                                    <span className="text-[9px] font-bold text-dark-lighter uppercase tracking-wider">XP</span>
+                                                </div>
+                                                {!isSelf && <ChevronRight size={16} className="text-gray-300" />}
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            {/* Public Profile Modal */}
+            <PublicProfileModal user={selectedUser} onClose={() => setSelectedUser(null)} />
+        </div>
+    );
+}

@@ -194,9 +194,9 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
     if (activeHabits.length === 0) {
         return (
             <div className="flex flex-col items-center justify-center py-20 text-center">
-                <Activity size={48} className="text-gray-600 mb-4" />
-                <h3 className="text-lg font-bold text-gray-200 mb-1">No data yet</h3>
-                <p className="text-gray-500 text-sm">
+                <Activity size={48} className="text-dark-lighter mb-4" />
+                <h3 className="text-lg font-bold text-dark mb-1">No data yet</h3>
+                <p className="text-dark-lighter text-sm">
                     Start tracking habits to see your statistics here!
                 </p>
             </div>
@@ -204,21 +204,21 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
     }
 
     return (
-        <div className="space-y-6 p-6 bg-[#111318] min-h-full text-gray-100">
+        <div className="space-y-6 p-6 bg-surface-dark min-h-full text-dark">
             {/* View Toggle + Filters */}
             <div className="flex flex-wrap items-center gap-3">
                 {/* Habits / Routines toggle */}
-                <div className="flex rounded-lg border border-gray-700 overflow-hidden">
+                <div className="flex rounded-lg border border-[#E6DDF2] overflow-hidden">
                     <button
                         onClick={() => { setActiveView('habits'); setSelectedRoutineId(null); }}
-                        className={`px-4 py-2 text-sm font-semibold transition-colors ${activeView === 'habits' ? 'bg-indigo-600 text-white' : 'bg-[#1a1a2e] text-gray-400 hover:bg-gray-800'
+                        className={`px-4 py-2 text-sm font-semibold transition-colors ${activeView === 'habits' ? 'bg-primary text-white' : 'bg-white text-dark-lighter hover:bg-[#E6DDF2]'
                             }`}
                     >
                         Habits
                     </button>
                     <button
                         onClick={() => setActiveView('routines')}
-                        className={`px-4 py-2 text-sm font-semibold transition-colors ${activeView === 'routines' ? 'bg-indigo-600 text-white' : 'bg-[#1a1a2e] text-gray-400 hover:bg-gray-800'
+                        className={`px-4 py-2 text-sm font-semibold transition-colors ${activeView === 'routines' ? 'bg-primary text-white' : 'bg-white text-dark-lighter hover:bg-[#E6DDF2]'
                             }`}
                     >
                         Routines
@@ -226,14 +226,14 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                 </div>
 
                 {/* Date range selector */}
-                <div className="flex rounded-lg border border-gray-700 overflow-hidden">
+                <div className="flex rounded-lg border border-[#E6DDF2] overflow-hidden">
                     {DATE_RANGE_OPTIONS.map((opt) => (
                         <button
                             key={opt.value}
                             onClick={() => setSelectedRange(opt.value)}
                             className={`px-4 py-2 text-sm font-semibold transition-colors ${selectedRange === opt.value
-                                ? 'bg-indigo-600 text-white'
-                                : 'bg-[#1a1a2e] text-gray-400 hover:bg-gray-800'
+                                ? 'bg-primary text-white'
+                                : 'bg-white text-dark-lighter hover:bg-[#E6DDF2]'
                                 }`}
                         >
                             {opt.label}
@@ -245,7 +245,7 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                     <select
                         value={statsFilter.habitType}
                         onChange={(e) => setStatsFilter({ habitType: e.target.value as HabitType | 'all' })}
-                        className="bg-[#1a1a2e] text-gray-300 border border-gray-700 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500"
+                        className="bg-white text-dark-light border border-[#E6DDF2] rounded-lg px-3 py-2 text-sm outline-none focus:border-primary"
                     >
                         <option value="all">All Types</option>
                         <option value="regular">Regular</option>
@@ -259,12 +259,12 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
             {/* Habit Selector Pills (Habits view) */}
             {activeView === 'habits' && (
                 <div className="flex flex-wrap gap-2 items-center">
-                    <Filter size={14} className="text-gray-500" />
+                    <Filter size={14} className="text-dark-lighter" />
                     <button
                         onClick={() => setSelectedHabitIds([])}
                         className={`px-3 py-1 rounded-full text-xs font-semibold transition-colors border ${selectedHabitIds.length === 0
-                            ? 'bg-indigo-600 text-white border-indigo-500'
-                            : 'bg-[#1a1a2e] text-gray-400 border-gray-700 hover:border-gray-500'
+                            ? 'bg-primary text-white border-indigo-500'
+                            : 'bg-white text-dark-lighter border-[#E6DDF2] hover:border-primary/30'
                             }`}
                     >
                         All Habits
@@ -275,7 +275,7 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                             onClick={() => toggleHabitSelection(h.id)}
                             className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-colors border ${selectedHabitIds.includes(h.id)
                                 ? 'text-white border-transparent'
-                                : 'bg-[#1a1a2e] text-gray-400 border-gray-700 hover:border-gray-500'
+                                : 'bg-white text-dark-lighter border-[#E6DDF2] hover:border-primary/30'
                                 }`}
                             style={selectedHabitIds.includes(h.id) ? { backgroundColor: h.color, borderColor: h.color } : undefined}
                         >
@@ -290,14 +290,14 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
             {/* Routine Selector (Routines view) */}
             {activeView === 'routines' && (
                 <div className="flex flex-wrap gap-2 items-center">
-                    <Filter size={14} className="text-gray-500" />
+                    <Filter size={14} className="text-dark-lighter" />
                     {routines.map(r => (
                         <button
                             key={r.id}
                             onClick={() => setSelectedRoutineId(r.id === selectedRoutineId ? null : r.id)}
                             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-colors border ${selectedRoutineId === r.id
-                                ? 'bg-indigo-600 text-white border-indigo-500'
-                                : 'bg-[#1a1a2e] text-gray-400 border-gray-700 hover:border-gray-500'
+                                ? 'bg-primary text-white border-indigo-500'
+                                : 'bg-white text-dark-lighter border-[#E6DDF2] hover:border-primary/30'
                                 }`}
                         >
                             <span>{r.icon}</span>
@@ -306,7 +306,7 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                         </button>
                     ))}
                     {routines.length === 0 && (
-                        <span className="text-sm text-gray-500">No routines created yet</span>
+                        <span className="text-sm text-dark-lighter">No routines created yet</span>
                     )}
                 </div>
             )}
@@ -329,25 +329,25 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
 
                 {/* Summary Cards */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div className="bg-[#1a1a2e] rounded-xl p-4 text-center border border-gray-800">
-                        <TrendingUp size={24} className="mx-auto text-indigo-400 mb-2" />
-                        <p className="text-2xl font-black text-indigo-400">{overallRate}%</p>
-                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mt-1">Completion Rate</p>
+                    <div className="bg-white rounded-xl p-4 text-center border border-[#E6DDF2]">
+                        <TrendingUp size={24} className="mx-auto text-primary mb-2" />
+                        <p className="text-2xl font-black text-primary">{overallRate}%</p>
+                        <p className="text-xs font-semibold text-dark-lighter uppercase tracking-wider mt-1">Completion Rate</p>
                     </div>
-                    <div className="bg-[#1a1a2e] rounded-xl p-4 text-center border border-gray-800">
+                    <div className="bg-white rounded-xl p-4 text-center border border-[#E6DDF2]">
                         <Flame size={24} className="mx-auto text-amber-400 mb-2" />
                         <p className="text-2xl font-black text-amber-400">{bestStreakHabit.streak}</p>
-                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mt-1">Best Streak</p>
+                        <p className="text-xs font-semibold text-dark-lighter uppercase tracking-wider mt-1">Best Streak</p>
                     </div>
-                    <div className="bg-[#1a1a2e] rounded-xl p-4 text-center border border-gray-800">
+                    <div className="bg-white rounded-xl p-4 text-center border border-[#E6DDF2]">
                         <Target size={24} className="mx-auto text-emerald-400 mb-2" />
                         <p className="text-2xl font-black text-emerald-400">{totalActiveHabits}</p>
-                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mt-1">Active Habits</p>
+                        <p className="text-xs font-semibold text-dark-lighter uppercase tracking-wider mt-1">Active Habits</p>
                     </div>
-                    <div className="bg-[#1a1a2e] rounded-xl p-4 text-center border border-gray-800">
+                    <div className="bg-white rounded-xl p-4 text-center border border-[#E6DDF2]">
                         <Award size={24} className="mx-auto text-purple-400 mb-2" />
                         <p className="text-2xl font-black text-purple-400">{avgConsistency}%</p>
-                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mt-1">Consistency</p>
+                        <p className="text-xs font-semibold text-dark-lighter uppercase tracking-wider mt-1">Consistency</p>
                     </div>
                 </div>
 
@@ -355,9 +355,9 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                 <StreakLifeLine />
 
                 {/* Completion Rate Over Time - Area Chart */}
-                <div className="bg-[#1a1a2e] rounded-xl p-5 border border-gray-800">
-                    <h3 className="text-sm font-bold text-gray-300 mb-4 flex items-center gap-2 uppercase tracking-wider">
-                        <TrendingUp size={18} className="text-indigo-400" />
+                <div className="bg-white rounded-xl p-5 border border-[#E6DDF2]">
+                    <h3 className="text-sm font-bold text-dark-light mb-4 flex items-center gap-2 uppercase tracking-wider">
+                        <TrendingUp size={18} className="text-primary" />
                         Completion Rate Over Time
                     </h3>
                     <ResponsiveContainer width="100%" height={280}>
@@ -387,8 +387,8 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                     {/* Per-Habit Completion Bar Chart */}
-                    <div className="bg-[#1a1a2e] rounded-xl p-5 border border-gray-800">
-                        <h3 className="text-sm font-bold text-gray-300 mb-4 flex items-center gap-2 uppercase tracking-wider">
+                    <div className="bg-white rounded-xl p-5 border border-[#E6DDF2]">
+                        <h3 className="text-sm font-bold text-dark-light mb-4 flex items-center gap-2 uppercase tracking-wider">
                             <BarChart3 size={18} className="text-emerald-400" />
                             Per-Habit Completion
                         </h3>
@@ -410,13 +410,13 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                                 </BarChart>
                             </ResponsiveContainer>
                         ) : (
-                            <p className="text-gray-600 text-center py-10">No data</p>
+                            <p className="text-dark-lighter text-center py-10">No data</p>
                         )}
                     </div>
 
                     {/* Habit Distribution Pie Chart */}
-                    <div className="bg-[#1a1a2e] rounded-xl p-5 border border-gray-800">
-                        <h3 className="text-sm font-bold text-gray-300 mb-4 flex items-center gap-2 uppercase tracking-wider">
+                    <div className="bg-white rounded-xl p-5 border border-[#E6DDF2]">
+                        <h3 className="text-sm font-bold text-dark-light mb-4 flex items-center gap-2 uppercase tracking-wider">
                             <Activity size={18} className="text-pink-400" />
                             Habit Type Distribution
                         </h3>
@@ -448,14 +448,14 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                                 </PieChart>
                             </ResponsiveContainer>
                         ) : (
-                            <p className="text-gray-600 text-center py-10">No data</p>
+                            <p className="text-dark-lighter text-center py-10">No data</p>
                         )}
                     </div>
                 </div>
 
                 {/* Streak Dashboard with Levels */}
-                <div className="bg-[#1a1a2e] rounded-xl p-5 border border-gray-800">
-                    <h3 className="text-sm font-bold text-gray-300 mb-4 flex items-center gap-2 uppercase tracking-wider">
+                <div className="bg-white rounded-xl p-5 border border-[#E6DDF2]">
+                    <h3 className="text-sm font-bold text-dark-light mb-4 flex items-center gap-2 uppercase tracking-wider">
                         <Flame size={18} className="text-amber-400" />
                         Streak Dashboard
                     </h3>
@@ -463,7 +463,7 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                         <div className="space-y-3">
                             {streakData.map((s, i) => (
                                 <div key={i} className="flex items-center gap-3">
-                                    <span className="text-sm font-semibold text-gray-300 w-28 truncate">{s.name}</span>
+                                    <span className="text-sm font-semibold text-dark-light w-28 truncate">{s.name}</span>
                                     <span
                                         className="text-[10px] font-bold px-1.5 rounded-full border"
                                         style={{
@@ -475,7 +475,7 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                                         Lv.{s.level.level}
                                     </span>
                                     <div className="flex-1 flex items-center gap-2">
-                                        <div className="flex-1 h-6 bg-gray-800 rounded-md overflow-hidden relative">
+                                        <div className="flex-1 h-6 bg-[#E6DDF2] rounded-md overflow-hidden relative">
                                             <div
                                                 className="h-full rounded-md flex items-center justify-end px-2"
                                                 style={{
@@ -486,7 +486,7 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                                                 <span className="text-xs font-bold text-white">{s.current}d</span>
                                             </div>
                                         </div>
-                                        <span className="text-xs text-gray-500 font-medium whitespace-nowrap">
+                                        <span className="text-xs text-dark-lighter font-medium whitespace-nowrap">
                                             Best: {s.longest}d
                                         </span>
                                     </div>
@@ -494,13 +494,13 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                             ))}
                         </div>
                     ) : (
-                        <p className="text-gray-600 text-center py-10">No streaks yet</p>
+                        <p className="text-dark-lighter text-center py-10">No streaks yet</p>
                     )}
                 </div>
 
                 {/* Best Days of Week */}
-                <div className="bg-[#1a1a2e] rounded-xl p-5 border border-gray-800">
-                    <h3 className="text-sm font-bold text-gray-300 mb-4 flex items-center gap-2 uppercase tracking-wider">
+                <div className="bg-white rounded-xl p-5 border border-[#E6DDF2]">
+                    <h3 className="text-sm font-bold text-dark-light mb-4 flex items-center gap-2 uppercase tracking-wider">
                         <CalendarIcon size={18} className="text-teal-400" />
                         Best Performing Days
                     </h3>
@@ -526,8 +526,8 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                 </div>
 
                 {/* Heat Map Calendar */}
-                <div className="bg-[#1a1a2e] rounded-xl p-5 border border-gray-800">
-                    <h3 className="text-sm font-bold text-gray-300 mb-4 flex items-center gap-2 uppercase tracking-wider">
+                <div className="bg-white rounded-xl p-5 border border-[#E6DDF2]">
+                    <h3 className="text-sm font-bold text-dark-light mb-4 flex items-center gap-2 uppercase tracking-wider">
                         <CalendarIcon size={18} className="text-emerald-400" />
                         Activity Heat Map
                     </h3>
@@ -544,7 +544,7 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                             );
                         })}
                     </div>
-                    <div className="flex items-center gap-2 mt-3 text-xs text-gray-500">
+                    <div className="flex items-center gap-2 mt-3 text-xs text-dark-lighter">
                         <span>Less</span>
                         {[0.08, 0.25, 0.5, 0.75, 1].map((op) => (
                             <div
@@ -559,8 +559,8 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
 
                 {/* Numerical Progress Line Chart WITH Goal Reference Lines */}
                 {numericalProgressData.length > 0 && (
-                    <div className="bg-[#1a1a2e] rounded-xl p-5 border border-gray-800">
-                        <h3 className="text-sm font-bold text-gray-300 mb-4 flex items-center gap-2 uppercase tracking-wider">
+                    <div className="bg-white rounded-xl p-5 border border-[#E6DDF2]">
+                        <h3 className="text-sm font-bold text-dark-light mb-4 flex items-center gap-2 uppercase tracking-wider">
                             <Target size={18} className="text-emerald-400" />
                             Numerical Habit Progress
                         </h3>
@@ -620,18 +620,18 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
 
                 {/* Goal Progress */}
                 {goalProgressData.length > 0 && (
-                    <div className="bg-[#1a1a2e] rounded-xl p-5 border border-gray-800">
-                        <h3 className="text-sm font-bold text-gray-300 mb-4 flex items-center gap-2 uppercase tracking-wider">
+                    <div className="bg-white rounded-xl p-5 border border-[#E6DDF2]">
+                        <h3 className="text-sm font-bold text-dark-light mb-4 flex items-center gap-2 uppercase tracking-wider">
                             <Award size={18} className="text-purple-400" />
                             Goal Progress
                         </h3>
                         <div className="space-y-4">
                             {goalProgressData.map((gp, i) => (
-                                <div key={i} className="border border-gray-700 rounded-lg p-4 bg-[#111318]">
+                                <div key={i} className="border border-[#E6DDF2] rounded-lg p-4 bg-surface-dark">
                                     <div className="flex items-center justify-between mb-2">
                                         <div>
-                                            <h4 className="font-semibold text-gray-200 text-sm">{gp.goal.name}</h4>
-                                            <p className="text-xs text-gray-500">{gp.habit.name}</p>
+                                            <h4 className="font-semibold text-dark text-sm">{gp.goal.name}</h4>
+                                            <p className="text-xs text-dark-lighter">{gp.habit.name}</p>
                                         </div>
                                         <div className="text-right">
                                             <p className="font-bold text-lg" style={{ color: gp.habit.color }}>
@@ -639,7 +639,7 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                                             </p>
                                         </div>
                                     </div>
-                                    <div className="h-4 bg-gray-800 rounded-full overflow-hidden">
+                                    <div className="h-4 bg-[#E6DDF2] rounded-full overflow-hidden">
                                         <div
                                             className="h-full rounded-full relative transition-all duration-500"
                                             style={{ width: `${gp.percent}%`, backgroundColor: gp.habit.color }}
@@ -655,7 +655,7 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                                             ))}
                                         </div>
                                     </div>
-                                    <div className="flex justify-between mt-1.5 text-xs text-gray-500">
+                                    <div className="flex justify-between mt-1.5 text-xs text-dark-lighter">
                                         <span>{gp.total} {gp.goal.unit}</span>
                                         <span>Target: {gp.goal.targetValue} {gp.goal.unit}</span>
                                     </div>
@@ -665,7 +665,7 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                                                 key={m}
                                                 className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${gp.percent >= m
                                                     ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-                                                    : 'bg-gray-800 text-gray-600 border border-gray-700'
+                                                    : 'bg-[#E6DDF2] text-dark-lighter border border-[#E6DDF2]'
                                                     }`}
                                             >
                                                 {m === 100 ? '🏆' : '⭐'} {m}%

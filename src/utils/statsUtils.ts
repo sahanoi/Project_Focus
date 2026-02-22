@@ -1,5 +1,38 @@
-import { Habit, Completion, Goal } from '../types';
-import { getDaysInRange, daysBetween, getDayOfWeek, getDayOfWeekName, today } from './dateUtils';
+import { Habit, Completion, Goal, HabitType } from '../types';
+import { getDaysInRange, daysBetween, getDayOfWeek, getDayOfWeekName, today, getDayOfMonth } from './dateUtils';
+
+// ==========================================
+// Schedule Helpers
+// ==========================================
+
+export function isHabitDueOnDate(habit: Habit, dateStr: string): boolean {
+    // 1. Check if date is before creation
+    if (dateStr < habit.createdAt.split('T')[0]) return false;
+
+    // 2. Check schedule type
+    const { schedule } = habit;
+    if (!schedule || schedule.type === 'daily') return true;
+
+    if (schedule.type === 'weekly') {
+        const dayOfWeek = getDayOfWeek(dateStr); // 0=Sun
+        return schedule.daysOfWeek?.includes(dayOfWeek) ?? false;
+    }
+
+    if (schedule.type === 'monthly') {
+        const dayOfMonth = getDayOfMonth(dateStr);
+        return schedule.daysOfMonth?.includes(dayOfMonth) ?? false;
+    }
+
+    if (schedule.type === 'custom') {
+        const interval = schedule.customInterval || 1;
+        const start = habit.createdAt.split('T')[0];
+        // daysBetween(start, current) -> differenceInDays(current, start) -> current - start
+        const diff = daysBetween(start, dateStr);
+        return diff >= 0 && diff % interval === 0;
+    }
+
+    return true;
+}
 
 // ==========================================
 // Completion Rate
@@ -13,16 +46,28 @@ export function calculateCompletionRate(
     const days = getDaysInRange(startDate, endDate);
     if (days.length === 0) return 0;
 
-    const completed = days.filter((day) => {
-        const completion = habit.completions[day];
-        if (!completion) return false;
-        if (habit.type === 'numerical') {
-            return completion.value !== undefined && completion.value > 0;
-        }
-        return completion.completed;
-    }).length;
+    let dueCount = 0;
+    let completedCount = 0;
 
-    return Math.round((completed / days.length) * 100);
+    for (const day of days) {
+        if (!isHabitDueOnDate(habit, day)) continue;
+
+        dueCount++;
+        const completion = habit.completions[day];
+
+        if (habit.type === 'numerical') {
+            if (completion?.value !== undefined && completion.value > 0) {
+                completedCount++;
+            }
+        } else {
+            if (completion?.completed) {
+                completedCount++;
+            }
+        }
+    }
+
+    if (dueCount === 0) return 0;
+    return Math.round((completedCount / dueCount) * 100);
 }
 
 export function calculateOverallCompletionRate(
@@ -31,8 +76,27 @@ export function calculateOverallCompletionRate(
     endDate: string
 ): number {
     if (habits.length === 0) return 0;
-    const rates = habits.map((h) => calculateCompletionRate(h, startDate, endDate));
-    return Math.round(rates.reduce((a, b) => a + b, 0) / rates.length);
+
+    let totalRate = 0;
+    let count = 0;
+
+    for (const habit of habits) {
+        // Optimization: Check isHabitDueOnDate for at least one day?
+        // Reuse logic: get due days in range
+        const rangeDays = getDaysInRange(startDate, endDate);
+        const dueDays = rangeDays.filter(d => isHabitDueOnDate(habit, d));
+
+        if (dueDays.length > 0) {
+            // Recalculate rate based on due days only
+            // We can call calculateCompletionRate, which now handles due checks
+            const rate = calculateCompletionRate(habit, startDate, endDate);
+            totalRate += rate;
+            count++;
+        }
+    }
+
+    if (count === 0) return 0;
+    return Math.round(totalRate / count);
 }
 
 // ==========================================
@@ -43,62 +107,75 @@ export function calculateCurrentStreak(habit: Habit): number {
     let streak = 0;
     let currentDate = today();
 
-    // Check if today is completed; if not, start from yesterday
-    const todayCompletion = habit.completions[currentDate];
-    const isTodayCompleted = isCompletionDone(habit, todayCompletion);
+    // 1. Find the last DUE date
+    let searchDate = currentDate;
+    let lookback = 0;
 
-    if (!isTodayCompleted) {
-        // Start checking from yesterday
-        const yesterday = getDaysInRange(
-            subtractOneDayStr(currentDate),
-            subtractOneDayStr(currentDate)
-        )[0];
-        if (!yesterday) return 0;
-        currentDate = yesterday;
+    // If today is NOT due, find previous due date
+    while (!isHabitDueOnDate(habit, searchDate) && lookback < 365) {
+        searchDate = subtractOneDayStr(searchDate);
+        lookback++;
+    }
+    if (lookback >= 365) return 0;
+
+    let pointer = searchDate; // Start at most recent due date
+
+    // Check the tip (most recent due date)
+    if (pointer === currentDate) {
+        if (isCompletionDone(habit, habit.completions[pointer])) {
+            streak++;
+            pointer = subtractOneDayStr(pointer);
+        } else {
+            // Today due, not done. Streak is not broken yet.
+            // Just move pointer back to check valid history.
+            pointer = subtractOneDayStr(pointer);
+        }
     }
 
-    while (true) {
-        const completion = habit.completions[currentDate];
-        if (!isCompletionDone(habit, completion)) break;
-        streak++;
-        const prev = getDaysInRange(
-            subtractOneDayStr(currentDate),
-            subtractOneDayStr(currentDate)
-        );
-        if (prev.length === 0) break;
-        currentDate = prev[0];
+    // Now loop back
+    let loops = 0;
+    while (loops < 365 * 5) { // 5 years max history
+        if (new Date(pointer) < new Date(habit.createdAt)) break;
+
+        if (isHabitDueOnDate(habit, pointer)) {
+            if (isCompletionDone(habit, habit.completions[pointer])) {
+                streak++;
+            } else if (habit.completions[pointer]?.frozen) {
+                // Frozen day — streak not broken, but doesn't count as completed
+            } else {
+                break; // Streak broken
+            }
+        }
+        pointer = subtractOneDayStr(pointer);
+        loops++;
     }
 
     return streak;
 }
 
 export function calculateLongestStreak(habit: Habit): number {
-    const dates = Object.keys(habit.completions).sort();
-    if (dates.length === 0) return 0;
+    const start = habit.createdAt.split('T')[0];
+    const end = today();
+    const days = getDaysInRange(start, end);
 
-    let longestStreak = 0;
-    let currentStreak = 0;
-    let prevDate: string | null = null;
+    let longest = 0;
+    let current = 0;
 
-    for (const date of dates) {
-        const completion = habit.completions[date];
-        if (!isCompletionDone(habit, completion)) {
-            currentStreak = 0;
-            prevDate = date;
-            continue;
-        }
+    for (const day of days) {
+        if (!isHabitDueOnDate(habit, day)) continue;
 
-        if (prevDate && daysBetween(prevDate, date) === 1) {
-            currentStreak++;
+        if (isCompletionDone(habit, habit.completions[day])) {
+            current++;
+        } else if (habit.completions[day]?.frozen) {
+            // Frozen — streak not broken, doesn't count
         } else {
-            currentStreak = 1;
+            if (current > longest) longest = current;
+            current = 0;
         }
-
-        longestStreak = Math.max(longestStreak, currentStreak);
-        prevDate = date;
     }
+    if (current > longest) longest = current;
 
-    return longestStreak;
+    return longest;
 }
 
 // ==========================================
@@ -110,18 +187,7 @@ export function calculateConsistencyScore(
     startDate: string,
     endDate: string
 ): number {
-    const days = getDaysInRange(startDate, endDate);
-    if (days.length === 0) return 0;
-
-    let completedDays = 0;
-    for (const day of days) {
-        const completion = habit.completions[day];
-        if (isCompletionDone(habit, completion)) {
-            completedDays++;
-        }
-    }
-
-    return Math.round((completedDays / days.length) * 100);
+    return calculateCompletionRate(habit, startDate, endDate);
 }
 
 // ==========================================
@@ -141,8 +207,11 @@ export function getBestPerformingDays(
     }
 
     for (const day of days) {
+        if (!isHabitDueOnDate(habit, day)) continue;
+
         const dayIndex = getDayOfWeek(day);
         dayStats[dayIndex].total++;
+
         const completion = habit.completions[day];
         if (isCompletionDone(habit, completion)) {
             dayStats[dayIndex].completed++;
@@ -305,8 +374,11 @@ export function getDailyCompletionData(
     const activeHabits = habits.filter((h) => !h.archived);
 
     return days.map((day) => {
-        const total = activeHabits.length;
-        const completed = activeHabits.filter((h) => {
+        // Only count habits that are DUE on this specific 'day'
+        const dueHabits = activeHabits.filter(h => isHabitDueOnDate(h, day));
+
+        const total = dueHabits.length;
+        const completed = dueHabits.filter((h) => {
             const c = h.completions[day];
             return isCompletionDone(h, c);
         }).length;

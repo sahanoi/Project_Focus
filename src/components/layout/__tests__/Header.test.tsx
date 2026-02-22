@@ -11,7 +11,7 @@ beforeEach(() => {
         selectedDate: '2026-02-13',
         activeTab: 'dashboard',
         statsFilter: { dateRange: 'month', habitType: 'all', habitId: 'all' },
-        darkMode: false,
+
         selectedHabitId: null,
     });
 });
@@ -23,48 +23,6 @@ describe('Header Component', () => {
         mockOnAddHabit.mockClear();
     });
 
-    // ==========================================
-    // Dark Mode Toggle
-    // ==========================================
-
-    describe('Dark Mode Toggle', () => {
-        it('should render dark mode toggle button', () => {
-            render(<Header onAddHabit={mockOnAddHabit} />);
-            const toggleButton = screen.getByLabelText(/toggle dark mode/i);
-            expect(toggleButton).toBeTruthy();
-        });
-
-        it('should show Moon icon when dark mode is off', () => {
-            useHabitStore.setState({ darkMode: false });
-            render(<Header onAddHabit={mockOnAddHabit} />);
-            const toggleButton = screen.getByLabelText(/toggle dark mode/i);
-            expect(toggleButton.querySelector('svg')).toBeTruthy();
-        });
-
-        it('should show Sun icon when dark mode is on', () => {
-            useHabitStore.setState({ darkMode: true });
-            render(<Header onAddHabit={mockOnAddHabit} />);
-            const toggleButton = screen.getByLabelText(/toggle dark mode/i);
-            expect(toggleButton.querySelector('svg')).toBeTruthy();
-        });
-
-        it('should toggle dark mode when clicked', () => {
-            render(<Header onAddHabit={mockOnAddHabit} />);
-            const toggleButton = screen.getByLabelText(/toggle dark mode/i);
-
-            expect(useHabitStore.getState().darkMode).toBe(false);
-            fireEvent.click(toggleButton);
-            expect(useHabitStore.getState().darkMode).toBe(true);
-            fireEvent.click(toggleButton);
-            expect(useHabitStore.getState().darkMode).toBe(false);
-        });
-
-        it('should have correct ID for dark mode toggle', () => {
-            render(<Header onAddHabit={mockOnAddHabit} />);
-            const toggleButton = document.getElementById('dark-mode-toggle');
-            expect(toggleButton).toBeTruthy();
-        });
-    });
 
     // ==========================================
     // Title and Branding

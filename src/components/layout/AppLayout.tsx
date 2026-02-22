@@ -11,12 +11,12 @@ export default function AppLayout({ children, onAddHabit }: AppLayoutProps) {
     const { activeTab, setActiveTab } = useHabitStore();
 
     // Type coercion for setActiveTab to match SidebarProps
-    const handleTabChange = (tab: 'dashboard' | 'statistics' | 'settings') => {
+    const handleTabChange = (tab: any) => {
         useHabitStore.setState({ activeTab: tab });
     };
 
     return (
-        <div className="flex h-screen bg-[#111318] overflow-hidden">
+        <div className="flex h-screen bg-surface overflow-hidden">
             <Sidebar
                 activeTab={activeTab}
                 setActiveTab={handleTabChange}
@@ -24,7 +24,7 @@ export default function AppLayout({ children, onAddHabit }: AppLayoutProps) {
             />
 
             {/* Main Content Wrapper */}
-            <main className="flex-1 pl-64 h-screen overflow-hidden">
+            <main className="flex-1 pl-0 lg:pl-64 h-screen overflow-hidden pt-14 lg:pt-0">
                 <div className="h-full overflow-y-auto">
                     {children}
                 </div>

@@ -130,6 +130,10 @@ export function getDayOfWeekName(dayIndex: number): string {
     return days[dayIndex];
 }
 
+export function getDayOfMonth(date: string): number {
+    return parseISO(date).getDate();
+}
+
 export function addDaysToDate(date: string, days: number): string {
     return formatDate(addDays(parseISO(date), days));
 }

@@ -9,7 +9,6 @@ export default function StreakLifeLine() {
 
     if (activeHabits.length === 0) return null;
 
-    // Calculate streaks for all habits
     const streakData = activeHabits.map(h => ({
         id: h.id,
         name: h.name,
@@ -25,11 +24,11 @@ export default function StreakLifeLine() {
     return (
         <div className="space-y-3">
             {/* Overall Streak Status */}
-            <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-orange-500/10 to-red-500/10 border border-orange-500/20 p-4">
+            <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-orange-50 to-red-50 border border-orange-200 p-4">
                 {/* Heartbeat pulse background */}
                 <div className="absolute inset-0 overflow-hidden">
                     <div
-                        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full bg-orange-500/5"
+                        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full bg-orange-200/20"
                         style={{
                             animation: totalActiveStreaks > 0 ? 'streakPulse 2s ease-in-out infinite' : 'none',
                         }}
@@ -41,14 +40,14 @@ export default function StreakLifeLine() {
                     <div className="relative">
                         <div
                             className={`w-12 h-12 rounded-xl flex items-center justify-center ${totalActiveStreaks > 0
-                                    ? 'bg-gradient-to-br from-orange-500 to-red-500 shadow-lg shadow-orange-500/20'
-                                    : 'bg-gray-800'
+                                ? 'bg-gradient-to-br from-orange-400 to-red-400 shadow-lg shadow-orange-300/30'
+                                : 'bg-[#E6DDF2]'
                                 }`}
                             style={{
                                 animation: topStreak?.currentStreak >= 7 ? 'streakBreathe 1.5s ease-in-out infinite' : 'none',
                             }}
                         >
-                            <Flame size={24} className={totalActiveStreaks > 0 ? 'text-white' : 'text-gray-600'} />
+                            <Flame size={24} className={totalActiveStreaks > 0 ? 'text-white' : 'text-dark-lighter'} />
                         </div>
                         {topStreak?.currentStreak >= 7 && (
                             <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-yellow-400 flex items-center justify-center">
@@ -59,23 +58,23 @@ export default function StreakLifeLine() {
 
                     <div className="flex-1">
                         <div className="flex items-baseline gap-2">
-                            <span className="text-2xl font-black text-white">
+                            <span className="text-2xl font-black text-dark">
                                 {topStreak?.currentStreak || 0}
                             </span>
-                            <span className="text-xs text-gray-400">day streak</span>
+                            <span className="text-xs text-dark-lighter">day streak</span>
                         </div>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-dark-lighter">
                             {totalActiveStreaks} of {activeHabits.length} habits on streak
                         </p>
                     </div>
 
                     {/* Best Record */}
                     <div className="text-right">
-                        <div className="flex items-center gap-1 text-xs text-amber-400">
+                        <div className="flex items-center gap-1 text-xs text-amber-600">
                             <Trophy size={12} />
                             <span className="font-bold">Best</span>
                         </div>
-                        <span className="text-sm font-bold text-white">
+                        <span className="text-sm font-bold text-dark">
                             {Math.max(...streakData.map(s => s.longestStreak), 0)}d
                         </span>
                     </div>
@@ -91,19 +90,19 @@ export default function StreakLifeLine() {
                     return (
                         <div key={s.id} className="flex items-center gap-2 group">
                             <span className="text-sm w-5 text-center">{s.icon}</span>
-                            <div className="flex-1 h-2 bg-gray-800 rounded-full overflow-hidden">
+                            <div className="flex-1 h-2 bg-[#E6DDF2] rounded-full overflow-hidden">
                                 <div
                                     className="h-full rounded-full transition-all duration-700 ease-out"
                                     style={{
                                         width: `${Math.max(streakPercent, s.currentStreak > 0 ? 8 : 0)}%`,
                                         background: s.currentStreak > 0
                                             ? `linear-gradient(90deg, ${s.color}88, ${s.color})`
-                                            : '#374151',
+                                            : '#E6DDF2',
                                         animation: s.currentStreak >= 3 ? 'lifeLinePulse 3s ease-in-out infinite' : 'none',
                                     }}
                                 />
                             </div>
-                            <span className={`text-xs font-mono w-6 text-right ${s.currentStreak > 0 ? 'text-white font-bold' : 'text-gray-600'
+                            <span className={`text-xs font-mono w-6 text-right ${s.currentStreak > 0 ? 'text-dark font-bold' : 'text-dark-lighter'
                                 }`}>
                                 {s.currentStreak}
                             </span>

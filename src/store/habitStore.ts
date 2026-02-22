@@ -5,6 +5,7 @@ import { Habit, Goal, HabitType, HabitCategory, TabView, StatsFilter, Completion
 import { today } from '../utils/dateUtils';
 import { generateDummyHabits, generateDummyGoals, generateDummyRoutines } from '../data/dummyData';
 import { calculateCharacterStats } from '../utils/gamificationUtils';
+import { evaluateAchievements, UnlockedAchievement, Achievement } from '../utils/achievementUtils';
 import { supabase } from '../lib/supabase';
 
 // ==========================================
@@ -23,8 +24,11 @@ interface HabitStore {
     selectedHabitId: string | null;   // For Quick Log Modal
     detailViewHabitId: string | null; // For Full Detail Page
     showModal: boolean;               // For Add/Edit Modal
-    darkMode: boolean;
     isLoading: boolean;
+    achievements: UnlockedAchievement[];
+    newAchievement: Achievement | null; // for toast notification
+    showLevelUpModal: boolean;
+    levelUpData: { oldLevel: number; newLevel: number; oldStats: CharacterStats; newStats: CharacterStats } | null;
 
     // Habit Actions
     addHabit: (habit: Omit<Habit, 'id' | 'completions' | 'createdAt' | 'archived'>) => string;
@@ -41,6 +45,8 @@ interface HabitStore {
     // Completion Actions
     toggleCompletion: (habitId: string, date: string) => void;
     setNumericalValue: (habitId: string, date: string, value: number) => void;
+    setCompletionNote: (habitId: string, date: string, note: string) => void;
+    freezeStreak: (habitId: string, date: string) => boolean; // returns false if no freezes left
 
     // Goal Actions
     addGoal: (goal: Omit<Goal, 'id' | 'achieved' | 'createdAt'>) => string;
@@ -55,9 +61,6 @@ interface HabitStore {
     setDetailViewHabitId: (id: string | null) => void;
     setShowModal: (show: boolean) => void;
 
-    // Dark mode
-    toggleDarkMode: () => void;
-
     // Data management
     importData: (data: { habits: Habit[]; goals: Goal[]; routines?: Routine[] }) => void;
     clearAllData: () => void;
@@ -68,6 +71,8 @@ interface HabitStore {
 
     // Internal
     recalculateStats: () => void;
+    dismissAchievementToast: () => void;
+    dismissLevelUpModal: () => void;
 }
 
 // ==========================================
@@ -209,8 +214,11 @@ export const useHabitStore = create<HabitStore>()(
             selectedHabitId: null,
             detailViewHabitId: null,
             showModal: false,
-            darkMode: false,
             isLoading: false,
+            achievements: [],
+            newAchievement: null,
+            showLevelUpModal: false,
+            levelUpData: null,
 
             // ==========================================
             // Supabase Sync — Fetch all data on login
@@ -281,10 +289,31 @@ export const useHabitStore = create<HabitStore>()(
             // ==========================================
 
             recalculateStats: () => {
-                const { habits } = get();
+                const state = get();
+                const { habits, achievements, stats: currentStats } = state;
                 const newStats = calculateCharacterStats(habits);
-                set({ stats: newStats });
+                const { unlocked, newlyUnlocked } = evaluateAchievements(habits, achievements);
+
+                const leveledUp = newStats.level > currentStats.level;
+
+                set({
+                    stats: newStats,
+                    achievements: unlocked,
+                    newAchievement: newlyUnlocked.length > 0 ? newlyUnlocked[0] : null,
+                    ...(leveledUp && {
+                        showLevelUpModal: true,
+                        levelUpData: {
+                            oldLevel: currentStats.level,
+                            newLevel: newStats.level,
+                            oldStats: currentStats,
+                            newStats: newStats
+                        }
+                    })
+                });
             },
+
+            dismissAchievementToast: () => set({ newAchievement: null }),
+            dismissLevelUpModal: () => set({ showLevelUpModal: false, levelUpData: null }),
 
             // ==========================================
             // Habit CRUD
@@ -607,6 +636,50 @@ export const useHabitStore = create<HabitStore>()(
                 })();
             },
 
+            setCompletionNote: (habitId, date, note) => {
+                set((state) => {
+                    const newHabits = state.habits.map((h) => {
+                        if (h.id !== habitId) return h;
+                        const existing = h.completions[date];
+                        if (!existing) return h;
+                        const newCompletions = { ...h.completions };
+                        newCompletions[date] = { ...existing, note: note || undefined };
+                        return { ...h, completions: newCompletions };
+                    });
+                    return { habits: newHabits };
+                });
+            },
+
+            freezeStreak: (habitId, date) => {
+                const habit = get().habits.find(h => h.id === habitId);
+                if (!habit) return false;
+
+                // Count freezes used this month
+                const [year, month] = date.split('-');
+                const monthPrefix = `${year}-${month}`;
+                const freezesThisMonth = Object.entries(habit.completions)
+                    .filter(([d, c]) => d.startsWith(monthPrefix) && c.frozen)
+                    .length;
+
+                if (freezesThisMonth >= 3) return false;
+
+                set((state) => {
+                    const newHabits = state.habits.map((h) => {
+                        if (h.id !== habitId) return h;
+                        const newCompletions = { ...h.completions };
+                        newCompletions[date] = {
+                            ...(newCompletions[date] || { date, completed: false }),
+                            date,
+                            frozen: true,
+                        };
+                        return { ...h, completions: newCompletions };
+                    });
+                    return { habits: newHabits };
+                });
+
+                return true;
+            },
+
             // ==========================================
             // Goal Actions
             // ==========================================
@@ -687,14 +760,6 @@ export const useHabitStore = create<HabitStore>()(
             setShowModal: (show) => set({ showModal: show }),
 
             // ==========================================
-            // Dark Mode
-            // ==========================================
-
-            toggleDarkMode: () => {
-                set((state) => ({ darkMode: !state.darkMode }));
-            },
-
-            // ==========================================
             // Data Management
             // ==========================================
 
@@ -746,7 +811,7 @@ export const useHabitStore = create<HabitStore>()(
                 goals: state.goals,
                 routines: state.routines,
                 stats: state.stats,
-                darkMode: state.darkMode,
+                achievements: state.achievements,
             }),
         }
     )
