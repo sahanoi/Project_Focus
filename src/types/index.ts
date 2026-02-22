@@ -72,6 +72,8 @@ export interface Completion {
     date: string; // 'YYYY-MM-DD'
     completed: boolean;
     value?: number; // for numerical habits
+    note?: string; // per-completion journal note
+    frozen?: boolean; // streak freeze — counts as "not broken" for streaks
 }
 
 // ==========================================
@@ -143,7 +145,7 @@ export interface Goal {
     createdAt: string;
 }
 
-export type TabView = 'dashboard' | 'statistics' | 'settings';
+export type TabView = 'dashboard' | 'community' | 'statistics' | 'settings' | 'achievements';
 
 export type DateRange = 'week' | 'month' | 'quarter' | 'year' | 'all';
 

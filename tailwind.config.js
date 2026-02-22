@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-    darkMode: 'class',
+    darkMode: false, // Disabling dark mode for pure Light/Paper cozy theme
     content: [
         "./index.html",
         "./src/**/*.{js,ts,jsx,tsx}",
@@ -8,27 +8,27 @@ export default {
     theme: {
         extend: {
             colors: {
-                primary: '#2563EB',
-                'primary-dark': '#1D4ED8',
-                'primary-light': '#3B82F6',
-                success: '#10B981',
-                'success-dark': '#059669',
-                warning: '#F59E0B',
+                primary: '#9B8BB4',      // Soft lilac-dark
+                'primary-dark': '#83739B',
+                'primary-light': '#D8B4E2', // Bright lilac
+                success: '#84CC16',      // Soft lime/mint green
+                'success-dark': '#65A30D',
+                warning: '#FBBF24',      // Soft yellow/amber
                 'warning-dark': '#D97706',
-                danger: '#EF4444',
+                danger: '#F87171',       // Soft red/peach
                 'danger-dark': '#DC2626',
-                purple: '#8B5CF6',
-                'purple-dark': '#7C3AED',
-                teal: '#14B8A6',
+                purple: '#D8B4E2',
+                'purple-dark': '#9B8BB4',
+                teal: '#2DD4BF',
                 'teal-dark': '#0D9488',
-                pink: '#EC4899',
+                pink: '#F472B6',
                 'pink-dark': '#DB2777',
-                surface: '#F9FAFB',
-                'surface-dark': '#F3F4F6',
-                dark: '#111827',
-                'dark-light': '#1F2937',
-                'dark-lighter': '#374151',
-                'dark-border': '#4B5563',
+                surface: '#FFFBF0',      // Warm cream paper
+                'surface-dark': '#F4EFE6', // Shadowed paper
+                dark: '#4A4453',         // Deep purplish gray text
+                'dark-light': '#5D566A',
+                'dark-lighter': '#7C758A',
+                'dark-border': '#E6DDF2', // Lilac tinted border for light mode
             },
             fontFamily: {
                 sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],

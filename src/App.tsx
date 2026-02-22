@@ -14,9 +14,13 @@ import { Habit } from './types';
 import { Loader2 } from 'lucide-react';
 
 import FUTDashboard from './components/dashboard/FUTDashboard';
+import AchievementsPage from './components/dashboard/AchievementsPage';
+import CommunityPage from './components/dashboard/CommunityPage';
+import AchievementToast from './components/dashboard/AchievementToast';
+import LevelUpModal from './components/dashboard/LevelUpModal';
 
 function AuthenticatedApp() {
-    const { activeTab, darkMode, habits, selectedHabitId, setSelectedHabitId, detailViewHabitId, setDetailViewHabitId, showModal, setShowModal, fetchAllData, isLoading } = useHabitStore();
+    const { activeTab, habits, selectedHabitId, setSelectedHabitId, detailViewHabitId, setDetailViewHabitId, showModal, setShowModal, fetchAllData, isLoading } = useHabitStore();
     const { session, loading } = useAuth();
     const [editHabit, setEditHabit] = useState<Habit | null>(null);
     const [onboardingDone, setOnboardingDone] = useState(false);
@@ -38,14 +42,7 @@ function AuthenticatedApp() {
         }
     }, [session, fetchAllData]);
 
-    // Apply dark mode class to <html>
-    useEffect(() => {
-        if (darkMode) {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
-    }, [darkMode]);
+
 
     if (loading) {
         return (
@@ -94,7 +91,7 @@ function AuthenticatedApp() {
     // If a habit detail page is selected, show it as an overlay/main content
     if (detailViewHabitId) {
         return (
-            <div className={`min-h-screen ${darkMode ? 'bg-[#111318]' : 'bg-surface'}`}>
+            <div className={`min-h-screen bg-surface`}>
                 <HabitDetailPage
                     habitId={detailViewHabitId}
                     onBack={() => setDetailViewHabitId(null)}
@@ -114,8 +111,16 @@ function AuthenticatedApp() {
             {activeTab === 'dashboard' && (
                 <FUTDashboard onAddHabit={handleAddHabit} onEditHabit={handleEditHabit} onAddGoal={() => setShowGoalWizard(true)} />
             )}
+            {activeTab === 'community' && <CommunityPage />}
             {activeTab === 'statistics' && <StatsPage onEditHabit={handleEditHabit} />}
             {activeTab === 'settings' && <SettingsPage />}
+            {activeTab === 'achievements' && <AchievementsPage />}
+
+            {/* Achievement Unlock Toast */}
+            <AchievementToast />
+
+            {/* Level Up Celebration */}
+            <LevelUpModal />
 
             {/* Quick Log Modal Overlay */}
             {selectedHabitId && <QuickLogModal />}

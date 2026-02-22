@@ -1,11 +1,12 @@
 import React, { useState, useMemo, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useHabitStore } from '../../store/habitStore';
 import { Habit } from '../../types';
-import { calculateCurrentStreak, calculateLongestStreak, getChallengeProgress, getTotalNumericalValue } from '../../utils/statsUtils';
+import { calculateCurrentStreak, getChallengeProgress, getTotalNumericalValue } from '../../utils/statsUtils';
 import { calculateHabitLevel, getLevelColor } from '../../utils/habitLevelUtils';
 import { getDateRange } from '../../utils/dateUtils';
 import {
-    Check, Flame, Infinity, Timer, Target, MoreVertical,
+    Check, Flame, Timer, Target, MoreVertical,
     Trash2, Copy, Archive, Edit3, Minus, Plus,
 } from 'lucide-react';
 
@@ -94,7 +95,12 @@ export default function HabitCard({ habit, date, onEdit }: HabitCardProps) {
 
     // Habit Level
     const levelInfo = useMemo(() => calculateHabitLevel(habit), [habit]);
-    const levelColor = getLevelColor(levelInfo.level);
+    let levelColor = getLevelColor(levelInfo.level);
+
+    // Swap pure stark colors for pastel versions
+    if (levelColor === '#ef4444') levelColor = '#F87171';
+    if (levelColor === '#f59e0b') levelColor = '#FBBF24';
+    if (levelColor === '#3b82f6') levelColor = '#9B8BB4'; // Make max level Lilac!
 
     // Challenge progress
     const challengeProgress = habit.type === 'challenge' ? getChallengeProgress(habit) : null;
@@ -128,51 +134,63 @@ export default function HabitCard({ habit, date, onEdit }: HabitCardProps) {
 
     return (
         <div
-            className={`rounded-lg border border-[#2A2E37] bg-[#1C1F26] p-4 relative group transition-all duration-200 hover:shadow-md cursor-pointer ${isCompleted ? 'border-l-4' : 'border-l-4 border-l-gray-700'
+            className={`rounded-2xl border border-[#E6DDF2] bg-white p-4 relative group transition-all duration-300 hover:shadow-md cursor-pointer hover:-translate-y-0.5 ${isCompleted ? 'border-l-4' : 'border-l-4 border-l-gray-200'
                 }`}
             style={isCompleted ? { borderLeftColor: habit.color } : undefined}
             onClick={() => setSelectedHabitId(habit.id)}
         >
-            <div className="flex items-start gap-3">
+            <div className="flex items-start gap-4">
                 {/* Status Indicator / Checkbox */}
                 <div onClick={(e) => e.stopPropagation()}>
                     {habit.type === 'numerical' ? (
                         <div
-                            className={`w-7 h-7 rounded-lg border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition-all duration-200 ${isCompleted
+                            className={`w-8 h-8 rounded-xl border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition-all duration-300 ${isCompleted
                                 ? 'text-white border-transparent'
-                                : 'border-gray-600 text-gray-500'
+                                : 'border-gray-300 text-dark-lighter bg-gray-50'
                                 }`}
-                            style={isCompleted ? { backgroundColor: habit.color } : undefined}
+                            style={isCompleted ? { backgroundColor: habit.color, boxShadow: `0 4px 12px ${habit.color}40` } : undefined}
                         >
-                            <Target size={14} strokeWidth={3} />
+                            <Target size={16} strokeWidth={2.5} />
                         </div>
                     ) : (
-                        <button
+                        <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.9 }}
                             onClick={handleCheckToggle}
-                            className={`w-7 h-7 rounded-lg border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition-all duration-200 ${isCompleted
+                            className={`w-8 h-8 rounded-xl border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition-colors duration-300 ${isCompleted
                                 ? 'text-white border-transparent'
-                                : 'border-gray-600 hover:border-gray-500'
+                                : 'border-gray-300 bg-gray-50 hover:border-gray-400'
                                 }`}
-                            style={isCompleted ? { backgroundColor: habit.color } : undefined}
+                            style={isCompleted ? { backgroundColor: habit.color, boxShadow: `0 4px 12px ${habit.color}40` } : undefined}
                         >
-                            {isCompleted && <Check size={16} strokeWidth={3} />}
-                        </button>
+                            <AnimatePresence>
+                                {isCompleted && (
+                                    <motion.div
+                                        initial={{ scale: 0, rotate: -45 }}
+                                        animate={{ scale: 1, rotate: 0 }}
+                                        exit={{ scale: 0, rotate: 45 }}
+                                        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                                    >
+                                        <Check size={18} strokeWidth={3} />
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </motion.button>
                     )}
                 </div>
 
                 {/* Content */}
                 <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-0.5">
-                        <span className="text-base">{habit.icon}</span>
-                        <h3 className={`font-semibold text-sm truncate ${isCompleted ? 'line-through text-gray-400' : 'text-dark'}`}>
+                    <div className="flex items-center gap-2 mb-1">
+                        <span className="text-lg leading-none">{habit.icon}</span>
+                        <h3 className={`font-bold text-base truncate transition-colors ${isCompleted ? 'line-through text-dark-lighter' : 'text-dark'}`}>
                             {habit.name}
                         </h3>
                         {/* Level Badge */}
                         <span
-                            className="text-[10px] font-bold px-1.5 py-0 rounded-full border"
+                            className="text-[10px] font-extrabold px-2 py-0.5 rounded-full"
                             style={{
                                 color: levelColor,
-                                borderColor: levelColor + '40',
                                 backgroundColor: levelColor + '15',
                             }}
                         >
@@ -181,90 +199,77 @@ export default function HabitCard({ habit, date, onEdit }: HabitCardProps) {
                     </div>
 
                     {/* Completion condition */}
-                    <p className="text-[10px] text-gray-400 mb-1.5 leading-tight">{completionCondition}</p>
+                    <p className="text-[11px] font-medium text-dark-lighter mb-2 leading-tight">{completionCondition}</p>
 
-                    {/* Type-specific info */}
+                    {/* Contextual Stats (Hiding irrelevant ones) */}
                     <div className="flex items-center gap-3 flex-wrap">
-                        {/* Streak */}
+                        {/* Streak (For Boolean) */}
                         {(habit.type === 'regular' || habit.type === 'infinite') && currentStreak > 0 && (
-                            <span className="inline-flex items-center gap-1 text-xs font-bold text-warning">
-                                <Flame size={13} /> {currentStreak} day streak 🔥
+                            <span className="streak-badge px-2 py-0.5 rounded text-[10px]">
+                                <Flame size={12} /> {currentStreak} streak
                             </span>
                         )}
 
-                        {/* Numerical goal progress */}
-                        {habit.type === 'numerical' && habit.goalValue && (
-                            <div className="flex items-center gap-2 flex-1 min-w-[120px]">
-                                <div className="progress-bar flex-1 h-2">
-                                    <div
-                                        className="progress-fill"
-                                        style={{ width: `${goalPercent}%`, backgroundColor: habit.color }}
-                                    />
-                                </div>
-                                <span className="text-xs font-bold text-gray-500">
-                                    {totalNumerical}/{habit.goalValue} {habit.unit}
-                                </span>
-                            </div>
-                        )}
-
-                        {/* Weekly aggregate total for numerical */}
+                        {/* Numerical Contextual Stats */}
                         {habit.type === 'numerical' && (
-                            <span className="text-[10px] font-bold text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
-                                This week: {weeklyTotal} {habit.unit || ''}
-                            </span>
-                        )}
+                            <div className="flex items-center gap-2 w-full mt-1">
+                                {/* Inline numerical entry */}
+                                {habit.dailyTarget && (
+                                    <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+                                        <motion.button
+                                            whileTap={{ scale: 0.9 }}
+                                            onClick={() => handleNumericalInput(currentNumValue - 0.5)}
+                                            className="w-6 h-6 rounded-lg bg-gray-100 flex items-center justify-center text-dark-lighter hover:text-dark hover:bg-gray-200 transition-colors"
+                                        >
+                                            <Minus size={12} />
+                                        </motion.button>
+                                        <input
+                                            type="number"
+                                            step="0.1"
+                                            min="0"
+                                            value={currentNumValue}
+                                            onChange={(e) => handleNumericalInput(parseFloat(e.target.value) || 0)}
+                                            className="w-14 text-center text-[12px] font-bold bg-white rounded-lg px-1 py-1 text-dark outline-none border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none transition-all"
+                                        />
+                                        <motion.button
+                                            whileTap={{ scale: 0.9 }}
+                                            onClick={() => handleNumericalInput(currentNumValue + 0.5)}
+                                            className="w-6 h-6 rounded-lg bg-gray-100 flex items-center justify-center text-dark-lighter hover:text-dark hover:bg-gray-200 transition-colors"
+                                        >
+                                            <Plus size={12} />
+                                        </motion.button>
+                                    </div>
+                                )}
 
-                        {/* Daily target / inline numerical entry */}
-                        {habit.dailyTarget && habit.type === 'numerical' && (
-                            <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
-                                <button
-                                    onClick={() => handleNumericalInput(currentNumValue - 0.5)}
-                                    className="w-5 h-5 rounded bg-gray-700/50 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-600 transition-colors"
-                                >
-                                    <Minus size={10} />
-                                </button>
-                                <input
-                                    type="number"
-                                    step="0.1"
-                                    min="0"
-                                    value={currentNumValue}
-                                    onChange={(e) => handleNumericalInput(parseFloat(e.target.value) || 0)}
-                                    className="w-14 text-center text-[11px] font-bold bg-gray-800/50 rounded px-1 py-0.5 text-gray-200 outline-none border border-gray-700 focus:border-indigo-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                                />
-                                <button
-                                    onClick={() => handleNumericalInput(currentNumValue + 0.5)}
-                                    className="w-5 h-5 rounded bg-gray-700/50 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-600 transition-colors"
-                                >
-                                    <Plus size={10} />
-                                </button>
-                                <span className={`text-[10px] font-bold ${currentNumValue >= habit.dailyTarget ? 'text-success' : 'text-gray-400'}`}>
-                                    /{habit.dailyTarget}
-                                </span>
+                                {habit.goalValue && (
+                                    <div className="flex-1 ml-2">
+                                        <div className="flex justify-between text-[10px] font-bold text-dark-lighter mb-1">
+                                            <span>{totalNumerical} {habit.unit}</span>
+                                            <span>Goal: {habit.goalValue}</span>
+                                        </div>
+                                        <div className="progress-bar flex-1 h-1.5 bg-gray-100">
+                                            <div
+                                                className="progress-fill"
+                                                style={{ width: `${goalPercent}%`, backgroundColor: habit.color }}
+                                            />
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         )}
 
                         {/* Challenge countdown */}
                         {habit.type === 'challenge' && challengeProgress && (
-                            <div className="flex items-center gap-2">
-                                <span className="challenge-timer">
-                                    <Timer size={12} /> {challengeProgress.daysRemaining}d left
+                            <div className="flex items-center gap-2 mt-1">
+                                <span className="challenge-timer text-[10px] px-2 py-0.5">
+                                    <Timer size={10} /> {challengeProgress.daysRemaining}d left
                                 </span>
-                                <span className="text-xs font-semibold text-gray-500">
-                                    {challengeProgress.daysCompleted}/{challengeProgress.daysTotal} days
-                                </span>
-                            </div>
-                        )}
-
-                        {/* Level progress bar (tiny) */}
-                        {levelInfo.level < 10 && (
-                            <div className="flex items-center gap-1.5 ml-auto">
-                                <div className="w-16 h-1 bg-gray-700 rounded-full overflow-hidden">
+                                <div className="w-16 h-1.5 bg-gray-100 rounded-full overflow-hidden">
                                     <div
-                                        className="h-full rounded-full transition-all"
-                                        style={{ width: `${levelInfo.progressToNext}%`, backgroundColor: levelColor }}
+                                        className="h-full bg-purple rounded-full transition-all"
+                                        style={{ width: `${(challengeProgress.daysCompleted / challengeProgress.daysTotal) * 100}%` }}
                                     />
                                 </div>
-                                <span className="text-[9px] text-gray-400">{levelInfo.title}</span>
                             </div>
                         )}
                     </div>
@@ -274,39 +279,39 @@ export default function HabitCard({ habit, date, onEdit }: HabitCardProps) {
                 <div className="relative" onClick={(e) => e.stopPropagation()}>
                     <button
                         onClick={() => setShowMenu(!showMenu)}
-                        className="btn-icon opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="btn-icon opacity-0 group-hover:opacity-100 transition-opacity bg-transparent hover:bg-gray-100 text-dark-lighter"
                     >
-                        <MoreVertical size={16} />
+                        <MoreVertical size={18} />
                     </button>
 
                     {showMenu && (
                         <>
                             <div className="fixed inset-0 z-10" onClick={() => setShowMenu(false)} />
-                            <div ref={menuRef} className="absolute right-0 top-8 bg-[#1C1F26] border border-[#2A2E37] rounded-lg shadow-lg z-20 py-1 min-w-[150px]">
+                            <div ref={menuRef} className="absolute right-0 top-8 bg-white border border-gray-100 rounded-xl shadow-xl z-20 py-2 min-w-[160px] animate-fade-in-up">
                                 <button
                                     onClick={() => { onEdit(habit); setShowMenu(false); }}
-                                    className="flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-gray-800 text-left text-gray-200"
+                                    className="flex items-center gap-3 w-full px-4 py-2 text-sm hover:bg-gray-50 text-left font-medium text-dark"
                                 >
-                                    <Edit3 size={14} /> ✏️ Edit
+                                    <Edit3 size={16} className="text-dark-lighter" /> Edit
                                 </button>
                                 <button
                                     onClick={() => { duplicateHabit(habit.id); setShowMenu(false); }}
-                                    className="flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-gray-800 text-left text-gray-200"
+                                    className="flex items-center gap-3 w-full px-4 py-2 text-sm hover:bg-gray-50 text-left font-medium text-dark"
                                 >
-                                    <Copy size={14} /> 📋 Duplicate
+                                    <Copy size={16} className="text-dark-lighter" /> Duplicate
                                 </button>
                                 <button
                                     onClick={() => { archiveHabit(habit.id); setShowMenu(false); }}
-                                    className="flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-gray-800 text-left text-gray-200"
+                                    className="flex items-center gap-3 w-full px-4 py-2 text-sm hover:bg-gray-50 text-left font-medium text-dark"
                                 >
-                                    <Archive size={14} /> 📦 {habit.archived ? 'Unarchive' : 'Archive'}
+                                    <Archive size={16} className="text-dark-lighter" /> {habit.archived ? 'Unarchive' : 'Archive'}
                                 </button>
-                                <hr className="my-1 border-gray-700" />
+                                <hr className="my-2 border-gray-100" />
                                 <button
                                     onClick={() => { deleteHabit(habit.id); setShowMenu(false); }}
-                                    className="flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-red-500/10 text-red-400 text-left"
+                                    className="flex items-center gap-3 w-full px-4 py-2 text-sm hover:bg-red-50 text-red-500 font-medium text-left"
                                 >
-                                    <Trash2 size={14} /> 🗑️ Delete
+                                    <Trash2 size={16} /> Delete
                                 </button>
                             </div>
                         </>

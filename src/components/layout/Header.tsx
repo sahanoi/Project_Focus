@@ -8,7 +8,7 @@ interface HeaderProps {
 }
 
 export default function Header({ onAddHabit }: HeaderProps) {
-    const { selectedDate, setSelectedDate, activeTab, setActiveTab, darkMode, toggleDarkMode } = useHabitStore();
+    const { selectedDate, setSelectedDate, activeTab, setActiveTab } = useHabitStore();
 
     const navigateDate = (direction: number) => {
         const d = new Date(selectedDate);
@@ -32,19 +32,7 @@ export default function Header({ onAddHabit }: HeaderProps) {
                     </h1>
 
                     <div className="flex items-center gap-2">
-                        {/* Dark Mode Toggle */}
-                        <button
-                            onClick={toggleDarkMode}
-                            className="btn-icon"
-                            aria-label="Toggle dark mode"
-                            id="dark-mode-toggle"
-                        >
-                            {darkMode ? (
-                                <Sun size={18} className="text-warning" />
-                            ) : (
-                                <Moon size={18} className="text-gray-600" />
-                            )}
-                        </button>
+
 
                         {activeTab === 'dashboard' && (
                             <button

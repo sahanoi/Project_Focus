@@ -96,9 +96,23 @@ export const calculateCharacterStats = (habits: Habit[]): CharacterStats => {
         if (stats[key] > 99) stats[key] = 99;
     });
 
-    // XP calculation based on total completions
-    const totalCompletions = habits.reduce((acc, h) => acc + Object.keys(h.completions).length, 0);
-    const xp = totalCompletions * 50; // 50 XP per completion
+    // Enhanced XP calculation
+    let totalXp = 0;
+    habits.forEach(h => {
+        // Only count actual completions
+        const validCompletions = Object.values(h.completions).filter(c => {
+            if (h.type === 'numerical') return (c.value ?? 0) > 0;
+            return c.completed;
+        }).length;
+
+        const difficultyMulti = h.difficulty === 'hard' ? 2 : h.difficulty === 'medium' ? 1.5 : 1;
+        const currentStreak = calculateCurrentStreak(h);
+        const streakMulti = 1 + Math.min(1, currentStreak / 30); // Up to 2x at 30 days
+
+        totalXp += validCompletions * 50 * difficultyMulti * streakMulti;
+    });
+
+    const xp = Math.round(totalXp);
     const { level, nextLevelXp } = calculateLevel(xp);
 
     return {

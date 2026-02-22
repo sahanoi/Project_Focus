@@ -9,7 +9,6 @@ export default function LogEntryBar() {
 
     const activeHabits = habits.filter(h => !h.archived);
 
-    // Top uncompleted habits for quick toggle
     const topUncompleted = useMemo(() => {
         return activeHabits
             .filter(h => {
@@ -20,7 +19,6 @@ export default function LogEntryBar() {
             .slice(0, 4);
     }, [activeHabits, selectedDate]);
 
-    // Filtered habits for search dropdown
     const filteredHabits = useMemo(() => {
         if (!search.trim()) return activeHabits.slice(0, 6);
         return activeHabits.filter(h =>
@@ -40,7 +38,7 @@ export default function LogEntryBar() {
     };
 
     const handleSelectHabit = (habitId: string) => {
-        setSelectedHabitId(habitId); // Open Quick Log Modal
+        setSelectedHabitId(habitId);
         setSearch('');
         setShowDropdown(false);
     };
@@ -49,12 +47,12 @@ export default function LogEntryBar() {
         <div className="flex items-center gap-4 flex-1">
             {/* Search/Log Input */}
             <div className="relative flex-1 max-w-md">
-                <div className="flex items-center bg-[#1a1a2e] rounded-lg border border-gray-700/50 px-3 py-2 focus-within:border-indigo-500/50 transition-colors">
-                    <Search size={16} className="text-gray-500 mr-2 flex-shrink-0" />
+                <div className="flex items-center bg-white rounded-lg border border-[#E6DDF2] px-3 py-2 focus-within:border-primary/50 transition-colors shadow-sm">
+                    <Search size={16} className="text-dark-lighter mr-2 flex-shrink-0" />
                     <input
                         type="text"
                         placeholder="Log a habit completion..."
-                        className="bg-transparent text-sm text-gray-200 placeholder-gray-500 outline-none w-full"
+                        className="bg-transparent text-sm text-dark placeholder-dark-lighter/60 outline-none w-full"
                         value={search}
                         onChange={(e) => {
                             setSearch(e.target.value);
@@ -67,7 +65,7 @@ export default function LogEntryBar() {
 
                 {/* Dropdown */}
                 {showDropdown && filteredHabits.length > 0 && (
-                    <div className="absolute top-full left-0 right-0 mt-1 bg-[#1a1a2e] border border-gray-700/50 rounded-lg shadow-xl z-50 overflow-hidden">
+                    <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-[#E6DDF2] rounded-lg shadow-xl z-50 overflow-hidden">
                         {filteredHabits.map(h => {
                             const c = h.completions[selectedDate];
                             const isDone = h.type === 'numerical'
@@ -81,14 +79,14 @@ export default function LogEntryBar() {
                                         e.preventDefault();
                                         handleSelectHabit(h.id);
                                     }}
-                                    className={`w-full flex items-center gap-3 px-3 py-2.5 text-left hover:bg-indigo-500/10 transition-colors ${isDone ? 'opacity-50' : ''
+                                    className={`w-full flex items-center gap-3 px-3 py-2.5 text-left hover:bg-primary/5 transition-colors ${isDone ? 'opacity-50' : ''
                                         }`}
                                 >
                                     <span className="text-base">{h.icon}</span>
-                                    <span className="text-sm text-gray-200 flex-1 truncate">{h.name}</span>
-                                    {isDone && <Check size={14} className="text-green-400" />}
+                                    <span className="text-sm text-dark flex-1 truncate">{h.name}</span>
+                                    {isDone && <Check size={14} className="text-success" />}
                                     {!isDone && (
-                                        <span className="text-[10px] text-gray-500 font-medium">
+                                        <span className="text-[10px] text-dark-lighter font-medium">
                                             {h.type === 'numerical' ? `+${h.dailyTarget || 1} ${h.unit}` : 'Toggle'}
                                         </span>
                                     )}
@@ -101,12 +99,12 @@ export default function LogEntryBar() {
 
             {/* Quick Toggle Pills */}
             <div className="flex items-center gap-2">
-                <Zap size={14} className="text-amber-400" />
+                <Zap size={14} className="text-warning" />
                 {topUncompleted.map(h => (
                     <button
                         key={h.id}
                         onClick={() => handleQuickToggle(h.id)}
-                        className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#1a1a2e] border border-gray-700/30 hover:border-indigo-500/30 hover:bg-indigo-500/10 text-xs text-gray-300 transition-all group"
+                        className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white border border-[#E6DDF2] hover:border-primary/30 hover:bg-primary/5 text-xs text-dark-light transition-all group shadow-sm"
                         title={`Quick complete: ${h.name}`}
                     >
                         <span className="text-sm">{h.icon}</span>
