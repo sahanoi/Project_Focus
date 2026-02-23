@@ -44,10 +44,10 @@ export default function PublicProfileModal({ user, onClose }: PublicProfileModal
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95, y: 20 }}
                     transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-                    className="relative w-full max-w-2xl bg-surface rounded-3xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col"
+                    className="relative w-full max-w-2xl bg-surface dark:bg-night-surface rounded-3xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col transition-colors"
                 >
                     {/* Header Banner */}
-                    <div className="flex-shrink-0 relative h-32 bg-gradient-to-tr from-indigo-500 via-primary to-primary-light">
+                    <div className="flex-shrink-0 relative h-32 bg-gradient-to-tr from-indigo-500 via-primary to-primary-light dark:from-indigo-600 dark:via-primary-dark dark:to-primary">
                         <button
                             onClick={onClose}
                             className="absolute top-4 right-4 w-8 h-8 rounded-full bg-black/20 text-white flex items-center justify-center hover:bg-black/40 transition-colors backdrop-blur-md"
@@ -64,18 +64,18 @@ export default function PublicProfileModal({ user, onClose }: PublicProfileModal
                                 <img
                                     src={user.avatarUrl}
                                     alt={user.name}
-                                    className="w-28 h-28 sm:w-32 sm:h-32 rounded-3xl bg-white border-4 border-surface shadow-xl object-cover"
+                                    className="w-28 h-28 sm:w-32 sm:h-32 rounded-3xl bg-white dark:bg-night-bg border-4 border-surface dark:border-night-surface shadow-xl object-cover transition-colors"
                                 />
-                                <div className="absolute -bottom-3 -right-3 w-10 h-10 bg-dark text-white text-sm font-black rounded-xl flex items-center justify-center shadow-lg border-2 border-surface">
+                                <div className="absolute -bottom-3 -right-3 w-10 h-10 bg-dark dark:bg-night-bg text-white dark:text-night-text text-sm font-black rounded-xl flex items-center justify-center shadow-lg border-2 border-surface dark:border-night-surface transition-colors">
                                     {user.level}
                                 </div>
                             </div>
 
                             <div className="flex-1 text-center sm:text-left pt-2 sm:pt-14">
-                                <h2 className="text-2xl sm:text-3xl font-black text-dark tracking-tight leading-none mb-1">
+                                <h2 className="text-2xl sm:text-3xl font-black text-dark dark:text-night-text tracking-tight leading-none mb-1 transition-colors">
                                     {user.name}
                                 </h2>
-                                <p className="text-dark-lighter font-medium flex items-center justify-center sm:justify-start gap-2">
+                                <p className="text-dark-lighter dark:text-night-text-muted font-medium flex items-center justify-center sm:justify-start gap-2 transition-colors">
                                     <Trophy size={14} className="text-primary" /> Accountability Partner
                                 </p>
                             </div>
@@ -92,13 +92,13 @@ export default function PublicProfileModal({ user, onClose }: PublicProfileModal
 
                             {/* Left Col: RPG Card */}
                             <div className="space-y-6">
-                                <div className="bg-white rounded-2xl p-6 border border-[#E6DDF2] shadow-sm relative overflow-hidden group">
+                                <div className="bg-white dark:bg-night-bg rounded-2xl p-6 border border-[#E6DDF2] dark:border-night-border shadow-sm relative overflow-hidden group transition-colors">
                                     {/* Glassmorphism gradient effect inside card */}
-                                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent pointer-events-none" />
+                                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 dark:from-primary/10 to-transparent pointer-events-none transition-colors" />
 
                                     <div className="flex items-center justify-between relative z-10 mb-4">
-                                        <h3 className="font-black text-dark text-lg uppercase tracking-wider">RPG Card</h3>
-                                        <div className="bg-dark text-white px-3 py-1 rounded-lg font-black text-sm flex items-center gap-1 shadow-md">
+                                        <h3 className="font-black text-dark dark:text-night-text text-lg uppercase tracking-wider transition-colors">RPG Card</h3>
+                                        <div className="bg-dark dark:bg-night-surface text-white dark:text-night-text border border-transparent dark:border-night-border px-3 py-1 rounded-lg font-black text-sm flex items-center gap-1 shadow-md transition-colors">
                                             OVR {user.stats.attributes?.ovr || 0}
                                         </div>
                                     </div>
@@ -107,10 +107,10 @@ export default function PublicProfileModal({ user, onClose }: PublicProfileModal
                                     <div className="h-[220px] -mt-4 relative z-10">
                                         <ResponsiveContainer width="100%" height="100%">
                                             <RadarChart cx="50%" cy="50%" outerRadius="70%" data={radarData}>
-                                                <PolarGrid stroke="#E6DDF2" />
+                                                <PolarGrid stroke="var(--radar-grid-color, #E6DDF2)" />
                                                 <PolarAngleAxis
                                                     dataKey="subject"
-                                                    tick={{ fill: '#4a4a4a', fontSize: 10, fontWeight: 800 }}
+                                                    tick={{ fill: 'var(--radar-text-color, #4a4a4a)', fontSize: 10, fontWeight: 800 }}
                                                 />
                                                 <Radar
                                                     name={user.name}
@@ -126,13 +126,13 @@ export default function PublicProfileModal({ user, onClose }: PublicProfileModal
 
                                 {/* Active Streaks Box */}
                                 {user.activeStreaks.length > 0 && (
-                                    <div className="bg-orange-50 rounded-2xl p-5 border border-orange-200 shadow-inner">
-                                        <h4 className="font-bold text-orange-800 text-xs uppercase tracking-wider mb-3 flex items-center gap-2">
+                                    <div className="bg-orange-50 dark:bg-orange-950/20 rounded-2xl p-5 border border-orange-200 dark:border-orange-900/30 shadow-inner transition-colors">
+                                        <h4 className="font-bold text-orange-800 dark:text-orange-500 text-xs uppercase tracking-wider mb-3 flex items-center gap-2 transition-colors">
                                             <Flame size={14} /> Active Streaks
                                         </h4>
                                         <div className="flex flex-wrap gap-2">
                                             {user.activeStreaks.map(streak => (
-                                                <div key={streak.name} className="bg-white px-3 py-1.5 rounded-lg border border-orange-200 text-sm font-bold shadow-sm flex items-center gap-2 text-dark">
+                                                <div key={streak.name} className="bg-white dark:bg-night-surface px-3 py-1.5 rounded-lg border border-orange-200 dark:border-orange-900/50 text-sm font-bold shadow-sm flex items-center gap-2 text-dark dark:text-night-text transition-colors">
                                                     <span>{streak.icon}</span> {streak.days}d
                                                 </div>
                                             ))}
@@ -146,8 +146,8 @@ export default function PublicProfileModal({ user, onClose }: PublicProfileModal
                                 {/* Top Badges Showcase */}
                                 <div>
                                     <div className="flex items-center justify-between mb-3">
-                                        <h3 className="font-black text-dark text-sm uppercase tracking-wider flex items-center gap-2">
-                                            <Trophy size={16} className="text-yellow-500" /> Trophy Room
+                                        <h3 className="font-black text-dark dark:text-night-text text-sm uppercase tracking-wider flex items-center gap-2 transition-colors">
+                                            <Trophy size={16} className="text-yellow-500 dark:text-yellow-400 transition-colors" /> Trophy Room
                                         </h3>
                                         <span className="text-xs font-bold text-primary hover:text-primary-dark cursor-pointer flex items-center gap-0.5">
                                             View All <ArrowUpRight size={14} />
@@ -157,15 +157,15 @@ export default function PublicProfileModal({ user, onClose }: PublicProfileModal
                                         {user.badges.map(badge => {
                                             const tierStyles = TIER_COLORS[badge.tier as keyof typeof TIER_COLORS];
                                             return (
-                                                <div key={badge.id} className={`flex items-center gap-4 p-3 rounded-xl border bg-white ${tierStyles.border} shadow-sm group hover:scale-[1.02] transition-transform`}>
-                                                    <div className={`w-12 h-12 rounded-lg flex items-center justify-center text-2xl shadow-inner ${tierStyles.bg}`}>
+                                                <div key={badge.id} className={`flex items-center gap-4 p-3 rounded-xl border bg-white dark:bg-night-surface ${tierStyles.border} dark:border-opacity-20 shadow-sm group hover:scale-[1.02] transition-all`}>
+                                                    <div className={`w-12 h-12 rounded-lg flex items-center justify-center text-2xl shadow-inner ${tierStyles.bg} dark:bg-opacity-10`}>
                                                         {badge.icon}
                                                     </div>
                                                     <div>
-                                                        <p className={`text-[9px] font-black uppercase tracking-wider mb-0.5 ${tierStyles.text}`}>
+                                                        <p className={`text-[9px] font-black uppercase tracking-wider mb-0.5 ${tierStyles.text} dark:opacity-80`}>
                                                             {badge.tier}
                                                         </p>
-                                                        <p className="text-sm font-black text-dark">{badge.name}</p>
+                                                        <p className="text-sm font-black text-dark dark:text-night-text transition-colors">{badge.name}</p>
                                                     </div>
                                                 </div>
                                             );
@@ -174,17 +174,17 @@ export default function PublicProfileModal({ user, onClose }: PublicProfileModal
                                 </div>
 
                                 {/* Weekly Stats summary */}
-                                <div className="bg-surface-dark border border-[#E6DDF2] rounded-2xl p-5 mt-auto">
-                                    <h4 className="font-bold text-dark text-xs uppercase tracking-wider mb-4">Current Week</h4>
+                                <div className="bg-surface-dark dark:bg-night-bg border border-[#E6DDF2] dark:border-night-border rounded-2xl p-5 mt-auto transition-colors">
+                                    <h4 className="font-bold text-dark dark:text-night-text text-xs uppercase tracking-wider mb-4 transition-colors">Current Week</h4>
                                     <div className="flex items-center justify-between">
                                         <div>
-                                            <p className="text-[10px] text-dark-lighter font-bold uppercase tracking-wider mb-0.5">XP Earned</p>
-                                            <p className="text-2xl font-black text-primary">{user.xpThisWeek.toLocaleString()}</p>
+                                            <p className="text-[10px] text-dark-lighter dark:text-night-text-muted font-bold uppercase tracking-wider mb-0.5 transition-colors">XP Earned</p>
+                                            <p className="text-2xl font-black text-primary dark:text-primary-light transition-colors">{user.xpThisWeek.toLocaleString()}</p>
                                         </div>
-                                        <div className="w-[1px] h-8 bg-[#E6DDF2]" />
+                                        <div className="w-[1px] h-8 bg-[#E6DDF2] dark:bg-night-border transition-colors" />
                                         <div className="text-right">
-                                            <p className="text-[10px] text-dark-lighter font-bold uppercase tracking-wider mb-0.5">Global Rank</p>
-                                            <p className="text-2xl font-black text-dark">Top 10%</p>
+                                            <p className="text-[10px] text-dark-lighter dark:text-night-text-muted font-bold uppercase tracking-wider mb-0.5 transition-colors">Global Rank</p>
+                                            <p className="text-2xl font-black text-dark dark:text-night-text transition-colors">Top 10%</p>
                                         </div>
                                     </div>
                                 </div>

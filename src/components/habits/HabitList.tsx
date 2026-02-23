@@ -76,11 +76,11 @@ export default function HabitList({ onEditHabit, onAddHabit }: HabitListProps) {
     if (totalHabitsCount === 0) {
         return (
             <div className="flex flex-col items-center justify-center py-20 text-center">
-                <div className="w-16 h-16 rounded-2xl bg-surface-dark flex items-center justify-center mb-4">
-                    <Inbox size={32} className="text-dark-lighter" />
+                <div className="w-16 h-16 rounded-2xl bg-surface-dark dark:bg-night-bg flex items-center justify-center mb-4 transition-colors">
+                    <Inbox size={32} className="text-dark-lighter dark:text-night-text-muted transition-colors" />
                 </div>
-                <h3 className="text-lg font-bold text-dark mb-1">No habits yet 📝</h3>
-                <p className="text-dark-lighter text-sm mb-4">
+                <h3 className="text-lg font-bold text-dark dark:text-night-text mb-1 transition-colors">No habits yet 📝</h3>
+                <p className="text-dark-lighter dark:text-night-text-muted text-sm mb-4 transition-colors">
                     Start building better habits today! 🚀
                 </p>
                 <button onClick={onAddHabit} className="btn-primary" id="empty-add-habit-btn">
@@ -94,8 +94,8 @@ export default function HabitList({ onEditHabit, onAddHabit }: HabitListProps) {
         return (
             <div className="flex flex-col items-center justify-center py-16 text-center">
                 <div className="text-4xl mb-3">🎉</div>
-                <h3 className="text-lg font-bold text-dark mb-1">No habits scheduled today!</h3>
-                <p className="text-dark-lighter text-sm mb-4">
+                <h3 className="text-lg font-bold text-dark dark:text-night-text mb-1 transition-colors">No habits scheduled today!</h3>
+                <p className="text-dark-lighter dark:text-night-text-muted text-sm mb-4 transition-colors">
                     Enjoy your day off, or create a new habit.
                 </p>
                 <button onClick={onAddHabit} className="btn-secondary" id="add-habit-off-day-btn">
@@ -111,10 +111,10 @@ export default function HabitList({ onEditHabit, onAddHabit }: HabitListProps) {
             <div className="mb-6">
                 <div className="flex items-center gap-2 mb-3">
                     <div className={`w-2.5 h-2.5 rounded-full ${colorClass}`} />
-                    <h2 className="text-sm font-bold uppercase tracking-wider text-dark-lighter">
+                    <h2 className="text-sm font-bold uppercase tracking-wider text-dark-lighter dark:text-night-text-muted transition-colors">
                         {emoji} {title}
                     </h2>
-                    <span className="text-xs text-dark-lighter font-medium">({habits.length})</span>
+                    <span className="text-xs text-dark-lighter dark:text-night-text-muted font-medium transition-colors">({habits.length})</span>
                 </div>
                 <div className="space-y-2">
                     {habits.map((h) => (
@@ -128,9 +128,9 @@ export default function HabitList({ onEditHabit, onAddHabit }: HabitListProps) {
     return (
         <div>
             {/* Daily Progress Summary */}
-            <div className="rounded-xl border border-[#E6DDF2] bg-white p-5 mb-6 shadow-sm">
+            <div className="rounded-xl border border-[#E6DDF2] dark:border-night-border bg-white dark:bg-night-surface p-5 mb-6 shadow-sm transition-colors">
                 <div className="flex items-center justify-between mb-3">
-                    <h2 className="section-title">📊 Today's Progress</h2>
+                    <h2 className="section-title dark:text-night-text transition-colors">📊 Today's Progress</h2>
                     <span className="stat-number text-xl" style={{ color: completionPercent === 100 ? '#10B981' : '#2563EB' }}>
                         {completionPercent === 100 ? '🎉 ' : ''}{completionPercent}%
                     </span>
@@ -144,10 +144,10 @@ export default function HabitList({ onEditHabit, onAddHabit }: HabitListProps) {
                         }}
                     />
                 </div>
-                <p className="text-sm text-dark-lighter mt-2">
+                <p className="text-sm text-dark-lighter dark:text-night-text-muted mt-2 transition-colors">
                     ✅ {completedCount} of {todaysHabits.length} habits completed
                     {todaysHabits.length < totalHabitsCount && (
-                        <span className="text-xs text-dark-lighter ml-2">
+                        <span className="text-xs text-dark-lighter dark:text-night-text-muted ml-2 transition-colors">
                             ({totalHabitsCount - todaysHabits.length} not scheduled today)
                         </span>
                     )}
