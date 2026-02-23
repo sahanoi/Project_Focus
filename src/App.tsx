@@ -22,7 +22,7 @@ import LevelUpModal from './components/dashboard/LevelUpModal';
 
 function AuthenticatedApp() {
     const { activeTab, habits, selectedHabitId, setSelectedHabitId, detailViewHabitId, setDetailViewHabitId, showModal, setShowModal, fetchAllData, isLoading } = useHabitStore();
-    const { session, loading } = useAuth();
+    const { session, loading, isRecovery } = useAuth();
     const { theme } = useThemeStore();
     const [editHabit, setEditHabit] = useState<Habit | null>(null);
     const [onboardingDone, setOnboardingDone] = useState(false);
@@ -71,7 +71,7 @@ function AuthenticatedApp() {
         );
     }
 
-    if (!session) {
+    if (!session || isRecovery) {
         return <Auth />;
     }
 
