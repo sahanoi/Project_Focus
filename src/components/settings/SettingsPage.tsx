@@ -1,12 +1,14 @@
 import React, { useRef, useState } from 'react';
 import { useHabitStore } from '../../store/habitStore';
 import { useAuth } from '../../contexts/AuthContext';
-import { Download, Upload, Trash2, AlertTriangle, Info, Database, LogOut, User, Shield, Package } from 'lucide-react';
+import { Download, Upload, Trash2, AlertTriangle, Info, Database, LogOut, User, Shield, Package, Moon, Sun, Monitor } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useThemeStore, ThemeMode } from '../../store/themeStore';
 
 export default function SettingsPage() {
     const { habits, goals, importData, clearAllData, loadDummyData } = useHabitStore();
     const { user, signOut } = useAuth();
+    const { theme, setTheme } = useThemeStore();
     const [showClearConfirm, setShowClearConfirm] = useState(false);
     const [importStatus, setImportStatus] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -61,14 +63,14 @@ export default function SettingsPage() {
     return (
         <div className="max-w-2xl mx-auto p-8 space-y-6">
             <div className="flex items-center gap-3 mb-2">
-                <h2 className="text-2xl font-black text-dark tracking-tight">Settings</h2>
+                <h2 className="text-2xl font-black text-dark dark:text-night-text tracking-tight transition-colors">Settings</h2>
             </div>
 
             {/* Profile Card */}
             <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-white rounded-2xl border border-[#E6DDF2] p-6 shadow-sm"
+                className="bg-white dark:bg-night-surface rounded-2xl border border-[#E6DDF2] dark:border-night-border p-6 shadow-sm transition-colors"
             >
                 <div className="flex items-center gap-4">
                     <div className="w-14 h-14 bg-gradient-to-tr from-primary to-primary-light rounded-2xl flex items-center justify-center shadow-md shadow-primary/15">
@@ -77,14 +79,14 @@ export default function SettingsPage() {
                         </span>
                     </div>
                     <div className="flex-1">
-                        <p className="font-bold text-dark text-lg">
+                        <p className="font-bold text-dark dark:text-night-text text-lg transition-colors">
                             {user?.user_metadata?.username || user?.email?.split('@')[0] || 'Player'}
                         </p>
-                        <p className="text-sm text-dark-lighter">{user?.email}</p>
+                        <p className="text-sm text-dark-lighter dark:text-night-text-muted transition-colors">{user?.email}</p>
                     </div>
                     <button
                         onClick={signOut}
-                        className="flex items-center gap-2 px-4 py-2 rounded-xl text-dark-lighter hover:text-danger hover:bg-danger/5 border border-[#E6DDF2] transition-all text-sm font-medium"
+                        className="flex items-center gap-2 px-4 py-2 rounded-xl text-dark-lighter dark:text-night-text-muted hover:text-danger dark:hover:text-danger hover:bg-danger/5 dark:hover:bg-danger/20 border border-[#E6DDF2] dark:border-night-border transition-all text-sm font-medium"
                     >
                         <LogOut size={16} />
                         Sign Out
@@ -105,12 +107,48 @@ export default function SettingsPage() {
                     { label: 'Goals', value: goals.length, icon: '🎯' },
                     { label: 'Logged', value: totalCompletions, icon: '✅' },
                 ].map(stat => (
-                    <div key={stat.label} className="bg-white rounded-xl border border-[#E6DDF2] p-4 text-center shadow-sm">
+                    <div key={stat.label} className="bg-white dark:bg-night-surface rounded-xl border border-[#E6DDF2] dark:border-night-border p-4 text-center shadow-sm transition-colors">
                         <span className="text-lg mb-1 block">{stat.icon}</span>
-                        <span className="text-xl font-black text-dark block">{stat.value}</span>
-                        <span className="text-[10px] text-dark-lighter uppercase tracking-wider font-semibold">{stat.label}</span>
+                        <span className="text-xl font-black text-dark dark:text-night-text block transition-colors">{stat.value}</span>
+                        <span className="text-[10px] text-dark-lighter dark:text-night-text-muted uppercase tracking-wider font-semibold transition-colors">{stat.label}</span>
                     </div>
                 ))}
+            </motion.div>
+
+            {/* Theme Preferences */}
+            <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.08 }}
+                className="bg-white dark:bg-night-surface rounded-2xl border border-[#E6DDF2] dark:border-night-border p-6 shadow-sm space-y-4 transition-colors"
+            >
+                <h3 className="font-bold text-dark dark:text-night-text flex items-center gap-2 transition-colors">
+                    <Moon size={18} className="text-indigo-500" />
+                    Appearance
+                </h3>
+
+                <div className="grid grid-cols-3 gap-3">
+                    {[
+                        { id: 'light', label: 'Light Mode', icon: Sun },
+                        { id: 'dark', label: 'Dark Mode', icon: Moon },
+                        { id: 'system', label: 'System', icon: Monitor },
+                    ].map(t => {
+                        const Icon = t.icon;
+                        const isActive = theme === t.id;
+                        return (
+                            <button
+                                key={t.id}
+                                onClick={() => setTheme(t.id as ThemeMode)}
+                                className={`flex items-center justify-center gap-2 py-3 rounded-xl border-2 transition-all font-bold text-sm ${isActive
+                                    ? 'border-primary bg-primary/5 text-primary-dark dark:text-primary-light'
+                                    : 'border-[#E6DDF2] dark:border-night-border bg-surface dark:bg-night-bg text-dark-lighter dark:text-night-text-muted hover:border-primary/50'
+                                    }`}
+                            >
+                                <Icon size={16} /> {t.label}
+                            </button>
+                        );
+                    })}
+                </div>
             </motion.div>
 
             {/* Data Management */}
@@ -118,14 +156,14 @@ export default function SettingsPage() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className="bg-white rounded-2xl border border-[#E6DDF2] p-6 shadow-sm space-y-4"
+                className="bg-white dark:bg-night-surface rounded-2xl border border-[#E6DDF2] dark:border-night-border p-6 shadow-sm space-y-4 transition-colors"
             >
-                <h3 className="font-bold text-dark flex items-center gap-2">
-                    <Package size={18} className="text-primary" />
+                <h3 className="font-bold text-dark dark:text-night-text flex items-center gap-2 transition-colors">
+                    <Package size={18} className="text-primary dark:text-primary-light" />
                     Data Management
                 </h3>
 
-                <p className="text-sm text-dark-lighter">
+                <p className="text-sm text-dark-lighter dark:text-night-text-muted transition-colors">
                     Your data syncs to the cloud via Supabase. Export regularly as an extra backup.
                 </p>
 
@@ -182,9 +220,9 @@ export default function SettingsPage() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.15 }}
-                className="bg-white rounded-2xl border border-danger/15 p-6 shadow-sm space-y-4"
+                className="bg-white dark:bg-night-surface rounded-2xl border border-danger/15 dark:border-danger/30 p-6 shadow-sm space-y-4 transition-colors"
             >
-                <h3 className="font-bold text-danger flex items-center gap-2">
+                <h3 className="font-bold text-danger dark:text-danger-dark flex items-center gap-2 transition-colors">
                     <Shield size={18} />
                     Danger Zone
                 </h3>
@@ -226,16 +264,16 @@ export default function SettingsPage() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="bg-white rounded-2xl border border-[#E6DDF2] p-6 shadow-sm"
+                className="bg-white dark:bg-night-surface rounded-2xl border border-[#E6DDF2] dark:border-night-border p-6 shadow-sm transition-colors"
             >
-                <h3 className="font-bold text-dark mb-2 flex items-center gap-2">
-                    <Info size={18} className="text-primary" />
+                <h3 className="font-bold text-dark dark:text-night-text mb-2 flex items-center gap-2 transition-colors">
+                    <Info size={18} className="text-primary dark:text-primary-light" />
                     About
                 </h3>
-                <p className="text-sm text-dark-lighter leading-relaxed">
-                    <span className="font-semibold text-dark">Focus FTP v3.0</span> — Your gamified habit companion. Track habits, level up your character, and build lasting discipline.
+                <p className="text-sm text-dark-lighter dark:text-night-text-muted leading-relaxed transition-colors">
+                    <span className="font-semibold text-dark dark:text-night-text">Focus FTP v3.0</span> — Your gamified habit companion. Track habits, level up your character, and build lasting discipline.
                 </p>
-                <p className="text-xs text-dark-lighter/50 mt-2">Made with ❤️ and framer-motion</p>
+                <p className="text-xs text-dark-lighter/50 dark:text-night-text-muted/50 mt-2 transition-colors">Made with ❤️ and framer-motion</p>
             </motion.div>
         </div>
     );

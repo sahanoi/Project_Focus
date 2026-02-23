@@ -10,6 +10,7 @@ import Auth from './components/auth/Auth';
 import OnboardingWizard from './components/onboarding/OnboardingWizard';
 import SmartGoalWizard from './components/goals/SmartGoalWizard';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { useThemeStore } from './store/themeStore';
 import { Habit } from './types';
 import { Loader2 } from 'lucide-react';
 
@@ -22,6 +23,7 @@ import LevelUpModal from './components/dashboard/LevelUpModal';
 function AuthenticatedApp() {
     const { activeTab, habits, selectedHabitId, setSelectedHabitId, detailViewHabitId, setDetailViewHabitId, showModal, setShowModal, fetchAllData, isLoading } = useHabitStore();
     const { session, loading } = useAuth();
+    const { theme } = useThemeStore();
     const [editHabit, setEditHabit] = useState<Habit | null>(null);
     const [onboardingDone, setOnboardingDone] = useState(false);
     const [showGoalWizard, setShowGoalWizard] = useState(false);
@@ -41,6 +43,23 @@ function AuthenticatedApp() {
             setInitialLoadDone(false);
         }
     }, [session, fetchAllData]);
+
+    // Handle global dark mode HTML class
+    useEffect(() => {
+        const root = document.documentElement;
+        if (theme === 'dark') {
+            root.classList.add('dark');
+        } else if (theme === 'light') {
+            root.classList.remove('dark');
+        } else if (theme === 'system') {
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (systemPrefersDark) {
+                root.classList.add('dark');
+            } else {
+                root.classList.remove('dark');
+            }
+        }
+    }, [theme]);
 
 
 

@@ -134,7 +134,7 @@ export default function HabitCard({ habit, date, onEdit }: HabitCardProps) {
 
     return (
         <div
-            className={`rounded-2xl border border-[#E6DDF2] bg-white p-4 relative group transition-all duration-300 hover:shadow-md cursor-pointer hover:-translate-y-0.5 ${isCompleted ? 'border-l-4' : 'border-l-4 border-l-gray-200'
+            className={`rounded-2xl border border-[#E6DDF2] dark:border-night-border bg-white dark:bg-night-surface p-4 relative group transition-all duration-300 hover:shadow-md cursor-pointer hover:-translate-y-0.5 ${isCompleted ? 'border-l-4' : 'border-l-4 border-l-gray-200 dark:border-l-night-text-muted/20'
                 }`}
             style={isCompleted ? { borderLeftColor: habit.color } : undefined}
             onClick={() => setSelectedHabitId(habit.id)}
@@ -146,7 +146,7 @@ export default function HabitCard({ habit, date, onEdit }: HabitCardProps) {
                         <div
                             className={`w-8 h-8 rounded-xl border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition-all duration-300 ${isCompleted
                                 ? 'text-white border-transparent'
-                                : 'border-gray-300 text-dark-lighter bg-gray-50'
+                                : 'border-gray-300 dark:border-night-border text-dark-lighter dark:text-night-text-muted bg-gray-50 dark:bg-night-bg/50'
                                 }`}
                             style={isCompleted ? { backgroundColor: habit.color, boxShadow: `0 4px 12px ${habit.color}40` } : undefined}
                         >
@@ -159,7 +159,7 @@ export default function HabitCard({ habit, date, onEdit }: HabitCardProps) {
                             onClick={handleCheckToggle}
                             className={`w-8 h-8 rounded-xl border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition-colors duration-300 ${isCompleted
                                 ? 'text-white border-transparent'
-                                : 'border-gray-300 bg-gray-50 hover:border-gray-400'
+                                : 'border-gray-300 dark:border-night-border bg-gray-50 dark:bg-night-bg/50 hover:border-gray-400 dark:hover:border-gray-600'
                                 }`}
                             style={isCompleted ? { backgroundColor: habit.color, boxShadow: `0 4px 12px ${habit.color}40` } : undefined}
                         >
@@ -183,7 +183,7 @@ export default function HabitCard({ habit, date, onEdit }: HabitCardProps) {
                 <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                         <span className="text-lg leading-none">{habit.icon}</span>
-                        <h3 className={`font-bold text-base truncate transition-colors ${isCompleted ? 'line-through text-dark-lighter' : 'text-dark'}`}>
+                        <h3 className={`font-bold text-base truncate transition-colors ${isCompleted ? 'line-through text-dark-lighter dark:text-night-text-muted/60' : 'text-dark dark:text-night-text'}`}>
                             {habit.name}
                         </h3>
                         {/* Level Badge */}
@@ -199,7 +199,7 @@ export default function HabitCard({ habit, date, onEdit }: HabitCardProps) {
                     </div>
 
                     {/* Completion condition */}
-                    <p className="text-[11px] font-medium text-dark-lighter mb-2 leading-tight">{completionCondition}</p>
+                    <p className="text-[11px] font-medium text-dark-lighter dark:text-night-text-muted mb-2 leading-tight transition-colors">{completionCondition}</p>
 
                     {/* Contextual Stats (Hiding irrelevant ones) */}
                     <div className="flex items-center gap-3 flex-wrap">
@@ -219,7 +219,7 @@ export default function HabitCard({ habit, date, onEdit }: HabitCardProps) {
                                         <motion.button
                                             whileTap={{ scale: 0.9 }}
                                             onClick={() => handleNumericalInput(currentNumValue - 0.5)}
-                                            className="w-6 h-6 rounded-lg bg-gray-100 flex items-center justify-center text-dark-lighter hover:text-dark hover:bg-gray-200 transition-colors"
+                                            className="w-6 h-6 rounded-lg bg-gray-100 dark:bg-night-bg flex items-center justify-center text-dark-lighter dark:text-night-text-muted hover:text-dark dark:hover:text-night-text hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
                                         >
                                             <Minus size={12} />
                                         </motion.button>
@@ -229,12 +229,12 @@ export default function HabitCard({ habit, date, onEdit }: HabitCardProps) {
                                             min="0"
                                             value={currentNumValue}
                                             onChange={(e) => handleNumericalInput(parseFloat(e.target.value) || 0)}
-                                            className="w-14 text-center text-[12px] font-bold bg-white rounded-lg px-1 py-1 text-dark outline-none border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none transition-all"
+                                            className="w-14 text-center text-[12px] font-bold bg-white dark:bg-night-surface rounded-lg px-1 py-1 text-dark dark:text-night-text outline-none border border-gray-200 dark:border-night-border focus:border-primary focus:ring-2 focus:ring-primary/20 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none transition-all"
                                         />
                                         <motion.button
                                             whileTap={{ scale: 0.9 }}
                                             onClick={() => handleNumericalInput(currentNumValue + 0.5)}
-                                            className="w-6 h-6 rounded-lg bg-gray-100 flex items-center justify-center text-dark-lighter hover:text-dark hover:bg-gray-200 transition-colors"
+                                            className="w-6 h-6 rounded-lg bg-gray-100 dark:bg-night-bg flex items-center justify-center text-dark-lighter dark:text-night-text-muted hover:text-dark dark:hover:text-night-text hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
                                         >
                                             <Plus size={12} />
                                         </motion.button>
@@ -243,11 +243,11 @@ export default function HabitCard({ habit, date, onEdit }: HabitCardProps) {
 
                                 {habit.goalValue && (
                                     <div className="flex-1 ml-2">
-                                        <div className="flex justify-between text-[10px] font-bold text-dark-lighter mb-1">
+                                        <div className="flex justify-between text-[10px] font-bold text-dark-lighter dark:text-night-text-muted mb-1 transition-colors">
                                             <span>{totalNumerical} {habit.unit}</span>
                                             <span>Goal: {habit.goalValue}</span>
                                         </div>
-                                        <div className="progress-bar flex-1 h-1.5 bg-gray-100">
+                                        <div className="progress-bar flex-1 h-1.5 bg-gray-100 dark:bg-night-bg transition-colors">
                                             <div
                                                 className="progress-fill"
                                                 style={{ width: `${goalPercent}%`, backgroundColor: habit.color }}
@@ -261,10 +261,10 @@ export default function HabitCard({ habit, date, onEdit }: HabitCardProps) {
                         {/* Challenge countdown */}
                         {habit.type === 'challenge' && challengeProgress && (
                             <div className="flex items-center gap-2 mt-1">
-                                <span className="challenge-timer text-[10px] px-2 py-0.5">
+                                <span className="challenge-timer text-[10px] px-2 py-0.5 border border-purple/20 dark:border-purple/30 text-purple dark:text-purple-300 bg-purple/5 dark:bg-purple/10 rounded-full transition-colors">
                                     <Timer size={10} /> {challengeProgress.daysRemaining}d left
                                 </span>
-                                <div className="w-16 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                <div className="w-16 h-1.5 bg-gray-100 dark:bg-night-bg rounded-full overflow-hidden transition-colors">
                                     <div
                                         className="h-full bg-purple rounded-full transition-all"
                                         style={{ width: `${(challengeProgress.daysCompleted / challengeProgress.daysTotal) * 100}%` }}
@@ -279,7 +279,7 @@ export default function HabitCard({ habit, date, onEdit }: HabitCardProps) {
                 <div className="relative" onClick={(e) => e.stopPropagation()}>
                     <button
                         onClick={() => setShowMenu(!showMenu)}
-                        className="btn-icon opacity-0 group-hover:opacity-100 transition-opacity bg-transparent hover:bg-gray-100 text-dark-lighter"
+                        className="btn-icon opacity-0 group-hover:opacity-100 transition-opacity bg-transparent hover:bg-gray-100 dark:hover:bg-white/10 text-dark-lighter dark:text-night-text-muted transition-colors p-1 rounded"
                     >
                         <MoreVertical size={18} />
                     </button>
@@ -287,29 +287,29 @@ export default function HabitCard({ habit, date, onEdit }: HabitCardProps) {
                     {showMenu && (
                         <>
                             <div className="fixed inset-0 z-10" onClick={() => setShowMenu(false)} />
-                            <div ref={menuRef} className="absolute right-0 top-8 bg-white border border-gray-100 rounded-xl shadow-xl z-20 py-2 min-w-[160px] animate-fade-in-up">
+                            <div ref={menuRef} className="absolute right-0 top-8 bg-white dark:bg-night-surface border border-gray-100 dark:border-night-border rounded-xl shadow-xl z-20 py-2 min-w-[160px] animate-fade-in-up transition-colors">
                                 <button
                                     onClick={() => { onEdit(habit); setShowMenu(false); }}
-                                    className="flex items-center gap-3 w-full px-4 py-2 text-sm hover:bg-gray-50 text-left font-medium text-dark"
+                                    className="flex items-center gap-3 w-full px-4 py-2 text-sm hover:bg-gray-50 dark:hover:bg-white/5 text-left font-medium text-dark dark:text-night-text transition-colors"
                                 >
-                                    <Edit3 size={16} className="text-dark-lighter" /> Edit
+                                    <Edit3 size={16} className="text-dark-lighter dark:text-night-text-muted" /> Edit
                                 </button>
                                 <button
                                     onClick={() => { duplicateHabit(habit.id); setShowMenu(false); }}
-                                    className="flex items-center gap-3 w-full px-4 py-2 text-sm hover:bg-gray-50 text-left font-medium text-dark"
+                                    className="flex items-center gap-3 w-full px-4 py-2 text-sm hover:bg-gray-50 dark:hover:bg-white/5 text-left font-medium text-dark dark:text-night-text transition-colors"
                                 >
-                                    <Copy size={16} className="text-dark-lighter" /> Duplicate
+                                    <Copy size={16} className="text-dark-lighter dark:text-night-text-muted" /> Duplicate
                                 </button>
                                 <button
                                     onClick={() => { archiveHabit(habit.id); setShowMenu(false); }}
-                                    className="flex items-center gap-3 w-full px-4 py-2 text-sm hover:bg-gray-50 text-left font-medium text-dark"
+                                    className="flex items-center gap-3 w-full px-4 py-2 text-sm hover:bg-gray-50 dark:hover:bg-white/5 text-left font-medium text-dark dark:text-night-text transition-colors"
                                 >
-                                    <Archive size={16} className="text-dark-lighter" /> {habit.archived ? 'Unarchive' : 'Archive'}
+                                    <Archive size={16} className="text-dark-lighter dark:text-night-text-muted" /> {habit.archived ? 'Unarchive' : 'Archive'}
                                 </button>
-                                <hr className="my-2 border-gray-100" />
+                                <hr className="my-2 border-gray-100 dark:border-night-border transition-colors" />
                                 <button
                                     onClick={() => { deleteHabit(habit.id); setShowMenu(false); }}
-                                    className="flex items-center gap-3 w-full px-4 py-2 text-sm hover:bg-red-50 text-red-500 font-medium text-left"
+                                    className="flex items-center gap-3 w-full px-4 py-2 text-sm hover:bg-red-50 dark:hover:bg-red-950/30 text-red-500 font-medium text-left transition-colors"
                                 >
                                     <Trash2 size={16} /> Delete
                                 </button>

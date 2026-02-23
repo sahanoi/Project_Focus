@@ -105,26 +105,26 @@ export default function WeeklyDigest() {
     }
 
     const TrendIcon = digest.trend > 0 ? TrendingUp : digest.trend < 0 ? TrendingDown : Minus;
-    const trendColor = digest.trend > 0 ? 'text-emerald-600' : digest.trend < 0 ? 'text-red-500' : 'text-dark-lighter';
-    const trendBg = digest.trend > 0 ? 'bg-emerald-50 border-emerald-200' : digest.trend < 0 ? 'bg-red-50 border-red-200' : 'bg-surface-dark border-[#E6DDF2]';
+    const trendColor = digest.trend > 0 ? 'text-emerald-600 dark:text-emerald-400' : digest.trend < 0 ? 'text-red-500 dark:text-red-400' : 'text-dark-lighter dark:text-night-text-muted';
+    const trendBg = digest.trend > 0 ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-800/50' : digest.trend < 0 ? 'bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800/50' : 'bg-surface-dark dark:bg-night-surface border-[#E6DDF2] dark:border-night-border';
 
     return (
         <div className="space-y-3">
             {/* Overall Rate Card */}
-            <div className={`rounded-xl p-4 border ${trendBg}`}>
+            <div className={`rounded-xl p-4 border transition-colors ${trendBg}`}>
                 <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs text-dark-lighter font-medium">This Week</span>
-                    <div className={`flex items-center gap-1 text-xs font-bold ${trendColor}`}>
+                    <span className="text-xs text-dark-lighter dark:text-night-text-muted font-medium transition-colors">This Week</span>
+                    <div className={`flex items-center gap-1 text-xs font-bold transition-colors ${trendColor}`}>
                         <TrendIcon size={12} />
                         {digest.trend > 0 ? '+' : ''}{digest.trend}%
                     </div>
                 </div>
                 <div className="flex items-baseline gap-2">
-                    <span className="text-3xl font-black text-dark">{digest.thisWeekAvg}%</span>
-                    <span className="text-xs text-dark-lighter">completion</span>
+                    <span className="text-3xl font-black text-dark dark:text-night-text transition-colors">{digest.thisWeekAvg}%</span>
+                    <span className="text-xs text-dark-lighter dark:text-night-text-muted transition-colors">completion</span>
                 </div>
                 {/* Mini bar */}
-                <div className="h-1.5 bg-[#E6DDF2] rounded-full mt-3 overflow-hidden">
+                <div className="h-1.5 bg-[#E6DDF2] dark:bg-night-bg rounded-full mt-3 overflow-hidden transition-colors">
                     <div
                         className="h-full rounded-full transition-all duration-1000"
                         style={{
@@ -141,44 +141,44 @@ export default function WeeklyDigest() {
 
             {/* Quick Stats Grid */}
             <div className="grid grid-cols-2 gap-2">
-                <div className="bg-white rounded-lg p-3 border border-[#E6DDF2] shadow-sm">
+                <div className="bg-white dark:bg-night-bg rounded-lg p-3 border border-[#E6DDF2] dark:border-night-border shadow-sm transition-colors">
                     <div className="flex items-center gap-1.5 mb-1">
                         <Zap size={12} className="text-warning" />
-                        <span className="text-[10px] text-dark-lighter uppercase">Completions</span>
+                        <span className="text-[10px] text-dark-lighter dark:text-night-text-muted uppercase transition-colors">Completions</span>
                     </div>
-                    <span className="text-lg font-bold text-dark">{digest.totalCompletions}</span>
+                    <span className="text-lg font-bold text-dark dark:text-night-text transition-colors">{digest.totalCompletions}</span>
                 </div>
                 {digest.totalVolume > 0 && (
-                    <div className="bg-white rounded-lg p-3 border border-[#E6DDF2] shadow-sm">
+                    <div className="bg-white dark:bg-night-bg rounded-lg p-3 border border-[#E6DDF2] dark:border-night-border shadow-sm transition-colors">
                         <div className="flex items-center gap-1.5 mb-1">
-                            <BarChart3 size={12} className="text-purple" />
-                            <span className="text-[10px] text-dark-lighter uppercase">Volume</span>
+                            <BarChart3 size={12} className="text-purple dark:text-primary-light transition-colors" />
+                            <span className="text-[10px] text-dark-lighter dark:text-night-text-muted uppercase transition-colors">Volume</span>
                         </div>
-                        <span className="text-lg font-bold text-dark">{Math.round(digest.totalVolume * 10) / 10}</span>
+                        <span className="text-lg font-bold text-dark dark:text-night-text transition-colors">{Math.round(digest.totalVolume * 10) / 10}</span>
                     </div>
                 )}
-                <div className="bg-white rounded-lg p-3 border border-[#E6DDF2] shadow-sm">
+                <div className="bg-white dark:bg-night-bg rounded-lg p-3 border border-[#E6DDF2] dark:border-night-border shadow-sm transition-colors">
                     <div className="flex items-center gap-1.5 mb-1">
-                        <Calendar size={12} className="text-primary" />
-                        <span className="text-[10px] text-dark-lighter uppercase">Best Day</span>
+                        <Calendar size={12} className="text-primary dark:text-primary-light transition-colors" />
+                        <span className="text-[10px] text-dark-lighter dark:text-night-text-muted uppercase transition-colors">Best Day</span>
                     </div>
-                    <span className="text-lg font-bold text-dark">{digest.bestDay?.[0] || '-'}</span>
+                    <span className="text-lg font-bold text-dark dark:text-night-text transition-colors">{digest.bestDay?.[0] || '-'}</span>
                 </div>
             </div>
 
             {/* Top & Bottom Habit */}
             {digest.bestHabit && (
                 <div className="space-y-1.5">
-                    <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-emerald-50 border border-emerald-200">
+                    <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/50 transition-colors">
                         <span className="text-sm">{digest.bestHabit.icon}</span>
-                        <span className="text-xs text-dark-light flex-1 truncate">{digest.bestHabit.name}</span>
-                        <span className="text-xs font-bold text-emerald-600">{digest.bestHabit.rate}%</span>
+                        <span className="text-xs text-dark-light dark:text-night-text-muted flex-1 truncate transition-colors">{digest.bestHabit.name}</span>
+                        <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 transition-colors">{digest.bestHabit.rate}%</span>
                     </div>
                     {digest.worstHabit && digest.worstHabit.name !== digest.bestHabit.name && (
-                        <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-red-50 border border-red-200">
+                        <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/50 transition-colors">
                             <span className="text-sm">{digest.worstHabit.icon}</span>
-                            <span className="text-xs text-dark-light flex-1 truncate">{digest.worstHabit.name}</span>
-                            <span className="text-xs font-bold text-red-500">{digest.worstHabit.rate}%</span>
+                            <span className="text-xs text-dark-light dark:text-night-text-muted flex-1 truncate transition-colors">{digest.worstHabit.name}</span>
+                            <span className="text-xs font-bold text-red-500 dark:text-red-400 transition-colors">{digest.worstHabit.rate}%</span>
                         </div>
                     )}
                 </div>

@@ -81,24 +81,24 @@ export default function DailyReviewModal({ isOpen, onClose }: DailyReviewModalPr
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-dark/20 backdrop-blur-sm">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-dark/20 dark:bg-black/60 backdrop-blur-sm transition-colors">
             <motion.div
                 initial={{ opacity: 0, scale: 0.95, y: 10 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                className="w-full max-w-lg bg-white rounded-3xl border border-[#E6DDF2] shadow-2xl overflow-hidden"
+                className="w-full max-w-lg bg-white dark:bg-night-surface rounded-3xl border border-[#E6DDF2] dark:border-night-border shadow-2xl overflow-hidden transition-colors"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header */}
-                <div className="relative bg-gradient-to-r from-primary/5 to-primary-light/5 p-6 border-b border-[#E6DDF2]">
-                    <button onClick={onClose} className="absolute top-4 right-4 p-2 rounded-xl hover:bg-white/50 text-dark-lighter transition-colors">
+                <div className="relative bg-gradient-to-r from-primary/5 to-primary-light/5 dark:from-primary/10 dark:to-primary-light/10 p-6 border-b border-[#E6DDF2] dark:border-night-border transition-colors">
+                    <button onClick={onClose} className="absolute top-4 right-4 p-2 rounded-xl hover:bg-white/50 dark:hover:bg-white/10 text-dark-lighter dark:text-night-text-muted transition-colors">
                         <X size={20} />
                     </button>
                     <div className="flex items-center gap-3">
-                        <Moon size={24} className="text-primary" />
+                        <Moon size={24} className="text-primary dark:text-primary-light transition-colors" />
                         <div>
-                            <h2 className="text-lg font-black text-dark">Daily Review</h2>
-                            <p className="text-sm text-dark-lighter">{dateLabel}</p>
+                            <h2 className="text-lg font-black text-dark dark:text-night-text transition-colors">Daily Review</h2>
+                            <p className="text-sm text-dark-lighter dark:text-night-text-muted transition-colors">{dateLabel}</p>
                         </div>
                     </div>
                 </div>
@@ -106,11 +106,11 @@ export default function DailyReviewModal({ isOpen, onClose }: DailyReviewModalPr
                 <div className="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
                     {/* Completion Summary */}
                     <div className="text-center">
-                        <div className="text-5xl font-black text-dark mb-1">{completionRate}%</div>
-                        <p className="text-sm text-dark-lighter">
+                        <div className="text-5xl font-black text-dark dark:text-night-text mb-1 transition-colors">{completionRate}%</div>
+                        <p className="text-sm text-dark-lighter dark:text-night-text-muted transition-colors">
                             {completedHabits.length} of {activeHabits.length} habits completed
                         </p>
-                        <div className="h-2 bg-[#E6DDF2] rounded-full mt-3 overflow-hidden max-w-xs mx-auto">
+                        <div className="h-2 bg-[#E6DDF2] dark:bg-night-border rounded-full mt-3 overflow-hidden max-w-xs mx-auto transition-colors">
                             <motion.div
                                 initial={{ width: 0 }}
                                 animate={{ width: `${completionRate}%` }}
@@ -123,13 +123,13 @@ export default function DailyReviewModal({ isOpen, onClose }: DailyReviewModalPr
                     {/* Completed */}
                     {completedHabits.length > 0 && (
                         <div>
-                            <p className="text-xs font-bold text-success uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                            <p className="text-xs font-bold text-success dark:text-emerald-400 uppercase tracking-wider mb-2 flex items-center gap-1.5 transition-colors">
                                 <CheckCircle2 size={14} />
                                 Completed ({completedHabits.length})
                             </p>
                             <div className="flex flex-wrap gap-2">
                                 {completedHabits.map(h => (
-                                    <span key={h.id} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-success/5 border border-success/15 text-sm font-medium text-dark">
+                                    <span key={h.id} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-success/5 dark:bg-emerald-950/30 border border-success/15 dark:border-emerald-800/50 text-sm font-medium text-dark dark:text-night-text transition-colors">
                                         <span>{h.icon}</span> {h.name}
                                     </span>
                                 ))}
@@ -140,7 +140,7 @@ export default function DailyReviewModal({ isOpen, onClose }: DailyReviewModalPr
                     {/* Missed — with freeze option */}
                     {missedHabits.length > 0 && (
                         <div>
-                            <p className="text-xs font-bold text-danger uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                            <p className="text-xs font-bold text-danger dark:text-red-400 uppercase tracking-wider mb-2 flex items-center gap-1.5 transition-colors">
                                 <XCircle size={14} />
                                 Missed ({missedHabits.length})
                             </p>
@@ -148,14 +148,14 @@ export default function DailyReviewModal({ isOpen, onClose }: DailyReviewModalPr
                                 {missedHabits.map(h => {
                                     const remaining = getFreezesRemaining(h.id);
                                     return (
-                                        <div key={h.id} className="flex items-center justify-between px-3 py-2 rounded-xl bg-danger/5 border border-danger/10">
-                                            <span className="flex items-center gap-2 text-sm font-medium text-dark">
+                                        <div key={h.id} className="flex items-center justify-between px-3 py-2 rounded-xl bg-danger/5 dark:bg-red-950/30 border border-danger/10 dark:border-red-900/50 transition-colors">
+                                            <span className="flex items-center gap-2 text-sm font-medium text-dark dark:text-night-text transition-colors">
                                                 <span>{h.icon}</span> {h.name}
                                             </span>
                                             {remaining > 0 && (
                                                 <button
                                                     onClick={() => handleFreeze(h.id)}
-                                                    className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-50 text-blue-600 text-xs font-bold hover:bg-blue-100 transition-colors"
+                                                    className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-bold hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors"
                                                 >
                                                     <Snowflake size={12} />
                                                     Freeze ({remaining})
@@ -171,13 +171,13 @@ export default function DailyReviewModal({ isOpen, onClose }: DailyReviewModalPr
                     {/* Frozen */}
                     {frozenHabits.length > 0 && (
                         <div>
-                            <p className="text-xs font-bold text-blue-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                            <p className="text-xs font-bold text-blue-500 uppercase tracking-wider mb-2 flex items-center gap-1.5 transition-colors">
                                 <Snowflake size={14} />
                                 Frozen ({frozenHabits.length})
                             </p>
                             <div className="flex flex-wrap gap-2">
                                 {frozenHabits.map(h => (
-                                    <span key={h.id} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-sm font-medium text-blue-700">
+                                    <span key={h.id} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-50 dark:bg-blue-900/30 border border-blue-100 dark:border-blue-800/50 text-sm font-medium text-blue-700 dark:text-blue-400 transition-colors">
                                         <Snowflake size={12} /> {h.icon} {h.name}
                                     </span>
                                 ))}
@@ -187,19 +187,19 @@ export default function DailyReviewModal({ isOpen, onClose }: DailyReviewModalPr
 
                     {/* Mood */}
                     <div>
-                        <p className="text-xs font-bold text-dark-lighter uppercase tracking-wider mb-3">How are you feeling?</p>
+                        <p className="text-xs font-bold text-dark-lighter dark:text-night-text-muted uppercase tracking-wider mb-3 transition-colors">How are you feeling?</p>
                         <div className="flex justify-center gap-3">
                             {MOOD_OPTIONS.map(m => (
                                 <button
                                     key={m.value}
                                     onClick={() => setMood(m.value)}
                                     className={`flex flex-col items-center gap-1 p-3 rounded-2xl transition-all duration-200 ${mood === m.value
-                                            ? 'bg-primary/10 border-2 border-primary/30 scale-110 shadow-sm'
-                                            : 'bg-surface border-2 border-transparent hover:bg-primary/5 hover:scale-105'
+                                        ? 'bg-primary/10 dark:bg-primary/20 border-2 border-primary/30 dark:border-primary/50 scale-110 shadow-sm'
+                                        : 'bg-surface dark:bg-night-bg border-2 border-transparent hover:bg-primary/5 dark:hover:bg-primary/10 hover:scale-105'
                                         }`}
                                 >
                                     <span className="text-2xl">{m.emoji}</span>
-                                    <span className="text-[10px] font-bold text-dark-lighter">{m.label}</span>
+                                    <span className="text-[10px] font-bold text-dark-lighter dark:text-night-text-muted transition-colors">{m.label}</span>
                                 </button>
                             ))}
                         </div>
@@ -207,19 +207,19 @@ export default function DailyReviewModal({ isOpen, onClose }: DailyReviewModalPr
 
                     {/* Journal */}
                     <div>
-                        <p className="text-xs font-bold text-dark-lighter uppercase tracking-wider mb-2">Quick reflection</p>
+                        <p className="text-xs font-bold text-dark-lighter dark:text-night-text-muted uppercase tracking-wider mb-2 transition-colors">Quick reflection</p>
                         <textarea
                             value={journal}
                             onChange={(e) => setJournal(e.target.value)}
                             placeholder="What went well? What could be better tomorrow?"
-                            className="w-full px-4 py-3 rounded-xl bg-surface border border-[#E6DDF2] text-dark text-sm placeholder-dark-lighter/40 focus:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/10 resize-none transition-all"
+                            className="w-full px-4 py-3 rounded-xl bg-surface dark:bg-night-bg border border-[#E6DDF2] dark:border-night-border text-dark dark:text-night-text text-sm placeholder-dark-lighter/40 dark:placeholder-night-text-muted/40 focus:border-primary/50 dark:focus:border-primary-light/50 focus:outline-none focus:ring-2 focus:ring-primary/10 dark:focus:ring-primary-light/10 resize-none transition-all"
                             rows={3}
                         />
                     </div>
                 </div>
 
                 {/* Footer */}
-                <div className="p-6 border-t border-[#E6DDF2] bg-surface/50">
+                <div className="p-6 border-t border-[#E6DDF2] dark:border-night-border bg-surface/50 dark:bg-night-bg/50 transition-colors">
                     <motion.button
                         whileHover={{ scale: 1.01 }}
                         whileTap={{ scale: 0.98 }}

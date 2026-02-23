@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-    darkMode: false, // Disabling dark mode for pure Light/Paper cozy theme
+    darkMode: 'class', // Enabled class-based dark mode
     content: [
         "./index.html",
         "./src/**/*.{js,ts,jsx,tsx}",
@@ -29,6 +29,13 @@ export default {
                 'dark-light': '#5D566A',
                 'dark-lighter': '#7C758A',
                 'dark-border': '#E6DDF2', // Lilac tinted border for light mode
+
+                // --- Cozy Dark Mode Specifics ---
+                'night-bg': '#16131D',       // Main dark background (very deep purple/grey)
+                'night-surface': '#201C29',  // Slightly elevated surface
+                'night-border': '#332D42',   // Soft borders in dark mode
+                'night-text': '#F5F2F8',     // Main text in dark mode
+                'night-text-muted': '#A49EB3',// Muted text in dark mode
             },
             fontFamily: {
                 sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],

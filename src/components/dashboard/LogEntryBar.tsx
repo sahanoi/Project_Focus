@@ -47,12 +47,12 @@ export default function LogEntryBar() {
         <div className="flex items-center gap-4 flex-1">
             {/* Search/Log Input */}
             <div className="relative flex-1 max-w-md">
-                <div className="flex items-center bg-white rounded-lg border border-[#E6DDF2] px-3 py-2 focus-within:border-primary/50 transition-colors shadow-sm">
-                    <Search size={16} className="text-dark-lighter mr-2 flex-shrink-0" />
+                <div className="flex items-center bg-white dark:bg-night-surface rounded-lg border border-[#E6DDF2] dark:border-night-border px-3 py-2 focus-within:border-primary/50 dark:focus-within:border-primary-light/50 transition-colors shadow-sm">
+                    <Search size={16} className="text-dark-lighter dark:text-night-text-muted mr-2 flex-shrink-0 transition-colors" />
                     <input
                         type="text"
                         placeholder="Log a habit completion..."
-                        className="bg-transparent text-sm text-dark placeholder-dark-lighter/60 outline-none w-full"
+                        className="bg-transparent text-sm text-dark dark:text-night-text placeholder-dark-lighter/60 dark:placeholder-night-text-muted/60 outline-none w-full transition-colors"
                         value={search}
                         onChange={(e) => {
                             setSearch(e.target.value);
@@ -65,7 +65,7 @@ export default function LogEntryBar() {
 
                 {/* Dropdown */}
                 {showDropdown && filteredHabits.length > 0 && (
-                    <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-[#E6DDF2] rounded-lg shadow-xl z-50 overflow-hidden">
+                    <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-night-surface border border-[#E6DDF2] dark:border-night-border rounded-lg shadow-xl z-50 overflow-hidden transition-colors">
                         {filteredHabits.map(h => {
                             const c = h.completions[selectedDate];
                             const isDone = h.type === 'numerical'
@@ -79,14 +79,14 @@ export default function LogEntryBar() {
                                         e.preventDefault();
                                         handleSelectHabit(h.id);
                                     }}
-                                    className={`w-full flex items-center gap-3 px-3 py-2.5 text-left hover:bg-primary/5 transition-colors ${isDone ? 'opacity-50' : ''
+                                    className={`w-full flex items-center gap-3 px-3 py-2.5 text-left hover:bg-primary/5 dark:hover:bg-primary-light/10 transition-colors ${isDone ? 'opacity-50' : ''
                                         }`}
                                 >
                                     <span className="text-base">{h.icon}</span>
-                                    <span className="text-sm text-dark flex-1 truncate">{h.name}</span>
+                                    <span className="text-sm text-dark dark:text-night-text flex-1 truncate transition-colors">{h.name}</span>
                                     {isDone && <Check size={14} className="text-success" />}
                                     {!isDone && (
-                                        <span className="text-[10px] text-dark-lighter font-medium">
+                                        <span className="text-[10px] text-dark-lighter dark:text-night-text-muted font-medium transition-colors">
                                             {h.type === 'numerical' ? `+${h.dailyTarget || 1} ${h.unit}` : 'Toggle'}
                                         </span>
                                     )}
@@ -104,7 +104,7 @@ export default function LogEntryBar() {
                     <button
                         key={h.id}
                         onClick={() => handleQuickToggle(h.id)}
-                        className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white border border-[#E6DDF2] hover:border-primary/30 hover:bg-primary/5 text-xs text-dark-light transition-all group shadow-sm"
+                        className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white dark:bg-night-surface border border-[#E6DDF2] dark:border-night-border hover:border-primary/30 dark:hover:border-primary-light/30 hover:bg-primary/5 dark:hover:bg-primary/10 text-xs text-dark-light dark:text-night-text transition-all group shadow-sm"
                         title={`Quick complete: ${h.name}`}
                     >
                         <span className="text-sm">{h.icon}</span>

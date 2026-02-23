@@ -22,17 +22,17 @@ export default function StatsRadar({ stats, className = '' }: StatsRadarProps) {
     return (
         <div className={`w-full aspect-square relative ${className}`}>
             {/* Background Container */}
-            <div className="absolute inset-0 bg-white rounded-2xl border border-[#E6DDF2] shadow-lg overflow-hidden">
+            <div className="absolute inset-0 bg-white dark:bg-night-surface rounded-2xl border border-[#E6DDF2] dark:border-night-border shadow-lg overflow-hidden transition-colors">
 
                 {/* Header */}
                 <div className="absolute top-0 left-0 w-full p-4 flex justify-between items-center z-10">
                     <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-primary/10 rounded flex items-center justify-center border border-primary/20">
-                            <span className="text-primary transform -rotate-45 font-bold">⚡</span>
+                        <div className="w-8 h-8 bg-primary/10 dark:bg-primary/20 rounded flex items-center justify-center border border-primary/20 dark:border-primary/30 transition-colors">
+                            <span className="text-primary dark:text-primary-light transform -rotate-45 font-bold transition-colors">⚡</span>
                         </div>
-                        <span className="text-dark font-bold tracking-wider">STATS</span>
+                        <span className="text-dark dark:text-night-text font-bold tracking-wider transition-colors">STATS</span>
                     </div>
-                    <div className="w-6 h-6 rounded-full border border-warning/50 flex items-center justify-center text-warning text-xs font-serif italic">
+                    <div className="w-6 h-6 rounded-full border border-warning/50 dark:border-warning/70 flex items-center justify-center text-warning dark:text-warning-light text-xs font-serif italic transition-colors">
                         i
                     </div>
                 </div>
@@ -41,10 +41,25 @@ export default function StatsRadar({ stats, className = '' }: StatsRadarProps) {
                 <div className="w-full h-full p-4 mt-4">
                     <ResponsiveContainer width="100%" height="100%">
                         <RadarChart cx="50%" cy="50%" outerRadius="70%" data={data}>
-                            <PolarGrid stroke="#E6DDF2" strokeDasharray="4 4" />
+                            <PolarGrid stroke="currentColor" className="text-[#E6DDF2] dark:text-night-border" strokeDasharray="4 4" />
                             <PolarAngleAxis
                                 dataKey="subject"
-                                tick={{ fill: '#4A4453', fontSize: 12, fontWeight: 'bold' }}
+                                tick={({ payload, x, y, textAnchor, stroke, radius }) => {
+                                    return (
+                                        <g className="recharts-layer recharts-polar-angle-axis-tick">
+                                            <text
+                                                radius={radius}
+                                                stroke={stroke}
+                                                x={x}
+                                                y={y}
+                                                className="recharts-text recharts-polar-angle-axis-tick-value fill-[#4A4453] dark:fill-night-text-muted text-[12px] font-bold"
+                                                textAnchor={textAnchor}
+                                            >
+                                                <tspan x={x} dy="0em">{payload.value}</tspan>
+                                            </text>
+                                        </g>
+                                    );
+                                }}
                             />
                             <Radar
                                 name="Stats"
@@ -55,7 +70,7 @@ export default function StatsRadar({ stats, className = '' }: StatsRadarProps) {
                                 fillOpacity={0.3}
                             />
                             <Tooltip
-                                contentStyle={{ backgroundColor: '#FFFBF0', borderColor: '#E6DDF2', color: '#4A4453' }}
+                                contentStyle={{ backgroundColor: 'var(--tw-colors-surface-dark)', borderColor: 'var(--tw-colors-night-border)', color: 'var(--tw-colors-night-text)' }}
                                 itemStyle={{ color: '#9B8BB4' }}
                                 formatter={(val: number, _name: string, props: any) => {
                                     const tooltip = props?.payload?.tooltip || '';
@@ -68,10 +83,10 @@ export default function StatsRadar({ stats, className = '' }: StatsRadarProps) {
 
                 {/* OVR Overlay */}
                 <div className="absolute bottom-4 right-4 text-right">
-                    <div className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-b from-primary to-primary-dark font-mono">
+                    <div className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-b from-primary to-primary-dark dark:from-primary-light dark:to-primary font-mono transition-colors">
                         {attributes.ovr}
                     </div>
-                    <div className="text-xs text-primary font-bold tracking-widest uppercase">OVR</div>
+                    <div className="text-xs text-primary dark:text-primary-light font-bold tracking-widest uppercase transition-colors">OVR</div>
                 </div>
             </div>
         </div>
