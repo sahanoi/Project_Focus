@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
 import { supabase } from '../../lib/supabase';
-import { Loader2, Mail, Lock, Sparkles, ArrowRight } from 'lucide-react';
+import { Loader2, Mail, Lock, Sparkles, ArrowRight, KeyRound } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function Auth() {
+    const { isRecovery } = useAuth();
     const [loading, setLoading] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
     const [isSignUp, setIsSignUp] = useState(false);
+    const [isForgotPassword, setIsForgotPassword] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [message, setMessage] = useState<string | null>(null);
 
@@ -44,6 +48,42 @@ export default function Auth() {
         }
     };
 
+    const handleResetPassword = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setLoading(true);
+        setError(null);
+        setMessage(null);
+        try {
+            const { error } = await supabase.auth.resetPasswordForEmail(email, {
+                redirectTo: window.location.origin,
+            });
+            if (error) throw error;
+            setMessage('Password reset link sent! Check your email.');
+        } catch (err: any) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleUpdatePassword = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setLoading(true);
+        setError(null);
+        setMessage(null);
+        try {
+            const { error } = await supabase.auth.updateUser({ password: newPassword });
+            if (error) throw error;
+            setMessage('Password updated successfully!');
+            // Clears the recovery hash from the URL
+            window.history.replaceState(null, '', window.location.pathname);
+        } catch (err: any) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-surface p-4 relative overflow-hidden">
             {/* Subtle background decoration */}
@@ -72,7 +112,7 @@ export default function Auth() {
                         Focus FTP
                     </h1>
                     <p className="text-dark-lighter mt-1 text-sm">
-                        {isSignUp ? 'Create your account to start the journey' : 'Welcome back, Player'}
+                        {isRecovery ? 'Create a new password' : isForgotPassword ? 'Reset your password' : isSignUp ? 'Create your account to start the journey' : 'Welcome back, Player'}
                     </p>
                 </div>
 
@@ -104,76 +144,176 @@ export default function Auth() {
                         )}
                     </AnimatePresence>
 
-                    <form onSubmit={handleAuth} className="space-y-5">
-                        <div>
-                            <label className="block text-xs font-semibold text-dark-lighter uppercase tracking-wider mb-2">
-                                Email
-                            </label>
-                            <div className="relative group">
-                                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-dark-lighter/60 group-focus-within:text-primary transition-colors" />
-                                <input
-                                    type="email"
-                                    required
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    className="w-full bg-surface border border-[#E6DDF2] rounded-xl py-3 pl-11 pr-4 text-dark placeholder-dark-lighter/40 focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/10 transition-all text-sm"
-                                    placeholder="you@example.com"
-                                />
+                    {isRecovery ? (
+                        <form onSubmit={handleUpdatePassword} className="space-y-5">
+                            <div>
+                                <label className="block text-xs font-semibold text-dark-lighter uppercase tracking-wider mb-2">
+                                    New Password
+                                </label>
+                                <div className="relative group">
+                                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-dark-lighter/60 group-focus-within:text-primary transition-colors" />
+                                    <input
+                                        type="password"
+                                        required
+                                        value={newPassword}
+                                        onChange={(e) => setNewPassword(e.target.value)}
+                                        className="w-full bg-surface border border-[#E6DDF2] rounded-xl py-3 pl-11 pr-4 text-dark placeholder-dark-lighter/40 focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/10 transition-all text-sm"
+                                        placeholder="••••••••"
+                                        minLength={6}
+                                    />
+                                </div>
                             </div>
-                        </div>
-
-                        <div>
-                            <label className="block text-xs font-semibold text-dark-lighter uppercase tracking-wider mb-2">
-                                Password
-                            </label>
-                            <div className="relative group">
-                                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-dark-lighter/60 group-focus-within:text-primary transition-colors" />
-                                <input
-                                    type="password"
-                                    required
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    className="w-full bg-surface border border-[#E6DDF2] rounded-xl py-3 pl-11 pr-4 text-dark placeholder-dark-lighter/40 focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/10 transition-all text-sm"
-                                    placeholder="••••••••"
-                                    minLength={6}
-                                />
-                            </div>
-                        </div>
-
-                        <motion.button
-                            type="submit"
-                            disabled={loading}
-                            whileHover={{ scale: loading ? 1 : 1.01 }}
-                            whileTap={{ scale: loading ? 1 : 0.98 }}
-                            className="w-full bg-gradient-to-r from-primary to-primary-light hover:from-primary-dark hover:to-primary text-white font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 shadow-md shadow-primary/20 disabled:opacity-60 disabled:cursor-not-allowed"
-                        >
-                            {loading ? (
-                                <Loader2 className="w-5 h-5 animate-spin" />
-                            ) : (
-                                <>
-                                    <Sparkles size={16} />
-                                    {isSignUp ? 'Create Account' : 'Sign In'}
-                                    <ArrowRight size={16} />
-                                </>
-                            )}
-                        </motion.button>
-                    </form>
-
-                    <div className="mt-6 text-center">
-                        <p className="text-dark-lighter text-sm">
-                            {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
-                            <button
-                                onClick={() => {
-                                    setIsSignUp(!isSignUp);
-                                    setError(null);
-                                    setMessage(null);
-                                }}
-                                className="text-primary hover:text-primary-dark font-semibold hover:underline transition-colors"
+                            <motion.button
+                                type="submit"
+                                disabled={loading}
+                                whileHover={{ scale: loading ? 1 : 1.01 }}
+                                whileTap={{ scale: loading ? 1 : 0.98 }}
+                                className="w-full bg-gradient-to-r from-primary to-primary-light hover:from-primary-dark hover:to-primary text-white font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 shadow-md shadow-primary/20 disabled:opacity-60 disabled:cursor-not-allowed"
                             >
-                                {isSignUp ? 'Sign In' : 'Sign Up'}
-                            </button>
-                        </p>
-                    </div>
+                                {loading ? (
+                                    <Loader2 className="w-5 h-5 animate-spin" />
+                                ) : (
+                                    <>
+                                        <KeyRound size={16} /> Update Password
+                                    </>
+                                )}
+                            </motion.button>
+                        </form>
+                    ) : isForgotPassword ? (
+                        <form onSubmit={handleResetPassword} className="space-y-5">
+                            <div>
+                                <label className="block text-xs font-semibold text-dark-lighter uppercase tracking-wider mb-2">
+                                    Email
+                                </label>
+                                <div className="relative group">
+                                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-dark-lighter/60 group-focus-within:text-primary transition-colors" />
+                                    <input
+                                        type="email"
+                                        required
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        className="w-full bg-surface border border-[#E6DDF2] rounded-xl py-3 pl-11 pr-4 text-dark placeholder-dark-lighter/40 focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/10 transition-all text-sm"
+                                        placeholder="you@example.com"
+                                    />
+                                </div>
+                            </div>
+                            <motion.button
+                                type="submit"
+                                disabled={loading}
+                                whileHover={{ scale: loading ? 1 : 1.01 }}
+                                whileTap={{ scale: loading ? 1 : 0.98 }}
+                                className="w-full bg-gradient-to-r from-primary to-primary-light hover:from-primary-dark hover:to-primary text-white font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 shadow-md shadow-primary/20 disabled:opacity-60 disabled:cursor-not-allowed"
+                            >
+                                {loading ? (
+                                    <Loader2 className="w-5 h-5 animate-spin" />
+                                ) : (
+                                    <>
+                                        <Mail size={16} /> Send Reset Link
+                                    </>
+                                )}
+                            </motion.button>
+                            <div className="mt-6 text-center">
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setIsForgotPassword(false);
+                                        setError(null);
+                                        setMessage(null);
+                                    }}
+                                    className="text-primary hover:text-primary-dark font-semibold hover:underline transition-colors text-sm"
+                                >
+                                    Back to Sign In
+                                </button>
+                            </div>
+                        </form>
+                    ) : (
+                        <form onSubmit={handleAuth} className="space-y-5">
+                            <div>
+                                <label className="block text-xs font-semibold text-dark-lighter uppercase tracking-wider mb-2">
+                                    Email
+                                </label>
+                                <div className="relative group">
+                                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-dark-lighter/60 group-focus-within:text-primary transition-colors" />
+                                    <input
+                                        type="email"
+                                        required
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        className="w-full bg-surface border border-[#E6DDF2] rounded-xl py-3 pl-11 pr-4 text-dark placeholder-dark-lighter/40 focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/10 transition-all text-sm"
+                                        placeholder="you@example.com"
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-semibold text-dark-lighter uppercase tracking-wider mb-2">
+                                    Password
+                                </label>
+                                <div className="relative group">
+                                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-dark-lighter/60 group-focus-within:text-primary transition-colors" />
+                                    <input
+                                        type="password"
+                                        required
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        className="w-full bg-surface border border-[#E6DDF2] rounded-xl py-3 pl-11 pr-4 text-dark placeholder-dark-lighter/40 focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/10 transition-all text-sm"
+                                        placeholder="••••••••"
+                                        minLength={6}
+                                    />
+                                </div>
+                                {!isSignUp && (
+                                    <div className="text-right mt-2">
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setIsForgotPassword(true);
+                                                setError(null);
+                                                setMessage(null);
+                                            }}
+                                            className="text-xs font-semibold text-primary hover:text-primary-dark transition-colors"
+                                        >
+                                            Forgot password?
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+
+                            <motion.button
+                                type="submit"
+                                disabled={loading}
+                                whileHover={{ scale: loading ? 1 : 1.01 }}
+                                whileTap={{ scale: loading ? 1 : 0.98 }}
+                                className="w-full bg-gradient-to-r from-primary to-primary-light hover:from-primary-dark hover:to-primary text-white font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 shadow-md shadow-primary/20 disabled:opacity-60 disabled:cursor-not-allowed"
+                            >
+                                {loading ? (
+                                    <Loader2 className="w-5 h-5 animate-spin" />
+                                ) : (
+                                    <>
+                                        <Sparkles size={16} />
+                                        {isSignUp ? 'Create Account' : 'Sign In'}
+                                        <ArrowRight size={16} />
+                                    </>
+                                )}
+                            </motion.button>
+
+                            <div className="mt-6 text-center">
+                                <p className="text-dark-lighter text-sm">
+                                    {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setIsSignUp(!isSignUp);
+                                            setError(null);
+                                            setMessage(null);
+                                        }}
+                                        className="text-primary hover:text-primary-dark font-semibold hover:underline transition-colors"
+                                    >
+                                        {isSignUp ? 'Sign In' : 'Sign Up'}
+                                    </button>
+                                </p>
+                            </div>
+                        </form>
+                    )}
                 </div>
 
                 {/* Footer note */}
