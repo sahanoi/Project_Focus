@@ -6,6 +6,7 @@ interface AuthContextType {
     session: Session | null;
     user: User | null;
     loading: boolean;
+    isRecovery: boolean;
     signOut: () => Promise<void>;
 }
 
@@ -15,6 +16,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [session, setSession] = useState<Session | null>(null);
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
+    const [isRecovery, setIsRecovery] = useState(false);
 
     useEffect(() => {
         // 1. Get initial session
@@ -24,8 +26,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             setLoading(false);
         });
 
-        // 2. Listen for changes (login, logout, refresh)
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+        // 2. Listen for changes (login, logout, recovery)
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+            if (event === 'PASSWORD_RECOVERY') {
+                setIsRecovery(true);
+            } else if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
+                setIsRecovery(false);
+            }
             setSession(session);
             setUser(session?.user ?? null);
             setLoading(false);
@@ -42,6 +49,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         session,
         user,
         loading,
+        isRecovery,
         signOut,
     };
 
