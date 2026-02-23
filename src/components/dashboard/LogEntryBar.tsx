@@ -104,7 +104,7 @@ export default function LogEntryBar() {
                     <button
                         key={h.id}
                         onClick={() => handleQuickToggle(h.id)}
-                        className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white dark:bg-night-surface border border-[#E6DDF2] dark:border-night-border hover:border-primary/30 dark:hover:border-primary-light/30 hover:bg-primary/5 dark:hover:bg-primary/10 text-xs text-dark-light dark:text-night-text transition-all group shadow-sm"
+                        className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white dark:bg-night-surface border border-[#E6DDF2] dark:border-night-border hover:border-primary/30 dark:hover:border-primary-light/30 hover:bg-primary/5 dark:hover:bg-primary/10 hover:-translate-y-0.5 text-xs text-dark-light dark:text-night-text transition-all group shadow-sm"
                         title={`Quick complete: ${h.name}`}
                     >
                         <span className="text-sm">{h.icon}</span>
