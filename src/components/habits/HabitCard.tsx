@@ -1,10 +1,11 @@
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useMemo, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useHabitStore } from '../../store/habitStore';
 import { Habit } from '../../types';
 import { calculateCurrentStreak, getChallengeProgress, getTotalNumericalValue } from '../../utils/statsUtils';
 import { calculateHabitLevel, getLevelColor } from '../../utils/habitLevelUtils';
 import { getDateRange } from '../../utils/dateUtils';
+import XPToast from '../ui/XPToast';
 import {
     Check, Flame, Timer, Target, MoreVertical,
     Trash2, Copy, Archive, Edit3, Minus, Plus,
@@ -87,7 +88,15 @@ function getWeeklyTotal(habit: Habit): number {
 export default function HabitCard({ habit, date, onEdit }: HabitCardProps) {
     const { toggleCompletion, setNumericalValue, deleteHabit, archiveHabit, duplicateHabit, setSelectedHabitId } = useHabitStore();
     const [showMenu, setShowMenu] = useState(false);
+    const [showXPToast, setShowXPToast] = useState(false);
+    const xpTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const menuRef = useRef<HTMLDivElement>(null);
+
+    const triggerXPToast = useCallback(() => {
+        if (xpTimerRef.current) clearTimeout(xpTimerRef.current);
+        setShowXPToast(true);
+        xpTimerRef.current = setTimeout(() => setShowXPToast(false), 1800);
+    }, []);
 
     const completion = habit.completions[date];
     const isCompleted = completion?.completed === true;
@@ -121,20 +130,24 @@ export default function HabitCard({ habit, date, onEdit }: HabitCardProps) {
 
     const handleCheckToggle = () => {
         if (habit.type !== 'numerical') {
+            const wasCompleted = isCompleted;
             toggleCompletion(habit.id, date);
+            if (!wasCompleted) triggerXPToast();
         }
     };
 
     const handleNumericalInput = (val: number) => {
         const newVal = Math.max(0, Math.round(val * 100) / 100);
+        const wasZero = currentNumValue === 0;
         setNumericalValue(habit.id, date, newVal);
+        if (wasZero && newVal > 0) triggerXPToast();
     };
 
     const currentNumValue = completion?.value ?? 0;
 
     return (
         <div
-            className={`rounded-2xl border border-[#E6DDF2] dark:border-night-border bg-white dark:bg-night-surface p-4 relative group transition-all duration-300 hover:shadow-md cursor-pointer hover:-translate-y-0.5 ${isCompleted ? 'border-l-4' : 'border-l-4 border-l-gray-200 dark:border-l-night-text-muted/20'
+            className={`rounded-2xl border border-[#D4C8E8] dark:border-night-border bg-white dark:bg-night-surface p-4 relative group transition-all duration-300 hover:shadow-md cursor-pointer hover:-translate-y-0.5 ${isCompleted ? 'border-l-4' : 'border-l-4 border-l-gray-200 dark:border-l-night-text-muted/20'
                 }`}
             style={isCompleted ? { borderLeftColor: habit.color } : undefined}
             onClick={() => setSelectedHabitId(habit.id)}
@@ -318,6 +331,9 @@ export default function HabitCard({ habit, date, onEdit }: HabitCardProps) {
                     )}
                 </div>
             </div>
+
+            {/* XP Toast */}
+            <XPToast visible={showXPToast} xp={50} />
         </div>
     );
 }

@@ -92,7 +92,7 @@ export default function PublicProfileModal({ user, onClose }: PublicProfileModal
 
                             {/* Left Col: RPG Card */}
                             <div className="space-y-6">
-                                <div className="bg-white dark:bg-night-bg rounded-2xl p-6 border border-[#E6DDF2] dark:border-night-border shadow-sm relative overflow-hidden group transition-colors">
+                                <div className="bg-white dark:bg-night-bg rounded-2xl p-6 border border-[#D4C8E8] dark:border-night-border shadow-sm relative overflow-hidden group transition-colors">
                                     {/* Glassmorphism gradient effect inside card */}
                                     <div className="absolute inset-0 bg-gradient-to-br from-primary/5 dark:from-primary/10 to-transparent pointer-events-none transition-colors" />
 
@@ -107,7 +107,7 @@ export default function PublicProfileModal({ user, onClose }: PublicProfileModal
                                     <div className="h-[220px] -mt-4 relative z-10">
                                         <ResponsiveContainer width="100%" height="100%">
                                             <RadarChart cx="50%" cy="50%" outerRadius="70%" data={radarData}>
-                                                <PolarGrid stroke="var(--radar-grid-color, #E6DDF2)" />
+                                                <PolarGrid stroke="var(--radar-grid-color, #D4C8E8)" />
                                                 <PolarAngleAxis
                                                     dataKey="subject"
                                                     tick={{ fill: 'var(--radar-text-color, #4a4a4a)', fontSize: 10, fontWeight: 800 }}
@@ -174,14 +174,14 @@ export default function PublicProfileModal({ user, onClose }: PublicProfileModal
                                 </div>
 
                                 {/* Weekly Stats summary */}
-                                <div className="bg-surface-dark dark:bg-night-bg border border-[#E6DDF2] dark:border-night-border rounded-2xl p-5 mt-auto transition-colors">
+                                <div className="bg-surface-dark dark:bg-night-bg border border-[#D4C8E8] dark:border-night-border rounded-2xl p-5 mt-auto transition-colors">
                                     <h4 className="font-bold text-dark dark:text-night-text text-xs uppercase tracking-wider mb-4 transition-colors">Current Week</h4>
                                     <div className="flex items-center justify-between">
                                         <div>
                                             <p className="text-[10px] text-dark-lighter dark:text-night-text-muted font-bold uppercase tracking-wider mb-0.5 transition-colors">XP Earned</p>
                                             <p className="text-2xl font-black text-primary dark:text-primary-light transition-colors">{user.xpThisWeek.toLocaleString()}</p>
                                         </div>
-                                        <div className="w-[1px] h-8 bg-[#E6DDF2] dark:bg-night-border transition-colors" />
+                                        <div className="w-[1px] h-8 bg-[#D4C8E8] dark:bg-night-border transition-colors" />
                                         <div className="text-right">
                                             <p className="text-[10px] text-dark-lighter dark:text-night-text-muted font-bold uppercase tracking-wider mb-0.5 transition-colors">Global Rank</p>
                                             <p className="text-2xl font-black text-dark dark:text-night-text transition-colors">Top 10%</p>

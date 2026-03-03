@@ -208,17 +208,17 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
             {/* View Toggle + Filters */}
             <div className="flex flex-wrap items-center gap-3">
                 {/* Habits / Routines toggle */}
-                <div className="flex rounded-lg border border-[#E6DDF2] dark:border-night-border overflow-hidden transition-colors">
+                <div className="flex rounded-lg border border-[#D4C8E8] dark:border-night-border overflow-hidden transition-colors">
                     <button
                         onClick={() => { setActiveView('habits'); setSelectedRoutineId(null); }}
-                        className={`px-4 py-2 text-sm font-semibold transition-colors ${activeView === 'habits' ? 'bg-primary dark:bg-primary-dark text-white' : 'bg-white dark:bg-night-surface text-dark-lighter dark:text-night-text-muted hover:bg-[#E6DDF2] dark:hover:bg-white/5'
+                        className={`px-4 py-2 text-sm font-semibold transition-colors ${activeView === 'habits' ? 'bg-primary dark:bg-primary-dark text-white' : 'bg-white dark:bg-night-surface text-dark-lighter dark:text-night-text-muted hover:bg-[#D4C8E8] dark:hover:bg-white/5'
                             }`}
                     >
                         Habits
                     </button>
                     <button
                         onClick={() => setActiveView('routines')}
-                        className={`px-4 py-2 text-sm font-semibold transition-colors ${activeView === 'routines' ? 'bg-primary dark:bg-primary-dark text-white' : 'bg-white dark:bg-night-surface text-dark-lighter dark:text-night-text-muted hover:bg-[#E6DDF2] dark:hover:bg-white/5'
+                        className={`px-4 py-2 text-sm font-semibold transition-colors ${activeView === 'routines' ? 'bg-primary dark:bg-primary-dark text-white' : 'bg-white dark:bg-night-surface text-dark-lighter dark:text-night-text-muted hover:bg-[#D4C8E8] dark:hover:bg-white/5'
                             }`}
                     >
                         Routines
@@ -226,14 +226,14 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                 </div>
 
                 {/* Date range selector */}
-                <div className="flex rounded-lg border border-[#E6DDF2] dark:border-night-border overflow-hidden transition-colors">
+                <div className="flex rounded-lg border border-[#D4C8E8] dark:border-night-border overflow-hidden transition-colors">
                     {DATE_RANGE_OPTIONS.map((opt) => (
                         <button
                             key={opt.value}
                             onClick={() => setSelectedRange(opt.value)}
                             className={`px-4 py-2 text-sm font-semibold transition-colors ${selectedRange === opt.value
                                 ? 'bg-primary dark:bg-primary-dark text-white'
-                                : 'bg-white dark:bg-night-surface text-dark-lighter dark:text-night-text-muted hover:bg-[#E6DDF2] dark:hover:bg-white/5'
+                                : 'bg-white dark:bg-night-surface text-dark-lighter dark:text-night-text-muted hover:bg-[#D4C8E8] dark:hover:bg-white/5'
                                 }`}
                         >
                             {opt.label}
@@ -245,7 +245,7 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                     <select
                         value={statsFilter.habitType}
                         onChange={(e) => setStatsFilter({ habitType: e.target.value as HabitType | 'all' })}
-                        className="bg-white dark:bg-night-surface text-dark-light dark:text-night-text border border-[#E6DDF2] dark:border-night-border rounded-lg px-3 py-2 text-sm outline-none focus:border-primary transition-colors"
+                        className="bg-white dark:bg-night-surface text-dark-light dark:text-night-text border border-[#D4C8E8] dark:border-night-border rounded-lg px-3 py-2 text-sm outline-none focus:border-primary transition-colors"
                     >
                         <option value="all">All Types</option>
                         <option value="regular">Regular</option>
@@ -264,7 +264,7 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                         onClick={() => setSelectedHabitIds([])}
                         className={`px-3 py-1 rounded-full text-xs font-semibold transition-colors border ${selectedHabitIds.length === 0
                             ? 'bg-primary dark:bg-primary-dark text-white border-indigo-500 dark:border-indigo-700'
-                            : 'bg-white dark:bg-night-surface text-dark-lighter dark:text-night-text-muted border-[#E6DDF2] dark:border-night-border hover:border-primary/30 dark:hover:border-primary/50'
+                            : 'bg-white dark:bg-night-surface text-dark-lighter dark:text-night-text-muted border-[#D4C8E8] dark:border-night-border hover:border-primary/30 dark:hover:border-primary/50'
                             }`}
                     >
                         All Habits
@@ -275,7 +275,7 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                             onClick={() => toggleHabitSelection(h.id)}
                             className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-colors border ${selectedHabitIds.includes(h.id)
                                 ? 'text-white border-transparent'
-                                : 'bg-white dark:bg-night-surface text-dark-lighter dark:text-night-text-muted border-[#E6DDF2] dark:border-night-border hover:border-primary/30 dark:hover:border-primary/50'
+                                : 'bg-white dark:bg-night-surface text-dark-lighter dark:text-night-text-muted border-[#D4C8E8] dark:border-night-border hover:border-primary/30 dark:hover:border-primary/50'
                                 }`}
                             style={selectedHabitIds.includes(h.id) ? { backgroundColor: h.color, borderColor: h.color } : undefined}
                         >
@@ -297,7 +297,7 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                             onClick={() => setSelectedRoutineId(r.id === selectedRoutineId ? null : r.id)}
                             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-colors border ${selectedRoutineId === r.id
                                 ? 'bg-primary dark:bg-primary-dark text-white border-indigo-500 dark:border-indigo-700'
-                                : 'bg-white dark:bg-night-surface text-dark-lighter dark:text-night-text-muted border-[#E6DDF2] dark:border-night-border hover:border-primary/30 dark:hover:border-primary/50'
+                                : 'bg-white dark:bg-night-surface text-dark-lighter dark:text-night-text-muted border-[#D4C8E8] dark:border-night-border hover:border-primary/30 dark:hover:border-primary/50'
                                 }`}
                         >
                             <span>{r.icon}</span>
@@ -329,22 +329,22 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
 
                 {/* Summary Cards */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div className="bg-white dark:bg-night-surface rounded-xl p-4 text-center border border-[#E6DDF2] dark:border-night-border transition-colors">
+                    <div className="bg-white dark:bg-night-surface rounded-xl p-4 text-center border border-[#D4C8E8] dark:border-night-border transition-colors">
                         <TrendingUp size={24} className="mx-auto text-primary dark:text-primary-light mb-2 transition-colors" />
                         <p className="text-2xl font-black text-primary dark:text-primary-light transition-colors">{overallRate}%</p>
                         <p className="text-xs font-semibold text-dark-lighter dark:text-night-text-muted uppercase tracking-wider mt-1 transition-colors">Completion Rate</p>
                     </div>
-                    <div className="bg-white dark:bg-night-surface rounded-xl p-4 text-center border border-[#E6DDF2] dark:border-night-border transition-colors">
+                    <div className="bg-white dark:bg-night-surface rounded-xl p-4 text-center border border-[#D4C8E8] dark:border-night-border transition-colors">
                         <Flame size={24} className="mx-auto text-amber-400 dark:text-amber-500 mb-2 transition-colors" />
                         <p className="text-2xl font-black text-amber-400 dark:text-amber-500 transition-colors">{bestStreakHabit.streak}</p>
                         <p className="text-xs font-semibold text-dark-lighter dark:text-night-text-muted uppercase tracking-wider mt-1 transition-colors">Best Streak</p>
                     </div>
-                    <div className="bg-white dark:bg-night-surface rounded-xl p-4 text-center border border-[#E6DDF2] dark:border-night-border transition-colors">
+                    <div className="bg-white dark:bg-night-surface rounded-xl p-4 text-center border border-[#D4C8E8] dark:border-night-border transition-colors">
                         <Target size={24} className="mx-auto text-emerald-400 dark:text-emerald-500 mb-2 transition-colors" />
                         <p className="text-2xl font-black text-emerald-400 dark:text-emerald-500 transition-colors">{totalActiveHabits}</p>
                         <p className="text-xs font-semibold text-dark-lighter dark:text-night-text-muted uppercase tracking-wider mt-1 transition-colors">Active Habits</p>
                     </div>
-                    <div className="bg-white dark:bg-night-surface rounded-xl p-4 text-center border border-[#E6DDF2] dark:border-night-border transition-colors">
+                    <div className="bg-white dark:bg-night-surface rounded-xl p-4 text-center border border-[#D4C8E8] dark:border-night-border transition-colors">
                         <Award size={24} className="mx-auto text-purple-400 dark:text-purple-500 mb-2 transition-colors" />
                         <p className="text-2xl font-black text-purple-400 dark:text-purple-500 transition-colors">{avgConsistency}%</p>
                         <p className="text-xs font-semibold text-dark-lighter dark:text-night-text-muted uppercase tracking-wider mt-1 transition-colors">Consistency</p>
@@ -355,18 +355,18 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                 <StreakLifeLine />
 
                 {/* Completion Rate Over Time - Area Chart */}
-                <div className="bg-white dark:bg-night-surface rounded-xl p-5 border border-[#E6DDF2] dark:border-night-border transition-colors">
+                <div className="bg-white dark:bg-night-surface rounded-xl p-5 border border-[#D4C8E8] dark:border-night-border transition-colors">
                     <h3 className="text-sm font-bold text-dark-light dark:text-night-text mb-4 flex items-center gap-2 uppercase tracking-wider transition-colors">
                         <TrendingUp size={18} className="text-primary dark:text-primary-light transition-colors" />
                         Completion Rate Over Time
                     </h3>
                     <ResponsiveContainer width="100%" height={280}>
                         <AreaChart data={dailyCompletionData}>
-                            <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid-color, #E6DDF2)" />
+                            <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid-color, #D4C8E8)" />
                             <XAxis dataKey="label" tick={{ fontSize: 11, fill: 'var(--chart-text-color, #6B7280)' }} interval="preserveStartEnd" />
                             <YAxis domain={[0, 100]} tick={{ fontSize: 11, fill: 'var(--chart-text-color, #6B7280)' }} unit="%" />
                             <Tooltip
-                                contentStyle={{ backgroundColor: 'var(--tooltip-bg, #fff)', borderColor: 'var(--tooltip-border, #E6DDF2)', color: 'var(--tooltip-text, #111318)', borderRadius: 8 }}
+                                contentStyle={{ backgroundColor: 'var(--tooltip-bg, #fff)', borderColor: 'var(--tooltip-border, #D4C8E8)', color: 'var(--tooltip-text, #111318)', borderRadius: 8 }}
                                 formatter={(val: number) => [`${val}%`, 'Completion Rate']}
                             />
                             <Area
@@ -387,7 +387,7 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                     {/* Per-Habit Completion Bar Chart */}
-                    <div className="bg-white dark:bg-night-surface rounded-xl p-5 border border-[#E6DDF2] dark:border-night-border transition-colors">
+                    <div className="bg-white dark:bg-night-surface rounded-xl p-5 border border-[#D4C8E8] dark:border-night-border transition-colors">
                         <h3 className="text-sm font-bold text-dark-light dark:text-night-text mb-4 flex items-center gap-2 uppercase tracking-wider transition-colors">
                             <BarChart3 size={18} className="text-emerald-400 dark:text-emerald-500 transition-colors" />
                             Per-Habit Completion
@@ -395,11 +395,11 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                         {perHabitRates.length > 0 ? (
                             <ResponsiveContainer width="100%" height={240}>
                                 <BarChart data={perHabitRates} layout="vertical">
-                                    <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid-color, #E6DDF2)" />
+                                    <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid-color, #D4C8E8)" />
                                     <XAxis type="number" domain={[0, 100]} tick={{ fontSize: 11, fill: 'var(--chart-text-color, #6B7280)' }} unit="%" />
                                     <YAxis type="category" dataKey="name" tick={{ fontSize: 11, fill: 'var(--chart-text-color, #9CA3AF)' }} width={100} />
                                     <Tooltip
-                                        contentStyle={{ backgroundColor: 'var(--tooltip-bg, #fff)', borderColor: 'var(--tooltip-border, #E6DDF2)', borderRadius: 8, color: 'var(--tooltip-text, #111318)' }}
+                                        contentStyle={{ backgroundColor: 'var(--tooltip-bg, #fff)', borderColor: 'var(--tooltip-border, #D4C8E8)', borderRadius: 8, color: 'var(--tooltip-text, #111318)' }}
                                         formatter={(val: number) => [`${val}%`, 'Rate']}
                                     />
                                     <Bar dataKey="rate" radius={[0, 6, 6, 0]}>
@@ -415,7 +415,7 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                     </div>
 
                     {/* Habit Distribution Pie Chart */}
-                    <div className="bg-white dark:bg-night-surface rounded-xl p-5 border border-[#E6DDF2] dark:border-night-border transition-colors">
+                    <div className="bg-white dark:bg-night-surface rounded-xl p-5 border border-[#D4C8E8] dark:border-night-border transition-colors">
                         <h3 className="text-sm font-bold text-dark-light dark:text-night-text mb-4 flex items-center gap-2 uppercase tracking-wider transition-colors">
                             <Activity size={18} className="text-pink-400 dark:text-pink-500 transition-colors" />
                             Habit Type Distribution
@@ -439,7 +439,7 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                                         ))}
                                     </Pie>
                                     <Tooltip
-                                        contentStyle={{ backgroundColor: 'var(--tooltip-bg, #fff)', borderColor: 'var(--tooltip-border, #E6DDF2)', borderRadius: 8, color: 'var(--tooltip-text, #111318)' }}
+                                        contentStyle={{ backgroundColor: 'var(--tooltip-bg, #fff)', borderColor: 'var(--tooltip-border, #D4C8E8)', borderRadius: 8, color: 'var(--tooltip-text, #111318)' }}
                                     />
                                     <Legend
                                         iconType="square"
@@ -454,7 +454,7 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                 </div>
 
                 {/* Streak Dashboard with Levels */}
-                <div className="bg-white dark:bg-night-surface rounded-xl p-5 border border-[#E6DDF2] dark:border-night-border transition-colors">
+                <div className="bg-white dark:bg-night-surface rounded-xl p-5 border border-[#D4C8E8] dark:border-night-border transition-colors">
                     <h3 className="text-sm font-bold text-dark-light dark:text-night-text mb-4 flex items-center gap-2 uppercase tracking-wider transition-colors">
                         <Flame size={18} className="text-amber-400 dark:text-amber-500 transition-colors" />
                         Streak Dashboard
@@ -475,7 +475,7 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                                         Lv.{s.level.level}
                                     </span>
                                     <div className="flex-1 flex items-center gap-2">
-                                        <div className="flex-1 h-6 bg-[#E6DDF2] dark:bg-night-bg rounded-md overflow-hidden relative transition-colors">
+                                        <div className="flex-1 h-6 bg-[#D4C8E8] dark:bg-night-bg rounded-md overflow-hidden relative transition-colors">
                                             <div
                                                 className="h-full rounded-md flex items-center justify-end px-2"
                                                 style={{
@@ -499,18 +499,18 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                 </div>
 
                 {/* Best Days of Week */}
-                <div className="bg-white dark:bg-night-surface rounded-xl p-5 border border-[#E6DDF2] dark:border-night-border transition-colors">
+                <div className="bg-white dark:bg-night-surface rounded-xl p-5 border border-[#D4C8E8] dark:border-night-border transition-colors">
                     <h3 className="text-sm font-bold text-dark-light dark:text-night-text mb-4 flex items-center gap-2 uppercase tracking-wider transition-colors">
                         <CalendarIcon size={18} className="text-teal-400 dark:text-teal-500 transition-colors" />
                         Best Performing Days
                     </h3>
                     <ResponsiveContainer width="100%" height={220}>
                         <BarChart data={bestDaysData}>
-                            <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid-color, #E6DDF2)" />
+                            <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid-color, #D4C8E8)" />
                             <XAxis dataKey="day" tick={{ fontSize: 12, fill: 'var(--chart-text-color, #9CA3AF)', fontWeight: 600 }} />
                             <YAxis domain={[0, 100]} tick={{ fontSize: 11, fill: 'var(--chart-text-color, #6B7280)' }} unit="%" />
                             <Tooltip
-                                contentStyle={{ backgroundColor: 'var(--tooltip-bg, #fff)', borderColor: 'var(--tooltip-border, #E6DDF2)', borderRadius: 8, color: 'var(--tooltip-text, #111318)' }}
+                                contentStyle={{ backgroundColor: 'var(--tooltip-bg, #fff)', borderColor: 'var(--tooltip-border, #D4C8E8)', borderRadius: 8, color: 'var(--tooltip-text, #111318)' }}
                                 formatter={(val: number) => [`${val}%`, 'Avg Rate']}
                             />
                             <Bar dataKey="rate" fill="#14B8A6" radius={[6, 6, 0, 0]}>
@@ -526,7 +526,7 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                 </div>
 
                 {/* Heat Map Calendar */}
-                <div className="bg-white dark:bg-night-surface rounded-xl p-5 border border-[#E6DDF2] dark:border-night-border transition-colors">
+                <div className="bg-white dark:bg-night-surface rounded-xl p-5 border border-[#D4C8E8] dark:border-night-border transition-colors">
                     <h3 className="text-sm font-bold text-dark-light dark:text-night-text mb-4 flex items-center gap-2 uppercase tracking-wider transition-colors">
                         <CalendarIcon size={18} className="text-emerald-400 dark:text-emerald-500 transition-colors" />
                         Activity Heat Map
@@ -559,14 +559,14 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
 
                 {/* Numerical Progress Line Chart WITH Goal Reference Lines */}
                 {numericalProgressData.length > 0 && (
-                    <div className="bg-white dark:bg-night-surface rounded-xl p-5 border border-[#E6DDF2] dark:border-night-border transition-colors">
+                    <div className="bg-white dark:bg-night-surface rounded-xl p-5 border border-[#D4C8E8] dark:border-night-border transition-colors">
                         <h3 className="text-sm font-bold text-dark-light dark:text-night-text mb-4 flex items-center gap-2 uppercase tracking-wider transition-colors">
                             <Target size={18} className="text-emerald-400 dark:text-emerald-500 transition-colors" />
                             Numerical Habit Progress
                         </h3>
                         <ResponsiveContainer width="100%" height={280}>
                             <LineChart>
-                                <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid-color, #E6DDF2)" />
+                                <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid-color, #D4C8E8)" />
                                 <XAxis
                                     dataKey="date"
                                     tick={{ fontSize: 11, fill: 'var(--chart-text-color, #6B7280)' }}
@@ -575,7 +575,7 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                                 />
                                 <YAxis tick={{ fontSize: 11, fill: 'var(--chart-text-color, #6B7280)' }} />
                                 <Tooltip
-                                    contentStyle={{ backgroundColor: 'var(--tooltip-bg, #fff)', borderColor: 'var(--tooltip-border, #E6DDF2)', borderRadius: 8, color: 'var(--tooltip-text, #111318)' }}
+                                    contentStyle={{ backgroundColor: 'var(--tooltip-bg, #fff)', borderColor: 'var(--tooltip-border, #D4C8E8)', borderRadius: 8, color: 'var(--tooltip-text, #111318)' }}
                                 />
                                 <Legend iconType="square" wrapperStyle={{ fontSize: 12, fontWeight: 600, color: 'var(--chart-text-color, #9CA3AF)' }} />
 
@@ -620,14 +620,14 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
 
                 {/* Goal Progress */}
                 {goalProgressData.length > 0 && (
-                    <div className="bg-white dark:bg-night-surface rounded-xl p-5 border border-[#E6DDF2] dark:border-night-border transition-colors">
+                    <div className="bg-white dark:bg-night-surface rounded-xl p-5 border border-[#D4C8E8] dark:border-night-border transition-colors">
                         <h3 className="text-sm font-bold text-dark-light dark:text-night-text mb-4 flex items-center gap-2 uppercase tracking-wider transition-colors">
                             <Award size={18} className="text-purple-400 dark:text-purple-500 transition-colors" />
                             Goal Progress
                         </h3>
                         <div className="space-y-4">
                             {goalProgressData.map((gp, i) => (
-                                <div key={i} className="border border-[#E6DDF2] dark:border-night-border rounded-lg p-4 bg-surface-dark dark:bg-night-bg transition-colors">
+                                <div key={i} className="border border-[#D4C8E8] dark:border-night-border rounded-lg p-4 bg-surface-dark dark:bg-night-bg transition-colors">
                                     <div className="flex items-center justify-between mb-2">
                                         <div>
                                             <h4 className="font-semibold text-dark dark:text-night-text text-sm transition-colors">{gp.goal.name}</h4>
@@ -639,7 +639,7 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                                             </p>
                                         </div>
                                     </div>
-                                    <div className="h-4 bg-[#E6DDF2] dark:bg-night-border rounded-full overflow-hidden transition-colors">
+                                    <div className="h-4 bg-[#D4C8E8] dark:bg-night-border rounded-full overflow-hidden transition-colors">
                                         <div
                                             className="h-full rounded-full relative transition-all duration-500"
                                             style={{ width: `${gp.percent}%`, backgroundColor: gp.habit.color }}
@@ -665,7 +665,7 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                                                 key={m}
                                                 className={`text-[10px] font-bold px-2 py-0.5 rounded-full transition-colors ${gp.percent >= m
                                                     ? 'bg-amber-500/20 text-amber-500 dark:text-amber-400 border border-amber-500/30'
-                                                    : 'bg-[#E6DDF2] dark:bg-night-border text-dark-lighter dark:text-night-text-muted border border-[#E6DDF2] dark:border-night-border'
+                                                    : 'bg-[#D4C8E8] dark:bg-night-border text-dark-lighter dark:text-night-text-muted border border-[#D4C8E8] dark:border-night-border'
                                                     }`}
                                             >
                                                 {m === 100 ? '🏆' : '⭐'} {m}%

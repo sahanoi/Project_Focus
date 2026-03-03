@@ -15,11 +15,11 @@
 
 body {
   font-family: 'Nunito', 'Inter', system-ui, -apple-system, sans-serif;
-  background-color: #FFFBF0;
-  /* Warm cream paper */
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
-  color: #4A4453;
-  /* Deep purplish gray text */
+  background-color: #F0ECF5;
+  /* Lavender mist */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+  color: #2D2640;
+  /* Deep plum text */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -38,18 +38,17 @@ body {
 
   /* ---- Cards ---- */
   .card {
-    @apply bg-white rounded-3xl border border-[#E6DDF2] p-5;
-    box-shadow: 0 10px 40px -10px rgba(155, 139, 180, 0.15);
-    /* Soft lilac shadow */
+    @apply bg-[#FAF7FE] rounded-3xl border border-dark-border p-5;
+    box-shadow: 0 10px 40px -10px rgba(100, 70, 150, 0.12);
   }
 
   .card-flat {
-    @apply bg-white rounded-2xl border border-[#E6DDF2] p-4;
+    @apply bg-[#FAF7FE] rounded-2xl border border-dark-border p-4;
   }
 
   .chart-card {
-    @apply bg-white rounded-3xl border border-[#E6DDF2] p-6;
-    box-shadow: 0 10px 40px -10px rgba(155, 139, 180, 0.15);
+    @apply bg-[#FAF7FE] rounded-3xl border border-dark-border p-6;
+    box-shadow: 0 10px 40px -10px rgba(100, 70, 150, 0.12);
   }
 
   /* ---- Buttons ---- */
@@ -58,7 +57,7 @@ body {
   }
 
   .btn-secondary {
-    @apply bg-white text-dark font-medium px-5 py-3 rounded-2xl border border-[#E6DDF2] shadow-sm hover:bg-gray-50 active:scale-95 transition-all duration-200;
+    @apply bg-[#FAF7FE] text-dark font-medium px-5 py-3 rounded-2xl border border-dark-border shadow-sm hover:bg-surface-dark active:scale-95 transition-all duration-200;
   }
 
   .btn-danger {
@@ -70,16 +69,16 @@ body {
   }
 
   .btn-icon {
-    @apply p-2 rounded-2xl hover:bg-[#F3EEF8] text-primary-dark active:scale-95 transition-all duration-200;
+    @apply p-2 rounded-2xl hover:bg-surface-dark text-primary-dark active:scale-95 transition-all duration-200;
   }
 
   /* ---- Inputs ---- */
   .input-field {
-    @apply w-full px-4 py-3 rounded-2xl border border-[#E6DDF2] bg-white text-dark font-medium placeholder-gray-400 focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none transition-all;
+    @apply w-full px-4 py-3 rounded-2xl border border-dark-border bg-[#FAF7FE] text-dark font-medium placeholder-dark-lighter/50 focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none transition-all;
   }
 
   .select-field {
-    @apply w-full px-4 py-3 rounded-2xl border border-[#E6DDF2] bg-white text-dark font-medium focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none transition-all appearance-none cursor-pointer;
+    @apply w-full px-4 py-3 rounded-2xl border border-dark-border bg-[#FAF7FE] text-dark font-medium focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none transition-all appearance-none cursor-pointer;
   }
 
   /* ---- Badges ---- */
@@ -106,7 +105,7 @@ body {
 
   /* ---- Progress ---- */
   .progress-bar {
-    @apply h-4 rounded-full bg-[#E6DDF2] overflow-hidden;
+    @apply h-4 rounded-full bg-dark-border overflow-hidden;
   }
 
   .progress-fill {
@@ -119,8 +118,8 @@ body {
   }
 
   .modal-content {
-    @apply bg-white rounded-[2rem] border border-[#E6DDF2] w-full max-w-lg max-h-[90vh] overflow-y-auto;
-    box-shadow: 0 25px 50px -12px rgba(155, 139, 180, 0.25);
+    @apply bg-[#FAF7FE] rounded-[2rem] border border-dark-border w-full max-w-lg max-h-[90vh] overflow-y-auto;
+    box-shadow: 0 25px 50px -12px rgba(100, 70, 150, 0.2);
   }
 
   /* ---- Streak / Challenge ---- */

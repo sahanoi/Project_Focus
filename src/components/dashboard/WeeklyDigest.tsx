@@ -106,7 +106,7 @@ export default function WeeklyDigest() {
 
     const TrendIcon = digest.trend > 0 ? TrendingUp : digest.trend < 0 ? TrendingDown : Minus;
     const trendColor = digest.trend > 0 ? 'text-emerald-600 dark:text-emerald-400' : digest.trend < 0 ? 'text-red-500 dark:text-red-400' : 'text-dark-lighter dark:text-night-text-muted';
-    const trendBg = digest.trend > 0 ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-800/50' : digest.trend < 0 ? 'bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800/50' : 'bg-surface-dark dark:bg-night-surface border-[#E6DDF2] dark:border-night-border';
+    const trendBg = digest.trend > 0 ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-800/50' : digest.trend < 0 ? 'bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800/50' : 'bg-surface-dark dark:bg-night-surface border-[#D4C8E8] dark:border-night-border';
 
     return (
         <div className="space-y-3">
@@ -124,7 +124,7 @@ export default function WeeklyDigest() {
                     <span className="text-xs text-dark-lighter dark:text-night-text-muted transition-colors">completion</span>
                 </div>
                 {/* Mini bar */}
-                <div className="h-1.5 bg-[#E6DDF2] dark:bg-night-bg rounded-full mt-3 overflow-hidden transition-colors">
+                <div className="h-1.5 bg-[#D4C8E8] dark:bg-night-bg rounded-full mt-3 overflow-hidden transition-colors">
                     <div
                         className="h-full rounded-full transition-all duration-1000"
                         style={{
@@ -141,7 +141,7 @@ export default function WeeklyDigest() {
 
             {/* Quick Stats Grid */}
             <div className="grid grid-cols-2 gap-2">
-                <div className="bg-white dark:bg-night-bg rounded-lg p-3 border border-[#E6DDF2] dark:border-night-border shadow-sm transition-colors">
+                <div className="bg-white dark:bg-night-bg rounded-lg p-3 border border-[#D4C8E8] dark:border-night-border shadow-sm transition-colors">
                     <div className="flex items-center gap-1.5 mb-1">
                         <Zap size={12} className="text-warning" />
                         <span className="text-[10px] text-dark-lighter dark:text-night-text-muted uppercase transition-colors">Completions</span>
@@ -149,7 +149,7 @@ export default function WeeklyDigest() {
                     <span className="text-lg font-bold text-dark dark:text-night-text transition-colors">{digest.totalCompletions}</span>
                 </div>
                 {digest.totalVolume > 0 && (
-                    <div className="bg-white dark:bg-night-bg rounded-lg p-3 border border-[#E6DDF2] dark:border-night-border shadow-sm transition-colors">
+                    <div className="bg-white dark:bg-night-bg rounded-lg p-3 border border-[#D4C8E8] dark:border-night-border shadow-sm transition-colors">
                         <div className="flex items-center gap-1.5 mb-1">
                             <BarChart3 size={12} className="text-purple dark:text-primary-light transition-colors" />
                             <span className="text-[10px] text-dark-lighter dark:text-night-text-muted uppercase transition-colors">Volume</span>
@@ -157,7 +157,7 @@ export default function WeeklyDigest() {
                         <span className="text-lg font-bold text-dark dark:text-night-text transition-colors">{Math.round(digest.totalVolume * 10) / 10}</span>
                     </div>
                 )}
-                <div className="bg-white dark:bg-night-bg rounded-lg p-3 border border-[#E6DDF2] dark:border-night-border shadow-sm transition-colors">
+                <div className="bg-white dark:bg-night-bg rounded-lg p-3 border border-[#D4C8E8] dark:border-night-border shadow-sm transition-colors">
                     <div className="flex items-center gap-1.5 mb-1">
                         <Calendar size={12} className="text-primary dark:text-primary-light transition-colors" />
                         <span className="text-[10px] text-dark-lighter dark:text-night-text-muted uppercase transition-colors">Best Day</span>

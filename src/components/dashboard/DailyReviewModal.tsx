@@ -86,11 +86,11 @@ export default function DailyReviewModal({ isOpen, onClose }: DailyReviewModalPr
                 initial={{ opacity: 0, scale: 0.95, y: 10 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                className="w-full max-w-lg bg-white dark:bg-night-surface rounded-3xl border border-[#E6DDF2] dark:border-night-border shadow-2xl overflow-hidden transition-colors"
+                className="w-full max-w-lg bg-white dark:bg-night-surface rounded-3xl border border-[#D4C8E8] dark:border-night-border shadow-2xl overflow-hidden transition-colors"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header */}
-                <div className="relative bg-gradient-to-r from-primary/5 to-primary-light/5 dark:from-primary/10 dark:to-primary-light/10 p-6 border-b border-[#E6DDF2] dark:border-night-border transition-colors">
+                <div className="relative bg-gradient-to-r from-primary/5 to-primary-light/5 dark:from-primary/10 dark:to-primary-light/10 p-6 border-b border-[#D4C8E8] dark:border-night-border transition-colors">
                     <button onClick={onClose} className="absolute top-4 right-4 p-2 rounded-xl hover:bg-white/50 dark:hover:bg-white/10 text-dark-lighter dark:text-night-text-muted transition-colors">
                         <X size={20} />
                     </button>
@@ -110,7 +110,7 @@ export default function DailyReviewModal({ isOpen, onClose }: DailyReviewModalPr
                         <p className="text-sm text-dark-lighter dark:text-night-text-muted transition-colors">
                             {completedHabits.length} of {activeHabits.length} habits completed
                         </p>
-                        <div className="h-2 bg-[#E6DDF2] dark:bg-night-border rounded-full mt-3 overflow-hidden max-w-xs mx-auto transition-colors">
+                        <div className="h-2 bg-[#D4C8E8] dark:bg-night-border rounded-full mt-3 overflow-hidden max-w-xs mx-auto transition-colors">
                             <motion.div
                                 initial={{ width: 0 }}
                                 animate={{ width: `${completionRate}%` }}
@@ -212,14 +212,14 @@ export default function DailyReviewModal({ isOpen, onClose }: DailyReviewModalPr
                             value={journal}
                             onChange={(e) => setJournal(e.target.value)}
                             placeholder="What went well? What could be better tomorrow?"
-                            className="w-full px-4 py-3 rounded-xl bg-surface dark:bg-night-bg border border-[#E6DDF2] dark:border-night-border text-dark dark:text-night-text text-sm placeholder-dark-lighter/40 dark:placeholder-night-text-muted/40 focus:border-primary/50 dark:focus:border-primary-light/50 focus:outline-none focus:ring-2 focus:ring-primary/10 dark:focus:ring-primary-light/10 resize-none transition-all"
+                            className="w-full px-4 py-3 rounded-xl bg-surface dark:bg-night-bg border border-[#D4C8E8] dark:border-night-border text-dark dark:text-night-text text-sm placeholder-dark-lighter/40 dark:placeholder-night-text-muted/40 focus:border-primary/50 dark:focus:border-primary-light/50 focus:outline-none focus:ring-2 focus:ring-primary/10 dark:focus:ring-primary-light/10 resize-none transition-all"
                             rows={3}
                         />
                     </div>
                 </div>
 
                 {/* Footer */}
-                <div className="p-6 border-t border-[#E6DDF2] dark:border-night-border bg-surface/50 dark:bg-night-bg/50 transition-colors">
+                <div className="p-6 border-t border-[#D4C8E8] dark:border-night-border bg-surface/50 dark:bg-night-bg/50 transition-colors">
                     <motion.button
                         whileHover={{ scale: 1.01 }}
                         whileTap={{ scale: 0.98 }}

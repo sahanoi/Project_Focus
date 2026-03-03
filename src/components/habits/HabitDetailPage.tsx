@@ -53,7 +53,7 @@ export default function HabitDetailPage({ habitId, onBack, onEdit }: HabitDetail
     if (!habit) {
         return (
             <div className="max-w-4xl mx-auto px-4 py-8 text-center text-dark">
-                <p className="text-dark-lighter bg-white p-8 rounded-3xl shadow-sm border border-[#E6DDF2]">Habit not found.</p>
+                <p className="text-dark-lighter bg-white p-8 rounded-3xl shadow-sm border border-[#D4C8E8]">Habit not found.</p>
                 <button onClick={onBack} className="btn-primary mt-4">← Go Back</button>
             </div>
         );
@@ -215,7 +215,7 @@ export default function HabitDetailPage({ habitId, onBack, onEdit }: HabitDetail
     return (
         <div className="max-w-5xl mx-auto px-4 py-8 animate-fade-in-up">
             {/* Header */}
-            <div className="flex items-center gap-4 mb-8 bg-white p-6 rounded-3xl shadow-sm border border-[#E6DDF2]">
+            <div className="flex items-center gap-4 mb-8 bg-white p-6 rounded-3xl shadow-sm border border-[#D4C8E8]">
                 <button onClick={onBack} className="btn-icon bg-gray-50 hover:bg-gray-100 text-dark-lighter">
                     <ArrowLeft size={20} />
                 </button>

@@ -112,7 +112,7 @@ interface DbCompletion {
 interface DbGoal {
     id: string;
     user_id: string;
-    habit_id: string;
+    habit_id: string | null;
     description: string;
     target_value: number;
     current_value: number;
@@ -164,7 +164,7 @@ function dbHabitToHabit(dbHabit: DbHabit, completions: DbCompletion[]): Habit {
 function dbGoalToGoal(dbGoal: DbGoal): Goal {
     return {
         id: dbGoal.id,
-        habitId: dbGoal.habit_id,
+        habitId: dbGoal.habit_id || '',
         name: dbGoal.description,
         targetValue: dbGoal.target_value,
         unit: '',
@@ -193,6 +193,7 @@ const DEFAULT_STATS: CharacterStats = {
     level: 1,
     xp: 0,
     nextLevelXp: 1000,
+    accountCreatedDate: new Date().toISOString(),
     attributes: { ovr: 60, dsc: 60, foc: 60, stk: 60, bal: 60, grt: 60, vit: 60 }
 };
 
@@ -234,6 +235,13 @@ export const useHabitStore = create<HabitStore>()(
                         return;
                     }
 
+                    // Fetch profile
+                    const { data: profile, error: profileErr } = await supabase
+                        .from('profiles')
+                        .select('*')
+                        .eq('id', user.id)
+                        .single();
+
                     // Fetch habits
                     const { data: dbHabits, error: habitsErr } = await supabase
                         .from('habits')
@@ -274,7 +282,20 @@ export const useHabitStore = create<HabitStore>()(
 
                     const goals = (dbGoals || []).map((g: any) => dbGoalToGoal(g));
                     const routines = (dbRoutines || []).map((r: any) => dbRoutineToRoutine(r));
-                    const stats = calculateCharacterStats(habits);
+
+                    // Use profile stats if available, otherwise recalculate
+                    let stats = calculateCharacterStats(habits);
+                    if (profile?.stats) {
+                        const dbStats = profile.stats as any;
+                        stats = {
+                            ...stats,
+                            level: dbStats.level ?? stats.level,
+                            xp: dbStats.xp ?? stats.xp,
+                            nextLevelXp: dbStats.nextLevelXp ?? stats.nextLevelXp,
+                            accountCreatedDate: dbStats.accountCreatedDate || profile.updated_at || stats.accountCreatedDate,
+                            attributes: dbStats.attributes || stats.attributes
+                        };
+                    }
 
                     set({ habits, goals, routines, stats, isLoading: false });
                 } catch (err) {
@@ -291,7 +312,7 @@ export const useHabitStore = create<HabitStore>()(
             recalculateStats: () => {
                 const state = get();
                 const { habits, achievements, stats: currentStats } = state;
-                const newStats = calculateCharacterStats(habits);
+                const newStats = calculateCharacterStats(habits, get().stats?.accountCreatedDate);
                 const { unlocked, newlyUnlocked } = evaluateAchievements(habits, achievements);
 
                 const leveledUp = newStats.level > currentStats.level;
@@ -310,6 +331,23 @@ export const useHabitStore = create<HabitStore>()(
                         }
                     })
                 });
+
+                // Sync stats to Supabase Profile (stored as JSONB 'stats' column)
+                (async () => {
+                    const { data: { user } } = await supabase.auth.getUser();
+                    if (!user) return;
+
+                    await supabase.from('profiles').update({
+                        stats: {
+                            level: newStats.level,
+                            xp: newStats.xp,
+                            nextLevelXp: newStats.nextLevelXp,
+                            accountCreatedDate: newStats.accountCreatedDate,
+                            attributes: newStats.attributes,
+                        },
+                        updated_at: new Date().toISOString()
+                    }).eq('id', user.id);
+                })();
             },
 
             dismissAchievementToast: () => set({ newAchievement: null }),
@@ -335,7 +373,7 @@ export const useHabitStore = create<HabitStore>()(
                     const newHabits = [...state.habits, newHabit];
                     return {
                         habits: newHabits,
-                        stats: calculateCharacterStats(newHabits)
+                        stats: calculateCharacterStats(newHabits, get().stats?.accountCreatedDate)
                     };
                 });
 
@@ -375,7 +413,7 @@ export const useHabitStore = create<HabitStore>()(
                     );
                     return {
                         habits: newHabits,
-                        stats: calculateCharacterStats(newHabits)
+                        stats: calculateCharacterStats(newHabits, get().stats?.accountCreatedDate)
                     };
                 });
 
@@ -411,7 +449,7 @@ export const useHabitStore = create<HabitStore>()(
                             ...r,
                             habitIds: r.habitIds.filter(hid => hid !== id)
                         })),
-                        stats: calculateCharacterStats(newHabits)
+                        stats: calculateCharacterStats(newHabits, get().stats?.accountCreatedDate)
                     };
                 });
 
@@ -454,7 +492,7 @@ export const useHabitStore = create<HabitStore>()(
                     const newHabits = [...state.habits, duplicate];
                     return {
                         habits: newHabits,
-                        stats: calculateCharacterStats(newHabits)
+                        stats: calculateCharacterStats(newHabits, get().stats?.accountCreatedDate)
                     };
                 });
 
@@ -576,7 +614,7 @@ export const useHabitStore = create<HabitStore>()(
 
                     return {
                         habits: newHabits,
-                        stats: calculateCharacterStats(newHabits)
+                        stats: calculateCharacterStats(newHabits, get().stats?.accountCreatedDate)
                     };
                 });
 
@@ -586,13 +624,13 @@ export const useHabitStore = create<HabitStore>()(
                     if (!user) return;
 
                     if (isCompleting) {
-                        await supabase.from('habit_completions').upsert({
+                        await supabase.from('habit_completions').insert({
                             user_id: user.id,
                             habit_id: habitId,
                             completed_date: date,
                             completed: true,
                             value: existing?.value ?? null,
-                        }, { onConflict: 'habit_id,completed_date' });
+                        });
                     } else {
                         await supabase.from('habit_completions')
                             .delete()
@@ -617,7 +655,7 @@ export const useHabitStore = create<HabitStore>()(
 
                     return {
                         habits: newHabits,
-                        stats: calculateCharacterStats(newHabits)
+                        stats: calculateCharacterStats(newHabits, get().stats?.accountCreatedDate)
                     };
                 });
 
@@ -626,13 +664,19 @@ export const useHabitStore = create<HabitStore>()(
                     const { data: { user } } = await supabase.auth.getUser();
                     if (!user) return;
 
-                    await supabase.from('habit_completions').upsert({
+                    // Delete existing then insert new value
+                    await supabase.from('habit_completions')
+                        .delete()
+                        .eq('habit_id', habitId)
+                        .eq('completed_date', date);
+
+                    await supabase.from('habit_completions').insert({
                         user_id: user.id,
                         habit_id: habitId,
                         completed_date: date,
                         completed: value > 0,
                         value,
-                    }, { onConflict: 'habit_id,completed_date' });
+                    });
                 })();
             },
 
@@ -799,7 +843,7 @@ export const useHabitStore = create<HabitStore>()(
                 const habits = generateDummyHabits();
                 const goals = generateDummyGoals(habits);
                 const routines = generateDummyRoutines(habits);
-                const stats = calculateCharacterStats(habits);
+                const stats = calculateCharacterStats(habits, get().stats?.accountCreatedDate);
 
                 set({ habits, goals, routines, stats });
             },

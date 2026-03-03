@@ -33,7 +33,7 @@ export const DUMMY_FRIENDS: SocialUser[] = [
         level: 14,
         xpThisWeek: 2150,
         stats: {
-            level: 14, xp: 21500, nextLevelXp: 25000,
+            level: 14, xp: 21500, nextLevelXp: 25000, accountCreatedDate: '2024-01-01T00:00:00.000Z',
             attributes: { ovr: 72, dsc: 85, foc: 68, stk: 75, bal: 60, grt: 80, vit: 65 }
         },
         badges: [
@@ -53,7 +53,7 @@ export const DUMMY_FRIENDS: SocialUser[] = [
         level: 8,
         xpThisWeek: 1850,
         stats: {
-            level: 8, xp: 8500, nextLevelXp: 10000,
+            level: 8, xp: 8500, nextLevelXp: 10000, accountCreatedDate: '2024-01-01T00:00:00.000Z',
             attributes: { ovr: 65, dsc: 60, foc: 70, stk: 65, bal: 80, grt: 60, vit: 55 }
         },
         badges: [
@@ -72,7 +72,7 @@ export const DUMMY_FRIENDS: SocialUser[] = [
         level: 21,
         xpThisWeek: 3400,
         stats: {
-            level: 21, xp: 45000, nextLevelXp: 50000,
+            level: 21, xp: 45000, nextLevelXp: 50000, accountCreatedDate: '2024-01-01T00:00:00.000Z',
             attributes: { ovr: 88, dsc: 95, foc: 85, stk: 90, bal: 75, grt: 98, vit: 80 }
         },
         badges: [
@@ -93,7 +93,7 @@ export const DUMMY_FRIENDS: SocialUser[] = [
         level: 11,
         xpThisWeek: 950,
         stats: {
-            level: 11, xp: 15000, nextLevelXp: 18000,
+            level: 11, xp: 15000, nextLevelXp: 18000, accountCreatedDate: '2024-01-01T00:00:00.000Z',
             attributes: { ovr: 68, dsc: 65, foc: 60, stk: 70, bal: 75, grt: 65, vit: 85 }
         },
         badges: [

@@ -41,7 +41,7 @@ export default function LevelUpModal() {
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.8, y: 50 }}
                 transition={{ type: 'spring', damping: 20, stiffness: 300 }}
-                className="relative w-full max-w-sm bg-white rounded-3xl p-8 border border-[#E6DDF2] shadow-2xl text-center overflow-hidden"
+                className="relative w-full max-w-sm bg-white rounded-3xl p-8 border border-[#D4C8E8] shadow-2xl text-center overflow-hidden"
             >
                 {/* Custom Confetti / Sparkles effect using framer-motion */}
                 <div className="absolute inset-0 pointer-events-none flex justify-center items-center">
@@ -81,7 +81,7 @@ export default function LevelUpModal() {
 
                     {/* Stat Improvements */}
                     {statChanges.length > 0 && (
-                        <div className="w-full bg-surface-dark border border-[#E6DDF2] rounded-2xl p-4 mb-8">
+                        <div className="w-full bg-surface-dark border border-[#D4C8E8] rounded-2xl p-4 mb-8">
                             <h3 className="text-xs font-bold text-dark-lighter uppercase tracking-wider mb-3">Stat Increases</h3>
                             <div className="space-y-2">
                                 {statChanges.map((stat, i) => (

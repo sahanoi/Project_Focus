@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useHabitStore } from '../../store/habitStore';
 import { useAuth } from '../../contexts/AuthContext';
-import { LayoutDashboard, BarChart2, Settings, User, LogOut, Plus, Menu, X, Award, Globe } from 'lucide-react';
+import { LayoutDashboard, BarChart2, Settings, User, LogOut, Plus, Menu, X, Award, Globe, Lock } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TabView } from '../../types';
+import { isAnalyticsEnabled, canAddHabit, getUserTierName } from '../../utils/featureGateUtils';
 
 interface SidebarProps {
     activeTab: TabView;
@@ -13,7 +14,12 @@ interface SidebarProps {
 
 export default function Sidebar({ activeTab, setActiveTab, onAddHabit }: SidebarProps) {
     const { user, signOut } = useAuth();
+    const stats = useHabitStore(s => s.stats);
+    const habitCount = useHabitStore(s => s.habits.filter(h => !h.archived).length);
     const [mobileOpen, setMobileOpen] = useState(false);
+    const analyticsLocked = !isAnalyticsEnabled(stats);
+    const habitLimitReached = !canAddHabit(stats, habitCount);
+    const tierName = getUserTierName(stats);
 
     const navItems = [
         { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -54,40 +60,55 @@ export default function Sidebar({ activeTab, setActiveTab, onAddHabit }: Sidebar
                 {navItems.map((item) => {
                     const Icon = item.icon;
                     const isActive = activeTab === item.id;
+                    const isLocked = item.id === 'statistics' && analyticsLocked;
                     return (
                         <button
                             key={item.id}
-                            onClick={() => handleTabChange(item.id)}
+                            onClick={() => {
+                                if (isLocked) return;
+                                handleTabChange(item.id);
+                            }}
                             className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group ${isActive
                                 ? 'bg-white dark:bg-night-border text-primary-dark dark:text-primary-light shadow-sm border border-primary/20'
-                                : 'text-dark-lighter dark:text-night-text-muted hover:bg-white/50 dark:hover:bg-white/5 hover:text-dark-light dark:hover:text-night-text'
+                                : isLocked
+                                    ? 'text-dark-lighter/50 dark:text-night-text-muted/50 cursor-not-allowed'
+                                    : 'text-dark-lighter dark:text-night-text-muted hover:bg-white/50 dark:hover:bg-white/5 hover:text-dark-light dark:hover:text-night-text'
                                 }`}
                         >
-                            <Icon size={20} className={isActive ? 'text-primary dark:text-primary-light' : 'text-dark-lighter dark:text-night-text-muted group-hover:text-primary-dark dark:group-hover:text-primary'} />
-                            <span className="font-medium text-sm">{item.label}</span>
+                            <Icon size={20} className={isActive ? 'text-primary dark:text-primary-light' : isLocked ? 'text-dark-lighter/40 dark:text-night-text-muted/40' : 'text-dark-lighter dark:text-night-text-muted group-hover:text-primary-dark dark:group-hover:text-primary'} />
+                            <span className="font-medium text-sm flex-1 text-left">{item.label}</span>
+                            {isLocked && (
+                                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 flex items-center gap-0.5">
+                                    <Lock size={8} /> Lvl 3
+                                </span>
+                            )}
                         </button>
                     );
                 })}
 
                 <button
-                    onClick={() => { onAddHabit(); setMobileOpen(false); }}
-                    className="w-full mt-6 bg-primary hover:bg-primary-dark text-white p-3 rounded-xl flex items-center justify-center gap-2 font-bold transition-all shadow-lg shadow-primary/20 hover:shadow-primary/30"
+                    onClick={() => { if (!habitLimitReached) { onAddHabit(); setMobileOpen(false); } }}
+                    className={`w-full mt-6 p-3 rounded-xl flex items-center justify-center gap-2 font-bold transition-all shadow-lg ${habitLimitReached
+                            ? 'bg-gray-300 dark:bg-night-border text-gray-500 dark:text-night-text-muted cursor-not-allowed shadow-none'
+                            : 'bg-primary hover:bg-primary-dark text-white shadow-primary/20 hover:shadow-primary/30'
+                        }`}
+                    title={habitLimitReached ? `Level up to add more habits (${habitCount}/${canAddHabit(stats, 0) ? 'max' : 'max reached'})` : 'Add a new habit'}
                 >
                     <Plus size={18} />
-                    <span>New Habit</span>
+                    <span>{habitLimitReached ? 'Level up for more' : 'New Habit'}</span>
                 </button>
             </nav>
 
             {/* User Profile / Bottom */}
-            <div className="p-4 border-t border-[#E6DDF2] dark:border-night-border bg-surface/50 dark:bg-night-surface/50 space-y-2 transition-colors">
+            <div className="p-4 border-t border-[#D4C8E8] dark:border-night-border bg-surface/50 dark:bg-night-surface/50 space-y-2 transition-colors">
                 <div className="flex items-center gap-3 p-2 rounded-lg">
-                    <div className="w-8 h-8 bg-white dark:bg-night-bg border border-[#E6DDF2] dark:border-night-border rounded-full flex items-center justify-center text-primary dark:text-primary-light transition-colors">
+                    <div className="w-8 h-8 bg-white dark:bg-night-bg border border-[#D4C8E8] dark:border-night-border rounded-full flex items-center justify-center text-primary dark:text-primary-light transition-colors">
                         <User size={16} />
                     </div>
                     <div className="flex-1 min-w-0 flex items-center gap-2">
                         <div className="flex-1 min-w-0 text-left">
                             <div className="text-sm font-bold text-dark dark:text-night-text truncate transition-colors">{user?.email?.split('@')[0] || 'User'}</div>
-                            <div className="text-xs text-dark-lighter dark:text-night-text-muted truncate transition-colors">{user?.email || 'Level 5 Pro'}</div>
+                            <div className="text-xs text-dark-lighter dark:text-night-text-muted truncate transition-colors">{tierName} • Lvl {stats.level}</div>
                         </div>
                     </div>
                 </div>
@@ -107,14 +128,14 @@ export default function Sidebar({ activeTab, setActiveTab, onAddHabit }: Sidebar
             {/* Mobile hamburger button */}
             <button
                 onClick={() => setMobileOpen(true)}
-                className="lg:hidden fixed top-4 left-4 z-[60] p-2.5 bg-white border border-[#E6DDF2] rounded-xl shadow-md text-dark hover:bg-primary/5 transition-colors"
+                className="lg:hidden fixed top-4 left-4 z-[60] p-2.5 bg-white border border-[#D4C8E8] rounded-xl shadow-md text-dark hover:bg-primary/5 transition-colors"
                 aria-label="Open menu"
             >
                 <Menu size={20} />
             </button>
 
             {/* Desktop sidebar */}
-            <aside className="hidden lg:flex w-64 h-screen bg-[#F4EFE6] dark:bg-night-surface border-r border-[#E6DDF2] dark:border-night-border flex-col fixed left-0 top-0 z-50 transition-colors">
+            <aside className="hidden lg:flex w-64 h-screen bg-[#E4DEF0] dark:bg-night-surface border-r border-[#D4C8E8] dark:border-night-border flex-col fixed left-0 top-0 z-50 transition-colors">
                 {sidebarContent}
             </aside>
 
@@ -136,7 +157,7 @@ export default function Sidebar({ activeTab, setActiveTab, onAddHabit }: Sidebar
                             animate={{ x: 0 }}
                             exit={{ x: '-100%' }}
                             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-                            className="lg:hidden fixed left-0 top-0 w-72 h-screen bg-[#F4EFE6] dark:bg-night-surface border-r border-[#E6DDF2] dark:border-night-border flex flex-col z-[70] shadow-2xl transition-colors"
+                            className="lg:hidden fixed left-0 top-0 w-72 h-screen bg-[#E4DEF0] dark:bg-night-surface border-r border-[#D4C8E8] dark:border-night-border flex flex-col z-[70] shadow-2xl transition-colors"
                         >
                             {sidebarContent}
                         </motion.aside>
