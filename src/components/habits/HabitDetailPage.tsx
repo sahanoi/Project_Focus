@@ -52,8 +52,8 @@ export default function HabitDetailPage({ habitId, onBack, onEdit }: HabitDetail
 
     if (!habit) {
         return (
-            <div className="max-w-4xl mx-auto px-4 py-8 text-center text-dark">
-                <p className="text-dark-lighter bg-white p-8 rounded-3xl shadow-sm border border-[#D4C8E8]">Habit not found.</p>
+            <div className="max-w-4xl mx-auto px-4 py-8 text-center text-dark dark:text-night-text transition-colors">
+                <p className="text-dark-lighter dark:text-night-text-muted bg-white dark:bg-night-surface p-8 rounded-3xl shadow-sm border border-[#D4C8E8] dark:border-night-border transition-colors">Habit not found.</p>
                 <button onClick={onBack} className="btn-primary mt-4">← Go Back</button>
             </div>
         );
@@ -215,16 +215,16 @@ export default function HabitDetailPage({ habitId, onBack, onEdit }: HabitDetail
     return (
         <div className="max-w-5xl mx-auto px-4 py-8 animate-fade-in-up">
             {/* Header */}
-            <div className="flex items-center gap-4 mb-8 bg-white p-6 rounded-3xl shadow-sm border border-[#D4C8E8]">
-                <button onClick={onBack} className="btn-icon bg-gray-50 hover:bg-gray-100 text-dark-lighter">
+            <div className="flex items-center gap-4 mb-8 bg-white dark:bg-night-surface p-6 rounded-3xl shadow-sm border border-[#D4C8E8] dark:border-night-border transition-colors">
+                <button onClick={onBack} className="btn-icon bg-gray-50 dark:bg-night-bg hover:bg-gray-100 dark:hover:bg-primary/20 text-dark-lighter dark:text-night-text transition-colors">
                     <ArrowLeft size={20} />
                 </button>
                 <div className="flex-1">
                     <div className="flex items-center gap-3">
-                        <span className="text-3xl bg-gray-50 p-3 rounded-2xl shadow-sm border border-gray-100">{habit.icon}</span>
+                        <span className="text-3xl bg-gray-50 dark:bg-night-bg p-3 rounded-2xl shadow-sm border border-gray-100 dark:border-night-border transition-colors">{habit.icon}</span>
                         <div>
                             <div className="flex items-center gap-3 mb-1">
-                                <h1 className="text-2xl font-bold text-dark">{habit.name}</h1>
+                                <h1 className="text-2xl font-bold text-dark dark:text-night-text transition-colors">{habit.name}</h1>
                                 <span
                                     className="px-2.5 py-1 rounded-full text-[11px] font-bold shadow-sm"
                                     style={{ backgroundColor: `${habit.color}15`, color: habit.color }}
@@ -232,8 +232,8 @@ export default function HabitDetailPage({ habitId, onBack, onEdit }: HabitDetail
                                     {habit.type.toUpperCase()}
                                 </span>
                             </div>
-                            <p className="text-sm font-medium text-dark-lighter flex items-center gap-1.5">
-                                <Calendar size={14} className="text-dark-lighter" /> {scheduleDisplay}
+                            <p className="text-sm font-medium text-dark-lighter dark:text-night-text-muted flex items-center gap-1.5 transition-colors">
+                                <Calendar size={14} className="text-dark-lighter dark:text-night-text-muted transition-colors" /> {scheduleDisplay}
                             </p>
                         </div>
                     </div>
@@ -241,12 +241,12 @@ export default function HabitDetailPage({ habitId, onBack, onEdit }: HabitDetail
                 <div className="flex items-center gap-2">
                     <button
                         onClick={() => setShowShareModal(true)}
-                        className="btn-secondary flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold bg-white border-2 border-gray-200 text-dark-lighter hover:border-indigo-400 hover:text-indigo-500 transition-colors"
+                        className="btn-secondary flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold bg-white dark:bg-night-bg border-2 border-gray-200 dark:border-night-border text-dark-lighter dark:text-night-text hover:border-indigo-400 dark:hover:border-indigo-400 hover:text-indigo-500 transition-colors"
                         title="Share Habit Template"
                     >
                         <Share2 size={16} />
                     </button>
-                    <button onClick={() => onEdit(habit)} className="btn-secondary flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold bg-white border-2 border-gray-200 text-dark-lighter hover:border-primary hover:text-primary transition-colors">
+                    <button onClick={() => onEdit(habit)} className="btn-secondary flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold bg-white dark:bg-night-bg border-2 border-gray-200 dark:border-night-border text-dark-lighter dark:text-night-text hover:border-primary dark:hover:border-primary-light hover:text-primary dark:hover:text-primary-light transition-colors">
                         <Edit3 size={16} /> Edit Habit
                     </button>
                 </div>
@@ -254,42 +254,42 @@ export default function HabitDetailPage({ habitId, onBack, onEdit }: HabitDetail
 
             {/* Summary Cards */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-5 mb-8">
-                <div className="card text-center hover:-translate-y-1 transition-transform">
+                <div className="card text-center hover:-translate-y-1 transition-transform dark:bg-night-surface dark:border-night-border">
                     <div className="w-12 h-12 rounded-2xl bg-warning/10 flex items-center justify-center mx-auto mb-3">
                         <Flame size={24} className="text-warning" />
                     </div>
-                    <p className="text-3xl font-black text-dark mb-1">{currentStreak}</p>
-                    <p className="text-[11px] font-bold text-dark-lighter uppercase tracking-wide">Current Streak</p>
+                    <p className="text-3xl font-black text-dark dark:text-night-text mb-1 transition-colors">{currentStreak}</p>
+                    <p className="text-[11px] font-bold text-dark-lighter dark:text-night-text-muted uppercase tracking-wide transition-colors">Current Streak</p>
                 </div>
-                <div className="card text-center hover:-translate-y-1 transition-transform">
+                <div className="card text-center hover:-translate-y-1 transition-transform dark:bg-night-surface dark:border-night-border">
                     <div className="w-12 h-12 rounded-2xl bg-purple/10 flex items-center justify-center mx-auto mb-3">
                         <Trophy size={24} className="text-purple" />
                     </div>
-                    <p className="text-3xl font-black text-dark mb-1">{longestStreak}</p>
-                    <p className="text-[11px] font-bold text-dark-lighter uppercase tracking-wide">Longest Streak</p>
+                    <p className="text-3xl font-black text-dark dark:text-night-text mb-1 transition-colors">{longestStreak}</p>
+                    <p className="text-[11px] font-bold text-dark-lighter dark:text-night-text-muted uppercase tracking-wide transition-colors">Longest Streak</p>
                 </div>
-                <div className="card text-center hover:-translate-y-1 transition-transform">
+                <div className="card text-center hover:-translate-y-1 transition-transform dark:bg-night-surface dark:border-night-border">
                     <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-3">
-                        <Target size={24} className="text-primary" />
+                        <Target size={24} className="text-primary dark:text-primary-light transition-colors" />
                     </div>
-                    <p className="text-3xl font-black text-dark mb-1">{completionRate}%</p>
-                    <p className="text-[11px] font-bold text-dark-lighter uppercase tracking-wide">This Month</p>
+                    <p className="text-3xl font-black text-dark dark:text-night-text mb-1 transition-colors">{completionRate}%</p>
+                    <p className="text-[11px] font-bold text-dark-lighter dark:text-night-text-muted uppercase tracking-wide transition-colors">This Month</p>
                 </div>
-                <div className="card text-center hover:-translate-y-1 transition-transform">
+                <div className="card text-center hover:-translate-y-1 transition-transform dark:bg-night-surface dark:border-night-border">
                     <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center mx-auto mb-3">
-                        <CheckCircle2 size={24} className="text-blue-500" />
+                        <CheckCircle2 size={24} className="text-blue-500 dark:text-blue-400 transition-colors" />
                     </div>
-                    <p className="text-3xl font-black text-dark mb-1">{totalCompletions}</p>
-                    <p className="text-[11px] font-bold text-dark-lighter uppercase tracking-wide">Total Done</p>
+                    <p className="text-3xl font-black text-dark dark:text-night-text mb-1 transition-colors">{totalCompletions}</p>
+                    <p className="text-[11px] font-bold text-dark-lighter dark:text-night-text-muted uppercase tracking-wide transition-colors">Total Done</p>
                 </div>
             </div>
 
             {/*  Contextual Charts: Only show line chart for Numerical. */}
             {habit.type === 'numerical' && (
-                <div className="card mb-8">
+                <div className="card mb-8 dark:bg-night-surface dark:border-night-border transition-colors">
                     <div className="flex items-center justify-between mb-6">
-                        <h3 className="text-lg font-bold text-dark flex items-center gap-2">
-                            <TrendingUp size={20} className="text-primary" />
+                        <h3 className="text-lg font-bold text-dark dark:text-night-text flex items-center gap-2 transition-colors">
+                            <TrendingUp size={20} className="text-primary dark:text-primary-light transition-colors" />
                             Daily Value Tracking
                         </h3>
                         {/* Legend / Goal Lines Info */}
@@ -358,9 +358,9 @@ export default function HabitDetailPage({ habitId, onBack, onEdit }: HabitDetail
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
 
                 {/* Calendar */}
-                <div className="card flex flex-col">
-                    <h3 className="text-lg font-bold text-dark mb-5 flex items-center gap-2">
-                        <Calendar size={20} className="text-primary" />
+                <div className="card flex flex-col dark:bg-night-surface dark:border-night-border transition-colors">
+                    <h3 className="text-lg font-bold text-dark dark:text-night-text mb-5 flex items-center gap-2 transition-colors">
+                        <Calendar size={20} className="text-primary dark:text-primary-light transition-colors" />
                         Consistency Calendar
                     </h3>
                     <div className="grid grid-cols-7 gap-2 mb-2">
@@ -388,8 +388,8 @@ export default function HabitDetailPage({ habitId, onBack, onEdit }: HabitDetail
                                     className={`aspect-square rounded-xl flex items-center justify-center text-sm font-bold transition-all duration-300 hover:scale-105 cursor-default ${cell.completed
                                         ? 'text-white shadow-sm'
                                         : isToday
-                                            ? 'ring-2 ring-primary ring-offset-2 text-dark font-black'
-                                            : 'bg-gray-50 text-dark-lighter hover:bg-gray-100'
+                                            ? 'ring-2 ring-primary dark:ring-primary-light ring-offset-2 dark:ring-offset-night-surface text-dark dark:text-night-text font-black'
+                                            : 'bg-gray-50 dark:bg-night-bg text-dark-lighter dark:text-night-text hover:bg-gray-100 dark:hover:bg-night-border'
                                         }`}
                                     style={cell.completed ? { backgroundColor: cellBg } : undefined}
                                     title={cell.value !== undefined ? `${cell.value} ${habit.unit || ''}` : cell.completed ? 'Done ✅' : 'Missed'}
@@ -402,8 +402,8 @@ export default function HabitDetailPage({ habitId, onBack, onEdit }: HabitDetail
                 </div>
 
                 {/* Weekly Pattern */}
-                <div className="card flex flex-col">
-                    <h3 className="text-lg font-bold text-dark mb-5 flex items-center gap-2">
+                <div className="card flex flex-col dark:bg-night-surface dark:border-night-border transition-colors">
+                    <h3 className="text-lg font-bold text-dark dark:text-night-text mb-5 flex items-center gap-2 transition-colors">
                         <BarChart3 size={20} className="text-teal" />
                         Weekly Distribution
                     </h3>
@@ -442,16 +442,16 @@ export default function HabitDetailPage({ habitId, onBack, onEdit }: HabitDetail
 
             {/* Cumulative Progress Over Time (Numerical Only) */}
             {habit.type === 'numerical' && progressData.length > 0 && (
-                <div className="card mb-8">
+                <div className="card mb-8 dark:bg-night-surface dark:border-night-border transition-colors">
                     <div className="flex items-center justify-between mb-6">
-                        <h3 className="text-lg font-bold text-dark flex items-center gap-2">
+                        <h3 className="text-lg font-bold text-dark dark:text-night-text flex items-center gap-2 transition-colors">
                             <TrendingUp size={20} className="text-purple" />
                             Cumulative Progress
                         </h3>
-                        <div className="flex items-center gap-3 bg-gray-50 px-4 py-2 rounded-xl">
+                        <div className="flex items-center gap-3 bg-gray-50 dark:bg-night-bg px-4 py-2 rounded-xl transition-colors">
                             <span className="font-black text-lg" style={{ color: habit.color }}>
                                 {Math.round(totalNumerical * 10) / 10}
-                                <span className="text-xs text-dark-lighter ml-1 font-bold tracking-wider uppercase">{habit.unit || ''}</span>
+                                <span className="text-xs text-dark-lighter dark:text-night-text-muted ml-1 font-bold tracking-wider uppercase transition-colors">{habit.unit || ''}</span>
                             </span>
                             {linkedGoal && (
                                 <div className="h-6 w-px bg-gray-200"></div>
@@ -513,24 +513,24 @@ export default function HabitDetailPage({ habitId, onBack, onEdit }: HabitDetail
             )}
 
             {/* Habit Meta Details */}
-            <div className="card bg-gray-50/50 border-none shadow-none">
+            <div className="card bg-gray-50/50 dark:bg-night-bg/50 border-none shadow-none transition-colors">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-sm">
                     <div>
-                        <p className="text-dark-lighter font-bold uppercase text-[10px] tracking-wider mb-1">Category</p>
-                        <p className="font-bold text-dark">{habit.category}</p>
+                        <p className="text-dark-lighter dark:text-night-text-muted font-bold uppercase text-[10px] tracking-wider mb-1 transition-colors">Category</p>
+                        <p className="font-bold text-dark dark:text-night-text transition-colors">{habit.category}</p>
                     </div>
                     <div>
-                        <p className="text-dark-lighter font-bold uppercase text-[10px] tracking-wider mb-1">Schedule</p>
-                        <p className="font-bold text-dark">{scheduleDisplay}</p>
+                        <p className="text-dark-lighter dark:text-night-text-muted font-bold uppercase text-[10px] tracking-wider mb-1 transition-colors">Schedule</p>
+                        <p className="font-bold text-dark dark:text-night-text transition-colors">{scheduleDisplay}</p>
                     </div>
                     <div>
-                        <p className="text-dark-lighter font-bold uppercase text-[10px] tracking-wider mb-1">Created</p>
-                        <p className="font-bold text-dark">{formatDisplayDate(habit.createdAt)}</p>
+                        <p className="text-dark-lighter dark:text-night-text-muted font-bold uppercase text-[10px] tracking-wider mb-1 transition-colors">Created</p>
+                        <p className="font-bold text-dark dark:text-night-text transition-colors">{formatDisplayDate(habit.createdAt)}</p>
                     </div>
                     {habit.type === 'numerical' && (
                         <div>
-                            <p className="text-dark-lighter font-bold uppercase text-[10px] tracking-wider mb-1">Target</p>
-                            <p className="font-bold text-dark">{habit.dailyTarget || habit.goalValue || '-'} {habit.unit}</p>
+                            <p className="text-dark-lighter dark:text-night-text-muted font-bold uppercase text-[10px] tracking-wider mb-1 transition-colors">Target</p>
+                            <p className="font-bold text-dark dark:text-night-text transition-colors">{habit.dailyTarget || habit.goalValue || '-'} {habit.unit}</p>
                         </div>
                     )}
                 </div>

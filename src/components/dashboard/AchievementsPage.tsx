@@ -35,20 +35,20 @@ export default function AchievementsPage() {
             {/* Header */}
             <header className="mb-10 text-center lg:text-left flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 <div>
-                    <h1 className="text-3xl lg:text-4xl font-black text-dark tracking-tight mb-2">
+                    <h1 className="text-3xl lg:text-4xl font-black text-dark dark:text-night-text tracking-tight mb-2">
                         Trophy Room
                     </h1>
-                    <p className="text-dark-lighter">
+                    <p className="text-dark-lighter dark:text-night-text-muted">
                         Track your milestones, streaks, and gamification rewards.
                     </p>
                 </div>
-                <div className="flex items-center gap-4 bg-white px-5 py-3 rounded-2xl shadow-sm border border-[#D4C8E8]">
-                    <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
-                        <Award className="text-primary" size={24} />
+                <div className="flex items-center gap-4 bg-white dark:bg-night-surface px-5 py-3 rounded-2xl shadow-sm border border-[#D4C8E8] dark:border-night-border transition-colors">
+                    <div className="w-12 h-12 bg-primary/10 dark:bg-primary/20 rounded-xl flex items-center justify-center">
+                        <Award className="text-primary dark:text-primary-light" size={24} />
                     </div>
                     <div className="text-left">
-                        <div className="text-2xl font-black text-dark">{achievements.length} <span className="text-sm font-medium text-dark-lighter">/ {ACHIEVEMENTS.length}</span></div>
-                        <div className="text-xs font-bold uppercase tracking-wider text-dark-lighter">Unlocked</div>
+                        <div className="text-2xl font-black text-dark dark:text-night-text">{achievements.length} <span className="text-sm font-medium text-dark-lighter dark:text-night-text-muted/70">/ {ACHIEVEMENTS.length}</span></div>
+                        <div className="text-xs font-bold uppercase tracking-wider text-dark-lighter dark:text-night-text-muted">Unlocked</div>
                     </div>
                 </div>
             </header>
@@ -57,10 +57,10 @@ export default function AchievementsPage() {
             <div className="space-y-12">
                 {categories.map((category, catIdx) => (
                     <section key={category}>
-                        <h2 className="text-lg font-black text-dark uppercase tracking-wider mb-6 flex items-center gap-3">
-                            <span className="w-8 h-px bg-[#D4C8E8] inline-block" />
+                        <h2 className="text-lg font-black text-dark dark:text-night-text uppercase tracking-wider mb-6 flex items-center gap-3">
+                            <span className="w-8 h-px bg-[#D4C8E8] dark:bg-night-border inline-block" />
                             {category}
-                            <span className="flex-1 h-px bg-[#D4C8E8] inline-block" />
+                            <span className="flex-1 h-px bg-[#D4C8E8] dark:bg-night-border inline-block" />
                         </h2>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -68,7 +68,7 @@ export default function AchievementsPage() {
                                 const isUnlocked = unlockedIds.has(achievement.id);
                                 const tierStyles = isUnlocked
                                     ? TIER_COLORS[achievement.tier]
-                                    : { bg: 'bg-surface-dark border-gray-200 opacity-60', text: 'text-gray-400', border: 'border-gray-200', glow: '' };
+                                    : { bg: 'bg-surface-dark dark:bg-night-surface/50 border-gray-200 dark:border-night-border opacity-70', text: 'text-gray-400 dark:text-night-text-muted/50', border: '', glow: '' };
 
                                 return (
                                     <motion.div
@@ -79,8 +79,8 @@ export default function AchievementsPage() {
                                         className={`relative p-5 rounded-2xl border ${tierStyles.bg} ${tierStyles.border} transition-all duration-300 ${isUnlocked ? tierStyles.glow : 'grayscale hover:grayscale-0'}`}
                                     >
                                         <div className="flex gap-4">
-                                            <div className={`w-14 h-14 rounded-xl flex items-center justify-center text-3xl shadow-inner ${isUnlocked ? 'bg-white' : 'bg-gray-100'}`}>
-                                                {isUnlocked ? achievement.icon : <Lock size={20} className="text-gray-400" />}
+                                            <div className={`w-14 h-14 rounded-xl flex items-center justify-center text-3xl shadow-inner ${isUnlocked ? 'bg-white dark:bg-white/10' : 'bg-gray-100 dark:bg-night-bg/50'}`}>
+                                                {isUnlocked ? achievement.icon : <Lock size={20} className="text-gray-400 dark:text-night-text-muted/50" />}
                                             </div>
                                             <div className="flex-1 min-w-0">
                                                 <div className="flex items-center justify-between gap-2 mb-1">
@@ -88,15 +88,15 @@ export default function AchievementsPage() {
                                                         {achievement.tier}
                                                     </span>
                                                     {isUnlocked && (
-                                                        <span className="text-[10px] font-medium text-dark-lighter">
+                                                        <span className="text-[10px] font-medium text-dark-lighter dark:text-night-text-muted/80">
                                                             {getUnlockDate(achievement.id)}
                                                         </span>
                                                     )}
                                                 </div>
-                                                <h3 className={`font-black text-sm mb-1 ${isUnlocked ? 'text-dark' : 'text-gray-500'}`}>
+                                                <h3 className={`font-black text-sm mb-1 ${isUnlocked ? 'text-dark dark:text-night-text' : 'text-gray-500 dark:text-night-text-muted/70'}`}>
                                                     {achievement.name}
                                                 </h3>
-                                                <p className={`text-xs ${isUnlocked ? 'text-dark-lighter' : 'text-gray-400'}`}>
+                                                <p className={`text-xs ${isUnlocked ? 'text-dark-lighter dark:text-night-text-muted' : 'text-gray-400 dark:text-night-text-muted/50'}`}>
                                                     {achievement.description}
                                                 </p>
                                             </div>

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useHabitStore } from '../../store/habitStore';
 import { useAuth } from '../../contexts/AuthContext';
-import { LayoutDashboard, BarChart2, Settings, User, LogOut, Plus, Menu, X, Award, Globe, Lock } from 'lucide-react';
+import { useThemeStore } from '../../store/themeStore';
+import { LayoutDashboard, BarChart2, Settings, User, LogOut, Plus, Menu, X, Award, Globe, Lock, Sun, Moon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TabView } from '../../types';
 import { isAnalyticsEnabled, canAddHabit, getUserTierName } from '../../utils/featureGateUtils';
@@ -14,6 +15,7 @@ interface SidebarProps {
 
 export default function Sidebar({ activeTab, setActiveTab, onAddHabit }: SidebarProps) {
     const { user, signOut } = useAuth();
+    const { theme, setTheme } = useThemeStore();
     const stats = useHabitStore(s => s.stats);
     const habitCount = useHabitStore(s => s.habits.filter(h => !h.archived).length);
     const [mobileOpen, setMobileOpen] = useState(false);
@@ -23,8 +25,9 @@ export default function Sidebar({ activeTab, setActiveTab, onAddHabit }: Sidebar
 
     const navItems = [
         { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-        { id: 'community', label: 'Community', icon: Globe },
+        { id: 'profile', label: 'Profile', icon: User },
         { id: 'statistics', label: 'Statistics', icon: BarChart2 },
+        { id: 'community', label: 'Community', icon: Globe },
         { id: 'achievements', label: 'Achievements', icon: Award },
         { id: 'settings', label: 'Settings', icon: Settings },
     ] as const;
@@ -89,8 +92,8 @@ export default function Sidebar({ activeTab, setActiveTab, onAddHabit }: Sidebar
                 <button
                     onClick={() => { if (!habitLimitReached) { onAddHabit(); setMobileOpen(false); } }}
                     className={`w-full mt-6 p-3 rounded-xl flex items-center justify-center gap-2 font-bold transition-all shadow-lg ${habitLimitReached
-                            ? 'bg-gray-300 dark:bg-night-border text-gray-500 dark:text-night-text-muted cursor-not-allowed shadow-none'
-                            : 'bg-primary hover:bg-primary-dark text-white shadow-primary/20 hover:shadow-primary/30'
+                        ? 'bg-gray-300 dark:bg-night-border text-gray-500 dark:text-night-text-muted cursor-not-allowed shadow-none'
+                        : 'bg-primary hover:bg-primary-dark text-white shadow-primary/20 hover:shadow-primary/30'
                         }`}
                     title={habitLimitReached ? `Level up to add more habits (${habitCount}/${canAddHabit(stats, 0) ? 'max' : 'max reached'})` : 'Add a new habit'}
                 >
@@ -101,16 +104,24 @@ export default function Sidebar({ activeTab, setActiveTab, onAddHabit }: Sidebar
 
             {/* User Profile / Bottom */}
             <div className="p-4 border-t border-[#D4C8E8] dark:border-night-border bg-surface/50 dark:bg-night-surface/50 space-y-2 transition-colors">
-                <div className="flex items-center gap-3 p-2 rounded-lg">
-                    <div className="w-8 h-8 bg-white dark:bg-night-bg border border-[#D4C8E8] dark:border-night-border rounded-full flex items-center justify-center text-primary dark:text-primary-light transition-colors">
-                        <User size={16} />
-                    </div>
-                    <div className="flex-1 min-w-0 flex items-center gap-2">
+                <div className="flex items-center justify-between p-2 rounded-lg gap-2">
+                    <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-8 h-8 bg-white dark:bg-night-bg border border-[#D4C8E8] dark:border-night-border rounded-full flex items-center justify-center text-primary dark:text-primary-light transition-colors flex-shrink-0">
+                            <User size={16} />
+                        </div>
                         <div className="flex-1 min-w-0 text-left">
                             <div className="text-sm font-bold text-dark dark:text-night-text truncate transition-colors">{user?.email?.split('@')[0] || 'User'}</div>
                             <div className="text-xs text-dark-lighter dark:text-night-text-muted truncate transition-colors">{tierName} • Lvl {stats.level}</div>
                         </div>
                     </div>
+                    {/* Theme Toggle */}
+                    <button
+                        onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                        className="p-2 rounded-lg bg-white dark:bg-night-bg border border-[#D4C8E8] dark:border-night-border hover:bg-gray-50 dark:hover:border-primary-light/50 text-dark-lighter dark:text-night-text-muted transition-colors flex-shrink-0"
+                        title="Toggle Dark Mode"
+                    >
+                        {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+                    </button>
                 </div>
                 <button
                     onClick={signOut}

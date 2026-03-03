@@ -90,20 +90,20 @@ export default function SmartGoalWizard({ isOpen, onClose }: SmartGoalWizardProp
 
     return (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div className="w-full max-w-md bg-white rounded-2xl border border-[#D4C8E8] shadow-2xl overflow-hidden">
+            <div className="w-full max-w-md bg-white dark:bg-night-surface rounded-2xl border border-[#D4C8E8] dark:border-night-border shadow-2xl overflow-hidden transition-colors">
                 {/* Header */}
-                <div className="px-5 py-4 border-b border-[#D4C8E8] flex items-center justify-between">
+                <div className="px-5 py-4 border-b border-[#D4C8E8] dark:border-night-border flex items-center justify-between transition-colors">
                     <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-yellow-400 to-amber-500 flex items-center justify-center">
                             <Target size={16} className="text-black" />
                         </div>
                         <div>
-                            <h3 className="text-sm font-bold text-white">S.M.A.R.T. Goal</h3>
-                            <p className="text-xs text-dark-lighter">Step {currentStep + 1} of {STEPS.length}</p>
+                            <h3 className="text-sm font-bold text-dark dark:text-night-text transition-colors">S.M.A.R.T. Goal</h3>
+                            <p className="text-xs text-dark-lighter dark:text-night-text-muted transition-colors">Step {currentStep + 1} of {STEPS.length}</p>
                         </div>
                     </div>
-                    <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-[#D4C8E8] transition-colors">
-                        <X size={16} className="text-dark-lighter" />
+                    <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-[#D4C8E8] dark:hover:bg-night-border transition-colors">
+                        <X size={16} className="text-dark-lighter dark:text-night-text-muted transition-colors" />
                     </button>
                 </div>
 
@@ -117,7 +117,7 @@ export default function SmartGoalWizard({ isOpen, onClose }: SmartGoalWizardProp
                                     : 'bg-primary/20'
                                     }`}
                             />
-                            <span className={`text-[10px] font-bold ${i <= currentStep ? 'text-yellow-400' : 'text-dark-lighter'}`}>
+                            <span className={`text-[10px] font-bold ${i <= currentStep ? 'text-yellow-500 dark:text-yellow-400' : 'text-dark-lighter dark:text-night-text-muted'}`}>
                                 {s.letter}
                             </span>
                         </div>
@@ -135,8 +135,8 @@ export default function SmartGoalWizard({ isOpen, onClose }: SmartGoalWizardProp
                             {step.icon}
                         </div>
                         <div>
-                            <h4 className="text-lg font-bold text-white">{step.label}</h4>
-                            <p className="text-xs text-dark-lighter">{step.description}</p>
+                            <h4 className="text-lg font-bold text-dark dark:text-night-text transition-colors">{step.label}</h4>
+                            <p className="text-xs text-dark-lighter dark:text-night-text-muted transition-colors">{step.description}</p>
                         </div>
                     </div>
 
@@ -144,26 +144,26 @@ export default function SmartGoalWizard({ isOpen, onClose }: SmartGoalWizardProp
                     {step.key === 'specific' && (
                         <div className="space-y-4">
                             <div>
-                                <label className="text-xs text-dark-lighter block mb-1.5">Goal name</label>
+                                <label className="text-xs text-dark-lighter dark:text-night-text-muted block mb-1.5 transition-colors">Goal name</label>
                                 <input
                                     type="text"
                                     value={goalName}
                                     onChange={e => setGoalName(e.target.value)}
                                     placeholder="e.g. Run 100km this month"
-                                    className="w-full px-4 py-3 rounded-xl bg-surface-dark border border-[#D4C8E8] text-dark placeholder-dark-lighter/50 focus:border-primary/50 focus:outline-none transition-all"
+                                    className="w-full px-4 py-3 rounded-xl bg-surface-dark dark:bg-night-bg border border-[#D4C8E8] dark:border-night-border text-dark dark:text-night-text placeholder-dark-lighter/50 dark:placeholder-night-text-muted/50 focus:border-primary/50 focus:outline-none transition-all"
                                     autoFocus
                                 />
                             </div>
                             <div>
-                                <label className="text-xs text-dark-lighter block mb-1.5">Link to a habit (optional)</label>
-                                <div className="grid grid-cols-2 gap-2 max-h-32 overflow-y-auto">
+                                <label className="text-xs text-dark-lighter dark:text-night-text-muted block mb-1.5 transition-colors">Link to a habit (optional)</label>
+                                <div className="grid grid-cols-2 gap-2 max-h-32 overflow-y-auto pr-1 custom-scrollbar">
                                     {activeHabits.map(h => (
                                         <button
                                             key={h.id}
                                             onClick={() => setLinkedHabitId(h.id === linkedHabitId ? '' : h.id)}
                                             className={`px-3 py-2 rounded-lg text-left text-xs flex items-center gap-2 transition-all ${linkedHabitId === h.id
-                                                ? 'bg-yellow-500/10 border border-yellow-500/30 text-white'
-                                                : 'bg-surface-dark border border-[#D4C8E8] text-dark-light hover:border-primary/30'
+                                                ? 'bg-yellow-500/10 border border-yellow-500/30 text-dark dark:text-night-text'
+                                                : 'bg-surface-dark dark:bg-night-bg border border-[#D4C8E8] dark:border-night-border text-dark-lighter dark:text-night-text-muted hover:border-primary/30 dark:hover:border-primary-light/30'
                                                 }`}
                                         >
                                             <span>{h.icon}</span>
@@ -180,24 +180,24 @@ export default function SmartGoalWizard({ isOpen, onClose }: SmartGoalWizardProp
                         <div className="space-y-4">
                             <div className="grid grid-cols-2 gap-3">
                                 <div>
-                                    <label className="text-xs text-dark-lighter block mb-1.5">Target value</label>
+                                    <label className="text-xs text-dark-lighter dark:text-night-text-muted block mb-1.5 transition-colors">Target value</label>
                                     <input
                                         type="number"
                                         value={targetValue}
                                         onChange={e => setTargetValue(e.target.value)}
                                         placeholder="100"
-                                        className="w-full px-4 py-3 rounded-xl bg-surface-dark border border-[#D4C8E8] text-dark placeholder-dark-lighter/50 focus:border-primary/50 focus:outline-none transition-all"
+                                        className="w-full px-4 py-3 rounded-xl bg-surface-dark dark:bg-night-bg border border-[#D4C8E8] dark:border-night-border text-dark dark:text-night-text placeholder-dark-lighter/50 dark:placeholder-night-text-muted/50 focus:border-primary/50 focus:outline-none transition-all"
                                         autoFocus
                                     />
                                 </div>
                                 <div>
-                                    <label className="text-xs text-dark-lighter block mb-1.5">Unit</label>
+                                    <label className="text-xs text-dark-lighter dark:text-night-text-muted block mb-1.5 transition-colors">Unit</label>
                                     <input
                                         type="text"
                                         value={unit}
                                         onChange={e => setUnit(e.target.value)}
                                         placeholder="km, reps, pages..."
-                                        className="w-full px-4 py-3 rounded-xl bg-surface-dark border border-[#D4C8E8] text-dark placeholder-dark-lighter/50 focus:border-primary/50 focus:outline-none transition-all"
+                                        className="w-full px-4 py-3 rounded-xl bg-surface-dark dark:bg-night-bg border border-[#D4C8E8] dark:border-night-border text-dark dark:text-night-text placeholder-dark-lighter/50 dark:placeholder-night-text-muted/50 focus:border-primary/50 focus:outline-none transition-all"
                                     />
                                 </div>
                             </div>
@@ -215,7 +215,7 @@ export default function SmartGoalWizard({ isOpen, onClose }: SmartGoalWizardProp
                     {/* Step: Achievable */}
                     {step.key === 'achievable' && (
                         <div className="space-y-4">
-                            <p className="text-xs text-dark-lighter">How challenging is this goal for you?</p>
+                            <p className="text-xs text-dark-lighter dark:text-night-text-muted transition-colors">How challenging is this goal for you?</p>
                             <div className="space-y-2">
                                 {([
                                     { key: 'easy' as const, label: '🟢 Comfortable', desc: 'I can do this with my current routine' },
@@ -227,12 +227,12 @@ export default function SmartGoalWizard({ isOpen, onClose }: SmartGoalWizardProp
                                         onClick={() => setDifficulty(opt.key)}
                                         className={`w-full px-4 py-3 rounded-xl text-left flex items-center justify-between transition-all ${difficulty === opt.key
                                             ? 'bg-yellow-500/10 border border-yellow-500/30'
-                                            : 'bg-surface-dark border border-[#D4C8E8] hover:border-primary/30'
+                                            : 'bg-surface-dark dark:bg-night-bg border border-[#D4C8E8] dark:border-night-border hover:border-primary/30 dark:hover:border-primary-light/30'
                                             }`}
                                     >
                                         <div>
-                                            <span className="text-sm font-medium text-white">{opt.label}</span>
-                                            <p className="text-xs text-dark-lighter mt-0.5">{opt.desc}</p>
+                                            <span className="text-sm font-medium text-dark dark:text-night-text transition-colors">{opt.label}</span>
+                                            <p className="text-xs text-dark-lighter dark:text-night-text-muted mt-0.5 transition-colors">{opt.desc}</p>
                                         </div>
                                         {difficulty === opt.key && (
                                             <div className="w-5 h-5 rounded-full bg-yellow-400 flex items-center justify-center">
@@ -249,19 +249,19 @@ export default function SmartGoalWizard({ isOpen, onClose }: SmartGoalWizardProp
                     {step.key === 'relevant' && (
                         <div className="space-y-4">
                             <div>
-                                <label className="text-xs text-dark-lighter block mb-1.5">Why does this goal matter to you? (optional)</label>
+                                <label className="text-xs text-dark-lighter dark:text-night-text-muted block mb-1.5 transition-colors">Why does this goal matter to you? (optional)</label>
                                 <textarea
                                     value={whyItMatters}
                                     onChange={e => setWhyItMatters(e.target.value)}
                                     placeholder="This matters because..."
                                     rows={3}
-                                    className="w-full px-4 py-3 rounded-xl bg-surface-dark border border-[#D4C8E8] text-dark placeholder-dark-lighter/50 focus:border-primary/50 focus:outline-none transition-all resize-none"
+                                    className="w-full px-4 py-3 rounded-xl bg-surface-dark dark:bg-night-bg border border-[#D4C8E8] dark:border-night-border text-dark dark:text-night-text placeholder-dark-lighter/50 dark:placeholder-night-text-muted/50 focus:border-primary/50 focus:outline-none transition-all resize-none"
                                     autoFocus
                                 />
                             </div>
                             <div className="bg-amber-500/5 rounded-xl p-4 border border-amber-500/10">
-                                <p className="text-xs text-dark-lighter leading-relaxed">
-                                    <span className="text-amber-400 font-semibold">Tip:</span> Goals that connect to your deeper values are 2-3x more likely to be achieved. Think about <em>who you want to become</em>, not just what you want to do.
+                                <p className="text-xs text-dark-lighter dark:text-night-text-muted leading-relaxed transition-colors">
+                                    <span className="text-amber-500 dark:text-amber-400 font-semibold transition-colors">Tip:</span> Goals that connect to your deeper values are 2-3x more likely to be achieved. Think about <em>who you want to become</em>, not just what you want to do.
                                 </p>
                             </div>
                         </div>
@@ -271,13 +271,13 @@ export default function SmartGoalWizard({ isOpen, onClose }: SmartGoalWizardProp
                     {step.key === 'timebound' && (
                         <div className="space-y-4">
                             <div>
-                                <label className="text-xs text-dark-lighter block mb-1.5">Deadline</label>
+                                <label className="text-xs text-dark-lighter dark:text-night-text-muted block mb-1.5 transition-colors">Deadline</label>
                                 <input
                                     type="date"
                                     value={deadline}
                                     onChange={e => setDeadline(e.target.value)}
                                     min={format(addDays(new Date(), 1), 'yyyy-MM-dd')}
-                                    className="w-full px-4 py-3 rounded-xl bg-surface-dark border border-[#D4C8E8] text-white focus:border-primary/50 focus:outline-none transition-all"
+                                    className="w-full px-4 py-3 rounded-xl bg-surface-dark dark:bg-night-bg border border-[#D4C8E8] dark:border-night-border text-dark dark:text-night-text focus:border-primary/50 focus:outline-none transition-all"
                                 />
                             </div>
                             <div className="flex flex-wrap gap-2">
@@ -286,8 +286,8 @@ export default function SmartGoalWizard({ isOpen, onClose }: SmartGoalWizardProp
                                         key={preset.label}
                                         onClick={() => setDeadline(preset.getValue())}
                                         className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${deadline === preset.getValue()
-                                            ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'
-                                            : 'bg-surface-dark text-dark-lighter border border-[#D4C8E8] hover:border-primary/30'
+                                            ? 'bg-yellow-500/20 text-yellow-600 dark:text-yellow-400 border border-yellow-500/30'
+                                            : 'bg-surface-dark dark:bg-night-bg text-dark-lighter dark:text-night-text-muted border border-[#D4C8E8] dark:border-night-border hover:border-primary/30 dark:hover:border-primary-light/30'
                                             }`}
                                     >
                                         {preset.label}
@@ -303,12 +303,12 @@ export default function SmartGoalWizard({ isOpen, onClose }: SmartGoalWizardProp
                             <div className="bg-gradient-to-br from-yellow-500/5 to-amber-500/5 rounded-xl p-4 border border-yellow-500/10 space-y-3">
                                 <div className="flex items-start gap-3">
                                     <div className="w-8 h-8 rounded-lg bg-yellow-500/20 flex items-center justify-center flex-shrink-0">
-                                        <Target size={14} className="text-yellow-400" />
+                                        <Target size={14} className="text-yellow-600 dark:text-yellow-400" />
                                     </div>
                                     <div>
-                                        <p className="text-sm font-bold text-white">{goalName}</p>
+                                        <p className="text-sm font-bold text-dark dark:text-night-text transition-colors">{goalName}</p>
                                         {linkedHabit && (
-                                            <p className="text-xs text-dark-lighter mt-0.5">
+                                            <p className="text-xs text-dark-lighter dark:text-night-text-muted mt-0.5 transition-colors">
                                                 Linked to {linkedHabit.icon} {linkedHabit.name}
                                             </p>
                                         )}
@@ -316,22 +316,22 @@ export default function SmartGoalWizard({ isOpen, onClose }: SmartGoalWizardProp
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-2">
-                                    <div className="bg-surface-dark rounded-lg px-3 py-2">
-                                        <span className="text-[10px] text-dark-lighter block">Target</span>
-                                        <span className="text-sm font-bold text-white">{targetValue} {unit}</span>
+                                    <div className="bg-surface-dark dark:bg-night-bg rounded-lg px-3 py-2 transition-colors">
+                                        <span className="text-[10px] text-dark-lighter dark:text-night-text-muted block transition-colors">Target</span>
+                                        <span className="text-sm font-bold text-dark dark:text-night-text transition-colors">{targetValue} {unit}</span>
                                     </div>
-                                    <div className="bg-surface-dark rounded-lg px-3 py-2">
-                                        <span className="text-[10px] text-dark-lighter block">Deadline</span>
-                                        <span className="text-sm font-bold text-white">{deadline ? format(new Date(deadline), 'MMM d, yyyy') : '-'}</span>
+                                    <div className="bg-surface-dark dark:bg-night-bg rounded-lg px-3 py-2 transition-colors">
+                                        <span className="text-[10px] text-dark-lighter dark:text-night-text-muted block transition-colors">Deadline</span>
+                                        <span className="text-sm font-bold text-dark dark:text-night-text transition-colors">{deadline ? format(new Date(deadline), 'MMM d, yyyy') : '-'}</span>
                                     </div>
-                                    <div className="bg-surface-dark rounded-lg px-3 py-2">
-                                        <span className="text-[10px] text-dark-lighter block">Difficulty</span>
-                                        <span className="text-sm font-bold text-white capitalize">{difficulty}</span>
+                                    <div className="bg-surface-dark dark:bg-night-bg rounded-lg px-3 py-2 transition-colors">
+                                        <span className="text-[10px] text-dark-lighter dark:text-night-text-muted block transition-colors">Difficulty</span>
+                                        <span className="text-sm font-bold text-dark dark:text-night-text capitalize transition-colors">{difficulty}</span>
                                     </div>
                                     {whyItMatters && (
-                                        <div className="bg-surface-dark rounded-lg px-3 py-2 col-span-2">
-                                            <span className="text-[10px] text-dark-lighter block">Why</span>
-                                            <p className="text-xs text-dark-light mt-0.5">{whyItMatters}</p>
+                                        <div className="bg-surface-dark dark:bg-night-bg rounded-lg px-3 py-2 col-span-2 transition-colors">
+                                            <span className="text-[10px] text-dark-lighter dark:text-night-text-muted block transition-colors">Why</span>
+                                            <p className="text-xs text-dark-light dark:text-night-text-muted/80 mt-0.5 transition-colors">{whyItMatters}</p>
                                         </div>
                                     )}
                                 </div>
@@ -341,10 +341,10 @@ export default function SmartGoalWizard({ isOpen, onClose }: SmartGoalWizardProp
                 </div>
 
                 {/* Footer Navigation */}
-                <div className="px-5 py-4 border-t border-[#D4C8E8] flex items-center justify-between">
+                <div className="px-5 py-4 border-t border-[#D4C8E8] dark:border-night-border flex items-center justify-between transition-colors">
                     <button
                         onClick={currentStep === 0 ? onClose : handleBack}
-                        className="px-4 py-2 rounded-xl text-sm text-dark-lighter hover:text-dark hover:bg-[#D4C8E8] transition-all"
+                        className="px-4 py-2 rounded-xl text-sm text-dark-lighter dark:text-night-text-muted hover:text-dark dark:hover:text-night-text hover:bg-[#D4C8E8] dark:hover:bg-night-border transition-all"
                     >
                         {currentStep === 0 ? 'Cancel' : (
                             <span className="flex items-center gap-1">

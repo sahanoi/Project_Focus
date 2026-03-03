@@ -15,6 +15,7 @@ import { Habit } from './types';
 import { Loader2 } from 'lucide-react';
 
 import FUTDashboard from './components/dashboard/FUTDashboard';
+import ProfilePage from './components/dashboard/ProfilePage';
 import AchievementsPage from './components/dashboard/AchievementsPage';
 import CommunityPage from './components/dashboard/CommunityPage';
 import AchievementToast from './components/dashboard/AchievementToast';
@@ -130,6 +131,7 @@ function AuthenticatedApp() {
             {activeTab === 'dashboard' && (
                 <FUTDashboard onAddHabit={handleAddHabit} onEditHabit={handleEditHabit} onAddGoal={() => setShowGoalWizard(true)} />
             )}
+            {activeTab === 'profile' && <ProfilePage />}
             {activeTab === 'community' && <CommunityPage />}
             {activeTab === 'statistics' && <StatsPage onEditHabit={handleEditHabit} />}
             {activeTab === 'settings' && <SettingsPage />}
