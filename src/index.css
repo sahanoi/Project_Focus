@@ -38,16 +38,16 @@ body {
 
   /* ---- Cards ---- */
   .card {
-    @apply bg-[#FAF7FE] rounded-3xl border border-dark-border p-5;
+    @apply bg-[#FAF7FE] dark:bg-night-surface rounded-3xl border border-dark-border dark:border-night-border p-5;
     box-shadow: 0 10px 40px -10px rgba(100, 70, 150, 0.12);
   }
 
   .card-flat {
-    @apply bg-[#FAF7FE] rounded-2xl border border-dark-border p-4;
+    @apply bg-[#FAF7FE] dark:bg-night-surface rounded-2xl border border-dark-border dark:border-night-border p-4;
   }
 
   .chart-card {
-    @apply bg-[#FAF7FE] rounded-3xl border border-dark-border p-6;
+    @apply bg-[#FAF7FE] dark:bg-night-surface rounded-3xl border border-dark-border dark:border-night-border p-6;
     box-shadow: 0 10px 40px -10px rgba(100, 70, 150, 0.12);
   }
 
@@ -57,7 +57,7 @@ body {
   }
 
   .btn-secondary {
-    @apply bg-[#FAF7FE] text-dark font-medium px-5 py-3 rounded-2xl border border-dark-border shadow-sm hover:bg-surface-dark active:scale-95 transition-all duration-200;
+    @apply bg-[#FAF7FE] dark:bg-night-bg text-dark dark:text-night-text font-medium px-5 py-3 rounded-2xl border border-dark-border dark:border-night-border shadow-sm hover:bg-surface-dark dark:hover:bg-primary/20 active:scale-95 transition-all duration-200;
   }
 
   .btn-danger {
@@ -74,11 +74,11 @@ body {
 
   /* ---- Inputs ---- */
   .input-field {
-    @apply w-full px-4 py-3 rounded-2xl border border-dark-border bg-[#FAF7FE] text-dark font-medium placeholder-dark-lighter/50 focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none transition-all;
+    @apply w-full px-4 py-3 rounded-2xl border border-dark-border dark:border-night-border bg-[#FAF7FE] dark:bg-night-bg text-dark dark:text-night-text font-medium placeholder-dark-lighter/50 dark:placeholder-night-text-muted/50 focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none transition-all;
   }
 
   .select-field {
-    @apply w-full px-4 py-3 rounded-2xl border border-dark-border bg-[#FAF7FE] text-dark font-medium focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none transition-all appearance-none cursor-pointer;
+    @apply w-full px-4 py-3 rounded-2xl border border-dark-border dark:border-night-border bg-[#FAF7FE] dark:bg-night-bg text-dark dark:text-night-text font-medium focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none transition-all appearance-none cursor-pointer;
   }
 
   /* ---- Badges ---- */
@@ -91,7 +91,7 @@ body {
   }
 
   .section-title {
-    @apply text-xl font-bold text-dark tracking-tight;
+    @apply text-xl font-bold text-dark dark:text-night-text tracking-tight;
   }
 
   /* ---- Tabs ---- */

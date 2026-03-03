@@ -24,10 +24,10 @@ export interface UnlockedAchievement {
 
 // Tier colors for UI
 export const TIER_COLORS: Record<AchievementTier, { bg: string; text: string; border: string; glow: string }> = {
-    bronze: { bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200', glow: 'shadow-amber-200/30' },
-    silver: { bg: 'bg-gray-50', text: 'text-gray-600', border: 'border-gray-300', glow: 'shadow-gray-300/30' },
-    gold: { bg: 'bg-yellow-50', text: 'text-yellow-700', border: 'border-yellow-300', glow: 'shadow-yellow-300/40' },
-    diamond: { bg: 'bg-blue-50', text: 'text-blue-600', border: 'border-blue-300', glow: 'shadow-blue-300/40' },
+    bronze: { bg: 'bg-amber-50 dark:bg-amber-900/20', text: 'text-amber-700 dark:text-amber-400', border: 'border-amber-200 dark:border-amber-900/50', glow: 'shadow-amber-200/30' },
+    silver: { bg: 'bg-gray-50 dark:bg-white/5', text: 'text-gray-600 dark:text-gray-300', border: 'border-gray-300 dark:border-white/10', glow: 'shadow-gray-300/30' },
+    gold: { bg: 'bg-yellow-50 dark:bg-yellow-900/20', text: 'text-yellow-700 dark:text-yellow-400', border: 'border-yellow-300 dark:border-yellow-900/50', glow: 'shadow-yellow-300/40' },
+    diamond: { bg: 'bg-blue-50 dark:bg-blue-900/20', text: 'text-blue-600 dark:text-blue-400', border: 'border-blue-300 dark:border-blue-900/50', glow: 'shadow-blue-300/40' },
 };
 
 // ==========================================
