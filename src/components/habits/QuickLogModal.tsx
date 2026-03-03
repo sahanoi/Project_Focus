@@ -73,7 +73,7 @@ export default function QuickLogModal() {
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-dark/20 backdrop-blur-sm animate-in fade-in duration-200">
             <div
-                className="w-full max-w-3xl bg-white rounded-3xl border border-[#E6DDF2] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col md:flex-row"
+                className="w-full max-w-3xl bg-white rounded-3xl border border-[#D4C8E8] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col md:flex-row"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* LEFT SIDE: Log Controls */}
@@ -213,7 +213,7 @@ export default function QuickLogModal() {
                                     }
                                 }}
                                 placeholder="How did it go? Any reflections..."
-                                className="w-full px-4 py-3 rounded-xl bg-surface border border-[#E6DDF2] text-dark text-sm placeholder-dark-lighter/40 focus:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/10 resize-none transition-all"
+                                className="w-full px-4 py-3 rounded-xl bg-surface border border-[#D4C8E8] text-dark text-sm placeholder-dark-lighter/40 focus:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/10 resize-none transition-all"
                                 rows={3}
                                 autoFocus
                             />

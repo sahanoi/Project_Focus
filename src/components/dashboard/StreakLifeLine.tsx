@@ -41,7 +41,7 @@ export default function StreakLifeLine() {
                         <div
                             className={`w-12 h-12 rounded-xl flex items-center justify-center transition-colors ${totalActiveStreaks > 0
                                 ? 'bg-gradient-to-br from-orange-400 to-red-400 dark:from-orange-500 dark:to-red-600 shadow-lg shadow-orange-300/30 dark:shadow-orange-900/30'
-                                : 'bg-[#E6DDF2] dark:bg-night-border'
+                                : 'bg-[#D4C8E8] dark:bg-night-border'
                                 }`}
                             style={{
                                 animation: topStreak?.currentStreak >= 7 ? 'streakBreathe 1.5s ease-in-out infinite' : 'none',
@@ -90,7 +90,7 @@ export default function StreakLifeLine() {
                     return (
                         <div key={s.id} className="flex items-center gap-2 group">
                             <span className="text-sm w-5 text-center">{s.icon}</span>
-                            <div className="flex-1 h-2 bg-[#E6DDF2] dark:bg-night-bg rounded-full overflow-hidden transition-colors">
+                            <div className="flex-1 h-2 bg-[#D4C8E8] dark:bg-night-bg rounded-full overflow-hidden transition-colors">
                                 <div
                                     className="h-full rounded-full transition-all duration-700 ease-out"
                                     style={{

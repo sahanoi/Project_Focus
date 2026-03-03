@@ -23,12 +23,12 @@ export default {
                 'teal-dark': '#0D9488',
                 pink: '#F472B6',
                 'pink-dark': '#DB2777',
-                surface: '#FFFBF0',      // Warm cream paper
-                'surface-dark': '#F4EFE6', // Shadowed paper
-                dark: '#4A4453',         // Deep purplish gray text
-                'dark-light': '#5D566A',
-                'dark-lighter': '#7C758A',
-                'dark-border': '#E6DDF2', // Lilac tinted border for light mode
+                surface: '#F0ECF5',      // Lavender mist
+                'surface-dark': '#E4DEF0', // Dusty lavender
+                dark: '#2D2640',         // Deep plum text
+                'dark-light': '#44385A',
+                'dark-lighter': '#6B5F82',
+                'dark-border': '#D4C8E8', // Deeper lilac border
 
                 // --- Cozy Dark Mode Specifics ---
                 'night-bg': '#16131D',       // Main dark background (very deep purple/grey)

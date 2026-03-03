@@ -55,7 +55,7 @@ export default function ShareHabitModal({ isOpen, onClose, habit }: ShareHabitMo
                     transition={{ type: 'spring', damping: 25, stiffness: 300 }}
                     className="relative w-full max-w-md bg-surface rounded-3xl shadow-2xl overflow-hidden"
                 >
-                    <div className="p-4 flex items-center justify-between border-b border-[#E6DDF2] bg-white">
+                    <div className="p-4 flex items-center justify-between border-b border-[#D4C8E8] bg-white">
                         <h3 className="font-black text-dark tracking-wide flex items-center gap-2">
                             <Share2 size={18} className="text-primary" /> Share Template
                         </h3>
@@ -132,7 +132,7 @@ export default function ShareHabitModal({ isOpen, onClose, habit }: ShareHabitMo
                             </button>
                             <button
                                 onClick={handleCopy}
-                                className="flex-1 py-3.5 bg-white text-dark border border-[#E6DDF2] rounded-xl font-bold shadow-sm hover:bg-surface-dark transition-colors flex items-center justify-center gap-2"
+                                className="flex-1 py-3.5 bg-white text-dark border border-[#D4C8E8] rounded-xl font-bold shadow-sm hover:bg-surface-dark transition-colors flex items-center justify-center gap-2"
                             >
                                 <Download size={18} /> Save Image
                             </button>

@@ -63,7 +63,7 @@ export default function MiniHeatmap() {
     }, [heatmapData]);
 
     const levelColors = [
-        'bg-[#E6DDF2]',           // 0: empty
+        'bg-[#D4C8E8]',           // 0: empty
         'bg-primary/20',          // 1: <25%
         'bg-primary/40',          // 2: 25-50%
         'bg-primary/65',          // 3: 50-75%

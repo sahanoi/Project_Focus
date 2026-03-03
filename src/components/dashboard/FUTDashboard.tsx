@@ -10,6 +10,7 @@ import StreakLifeLine from './StreakLifeLine';
 import WeeklyDigest from './WeeklyDigest';
 import MiniHeatmap from './MiniHeatmap';
 import HabitList from '../habits/HabitList';
+import DailyMissionCard from './DailyMissionCard';
 import { Target, Check, ChevronDown, ChevronRight, Sparkles, Moon } from 'lucide-react';
 import { Habit, Routine } from '../../types';
 
@@ -31,7 +32,7 @@ export default function FUTDashboard({ onAddHabit, onEditHabit, onAddGoal }: FUT
     return (
         <div className="flex flex-col h-full bg-surface-dark dark:bg-night-surface text-dark dark:text-night-text overflow-hidden transition-colors duration-300">
             {/* Top Bar / Header Area */}
-            <div className="border-b border-[#E6DDF2] dark:border-night-border bg-surface dark:bg-night-bg shadow-sm fade-down z-10 transition-colors">
+            <div className="border-b border-[#D4C8E8] dark:border-night-border bg-surface dark:bg-night-bg shadow-sm fade-down z-10 transition-colors">
                 {/* Row 1: Search + XP */}
                 <div className="flex items-center justify-between px-4 lg:px-8 py-2 gap-4">
                     <div className="flex-1 max-w-2xl">
@@ -52,6 +53,9 @@ export default function FUTDashboard({ onAddHabit, onEditHabit, onAddGoal }: FUT
 
                 {/* Main Content (Goals -> Routines -> Habits) */}
                 <div className="flex-1 overflow-y-auto pr-6 scrollbar-thin scrollbar-thumb-gray-300 min-w-0 flex flex-col gap-8">
+
+                    {/* 7-DAY ONBOARDING MISSION */}
+                    <DailyMissionCard />
 
                     {/* Level 1: GOALS (The Umbrella) */}
                     <section>
@@ -85,7 +89,7 @@ export default function FUTDashboard({ onAddHabit, onEditHabit, onAddGoal }: FUT
                                 </div>
                             ))}
                             {goals.length === 0 && onAddGoal && (
-                                <button onClick={onAddGoal} className="card border-dashed border-2 flex flex-col items-center justify-center p-8 text-dark-lighter dark:text-night-text-muted hover:text-primary dark:hover:text-primary-light border-[#E6DDF2] dark:border-night-border hover:border-primary/50 dark:hover:border-primary-light/50 hover:bg-primary/5 transition-all h-32">
+                                <button onClick={onAddGoal} className="card border-dashed border-2 flex flex-col items-center justify-center p-8 text-dark-lighter dark:text-night-text-muted hover:text-primary dark:hover:text-primary-light border-[#D4C8E8] dark:border-night-border hover:border-primary/50 dark:hover:border-primary-light/50 hover:bg-primary/5 transition-all h-32">
                                     <Target size={24} className="mb-2 opacity-50" />
                                     <span className="font-medium">Define your first objective</span>
                                 </button>
@@ -175,7 +179,7 @@ export default function FUTDashboard({ onAddHabit, onEditHabit, onAddGoal }: FUT
                 </div>
 
                 {/* Right Panel (Stats & Widgets) - Kept lighter and cleanly separated */}
-                <aside className="w-[340px] flex-shrink-0 flex flex-col gap-6 pl-6 border-l border-[#E6DDF2]/50 dark:border-night-border transition-colors">
+                <aside className="w-[340px] flex-shrink-0 flex flex-col gap-6 pl-6 border-l border-[#D4C8E8]/50 dark:border-night-border transition-colors">
 
                     {/* Daily Review CTA */}
                     <button

@@ -4,6 +4,37 @@
 
 export type HabitType = 'regular' | 'numerical' | 'infinite' | 'challenge';
 
+// ==========================================
+// Level Gating — Progressive Feature Unlock
+// ==========================================
+
+export type UserTier = 'novice' | 'apprentice' | 'practitioner' | 'competent' | 'expert';
+
+export const LEVEL_TO_TIER = (level: number): UserTier => {
+    if (level >= 5) return 'expert';
+    if (level >= 4) return 'competent';
+    if (level >= 3) return 'practitioner';
+    if (level >= 2) return 'apprentice';
+    return 'novice';
+};
+
+export interface FeatureGate {
+    maxHabits: number;
+    availableHabitTypes: HabitType[];
+    analyticsEnabled: boolean;
+    routinesEnabled: boolean;
+    goalsEnabled: boolean;
+    customScheduleEnabled: boolean;
+}
+
+export const FEATURE_GATES: Record<UserTier, FeatureGate> = {
+    novice: { maxHabits: 3, availableHabitTypes: ['regular'], analyticsEnabled: false, routinesEnabled: false, goalsEnabled: false, customScheduleEnabled: false },
+    apprentice: { maxHabits: 6, availableHabitTypes: ['regular', 'numerical'], analyticsEnabled: false, routinesEnabled: false, goalsEnabled: false, customScheduleEnabled: false },
+    practitioner: { maxHabits: 12, availableHabitTypes: ['regular', 'numerical', 'infinite'], analyticsEnabled: true, routinesEnabled: false, goalsEnabled: true, customScheduleEnabled: true },
+    competent: { maxHabits: 25, availableHabitTypes: ['regular', 'numerical', 'infinite', 'challenge'], analyticsEnabled: true, routinesEnabled: true, goalsEnabled: true, customScheduleEnabled: true },
+    expert: { maxHabits: Infinity, availableHabitTypes: ['regular', 'numerical', 'infinite', 'challenge'], analyticsEnabled: true, routinesEnabled: true, goalsEnabled: true, customScheduleEnabled: true },
+};
+
 export type HabitCategory =
     | 'health'
     | 'fitness'
@@ -84,6 +115,7 @@ export interface CharacterStats {
     level: number;
     xp: number;
     nextLevelXp: number;
+    accountCreatedDate: string; // ISO string to track onboard day
     attributes: {
         ovr: number; // Overall Rating (weighted average)
         dsc: number; // Discipline (daily habit completion rate)

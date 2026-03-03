@@ -22,7 +22,7 @@ export default function StatsRadar({ stats, className = '' }: StatsRadarProps) {
     return (
         <div className={`w-full aspect-square relative ${className}`}>
             {/* Background Container */}
-            <div className="absolute inset-0 bg-white dark:bg-night-surface rounded-2xl border border-[#E6DDF2] dark:border-night-border shadow-lg overflow-hidden transition-colors">
+            <div className="absolute inset-0 bg-white dark:bg-night-surface rounded-2xl border border-[#D4C8E8] dark:border-night-border shadow-lg overflow-hidden transition-colors">
 
                 {/* Header */}
                 <div className="absolute top-0 left-0 w-full p-4 flex justify-between items-center z-10">
@@ -41,7 +41,7 @@ export default function StatsRadar({ stats, className = '' }: StatsRadarProps) {
                 <div className="w-full h-full p-4 mt-4">
                     <ResponsiveContainer width="100%" height="100%">
                         <RadarChart cx="50%" cy="50%" outerRadius="70%" data={data}>
-                            <PolarGrid stroke="currentColor" className="text-[#E6DDF2] dark:text-night-border" strokeDasharray="4 4" />
+                            <PolarGrid stroke="currentColor" className="text-[#D4C8E8] dark:text-night-border" strokeDasharray="4 4" />
                             <PolarAngleAxis
                                 dataKey="subject"
                                 tick={({ payload, x, y, textAnchor, stroke, radius }) => {

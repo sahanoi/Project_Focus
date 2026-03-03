@@ -42,7 +42,7 @@ export default function AchievementsPage() {
                         Track your milestones, streaks, and gamification rewards.
                     </p>
                 </div>
-                <div className="flex items-center gap-4 bg-white px-5 py-3 rounded-2xl shadow-sm border border-[#E6DDF2]">
+                <div className="flex items-center gap-4 bg-white px-5 py-3 rounded-2xl shadow-sm border border-[#D4C8E8]">
                     <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
                         <Award className="text-primary" size={24} />
                     </div>
@@ -58,9 +58,9 @@ export default function AchievementsPage() {
                 {categories.map((category, catIdx) => (
                     <section key={category}>
                         <h2 className="text-lg font-black text-dark uppercase tracking-wider mb-6 flex items-center gap-3">
-                            <span className="w-8 h-px bg-[#E6DDF2] inline-block" />
+                            <span className="w-8 h-px bg-[#D4C8E8] inline-block" />
                             {category}
-                            <span className="flex-1 h-px bg-[#E6DDF2] inline-block" />
+                            <span className="flex-1 h-px bg-[#D4C8E8] inline-block" />
                         </h2>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

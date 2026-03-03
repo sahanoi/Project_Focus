@@ -70,7 +70,7 @@ export default function SettingsPage() {
             <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-white dark:bg-night-surface rounded-2xl border border-[#E6DDF2] dark:border-night-border p-6 shadow-sm transition-colors"
+                className="bg-white dark:bg-night-surface rounded-2xl border border-[#D4C8E8] dark:border-night-border p-6 shadow-sm transition-colors"
             >
                 <div className="flex items-center gap-4">
                     <div className="w-14 h-14 bg-gradient-to-tr from-primary to-primary-light rounded-2xl flex items-center justify-center shadow-md shadow-primary/15">
@@ -86,7 +86,7 @@ export default function SettingsPage() {
                     </div>
                     <button
                         onClick={signOut}
-                        className="flex items-center gap-2 px-4 py-2 rounded-xl text-dark-lighter dark:text-night-text-muted hover:text-danger dark:hover:text-danger hover:bg-danger/5 dark:hover:bg-danger/20 border border-[#E6DDF2] dark:border-night-border transition-all text-sm font-medium"
+                        className="flex items-center gap-2 px-4 py-2 rounded-xl text-dark-lighter dark:text-night-text-muted hover:text-danger dark:hover:text-danger hover:bg-danger/5 dark:hover:bg-danger/20 border border-[#D4C8E8] dark:border-night-border transition-all text-sm font-medium"
                     >
                         <LogOut size={16} />
                         Sign Out
@@ -107,7 +107,7 @@ export default function SettingsPage() {
                     { label: 'Goals', value: goals.length, icon: '🎯' },
                     { label: 'Logged', value: totalCompletions, icon: '✅' },
                 ].map(stat => (
-                    <div key={stat.label} className="bg-white dark:bg-night-surface rounded-xl border border-[#E6DDF2] dark:border-night-border p-4 text-center shadow-sm transition-colors">
+                    <div key={stat.label} className="bg-white dark:bg-night-surface rounded-xl border border-[#D4C8E8] dark:border-night-border p-4 text-center shadow-sm transition-colors">
                         <span className="text-lg mb-1 block">{stat.icon}</span>
                         <span className="text-xl font-black text-dark dark:text-night-text block transition-colors">{stat.value}</span>
                         <span className="text-[10px] text-dark-lighter dark:text-night-text-muted uppercase tracking-wider font-semibold transition-colors">{stat.label}</span>
@@ -120,7 +120,7 @@ export default function SettingsPage() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.08 }}
-                className="bg-white dark:bg-night-surface rounded-2xl border border-[#E6DDF2] dark:border-night-border p-6 shadow-sm space-y-4 transition-colors"
+                className="bg-white dark:bg-night-surface rounded-2xl border border-[#D4C8E8] dark:border-night-border p-6 shadow-sm space-y-4 transition-colors"
             >
                 <h3 className="font-bold text-dark dark:text-night-text flex items-center gap-2 transition-colors">
                     <Moon size={18} className="text-indigo-500" />
@@ -141,7 +141,7 @@ export default function SettingsPage() {
                                 onClick={() => setTheme(t.id as ThemeMode)}
                                 className={`flex items-center justify-center gap-2 py-3 rounded-xl border-2 transition-all font-bold text-sm ${isActive
                                     ? 'border-primary bg-primary/5 text-primary-dark dark:text-primary-light'
-                                    : 'border-[#E6DDF2] dark:border-night-border bg-surface dark:bg-night-bg text-dark-lighter dark:text-night-text-muted hover:border-primary/50'
+                                    : 'border-[#D4C8E8] dark:border-night-border bg-surface dark:bg-night-bg text-dark-lighter dark:text-night-text-muted hover:border-primary/50'
                                     }`}
                             >
                                 <Icon size={16} /> {t.label}
@@ -156,7 +156,7 @@ export default function SettingsPage() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className="bg-white dark:bg-night-surface rounded-2xl border border-[#E6DDF2] dark:border-night-border p-6 shadow-sm space-y-4 transition-colors"
+                className="bg-white dark:bg-night-surface rounded-2xl border border-[#D4C8E8] dark:border-night-border p-6 shadow-sm space-y-4 transition-colors"
             >
                 <h3 className="font-bold text-dark dark:text-night-text flex items-center gap-2 transition-colors">
                     <Package size={18} className="text-primary dark:text-primary-light" />
@@ -264,7 +264,7 @@ export default function SettingsPage() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="bg-white dark:bg-night-surface rounded-2xl border border-[#E6DDF2] dark:border-night-border p-6 shadow-sm transition-colors"
+                className="bg-white dark:bg-night-surface rounded-2xl border border-[#D4C8E8] dark:border-night-border p-6 shadow-sm transition-colors"
             >
                 <h3 className="font-bold text-dark dark:text-night-text mb-2 flex items-center gap-2 transition-colors">
                     <Info size={18} className="text-primary dark:text-primary-light" />

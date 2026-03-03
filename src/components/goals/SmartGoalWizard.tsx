@@ -90,9 +90,9 @@ export default function SmartGoalWizard({ isOpen, onClose }: SmartGoalWizardProp
 
     return (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div className="w-full max-w-md bg-white rounded-2xl border border-[#E6DDF2] shadow-2xl overflow-hidden">
+            <div className="w-full max-w-md bg-white rounded-2xl border border-[#D4C8E8] shadow-2xl overflow-hidden">
                 {/* Header */}
-                <div className="px-5 py-4 border-b border-[#E6DDF2] flex items-center justify-between">
+                <div className="px-5 py-4 border-b border-[#D4C8E8] flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-yellow-400 to-amber-500 flex items-center justify-center">
                             <Target size={16} className="text-black" />
@@ -102,7 +102,7 @@ export default function SmartGoalWizard({ isOpen, onClose }: SmartGoalWizardProp
                             <p className="text-xs text-dark-lighter">Step {currentStep + 1} of {STEPS.length}</p>
                         </div>
                     </div>
-                    <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-[#E6DDF2] transition-colors">
+                    <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-[#D4C8E8] transition-colors">
                         <X size={16} className="text-dark-lighter" />
                     </button>
                 </div>
@@ -150,7 +150,7 @@ export default function SmartGoalWizard({ isOpen, onClose }: SmartGoalWizardProp
                                     value={goalName}
                                     onChange={e => setGoalName(e.target.value)}
                                     placeholder="e.g. Run 100km this month"
-                                    className="w-full px-4 py-3 rounded-xl bg-surface-dark border border-[#E6DDF2] text-dark placeholder-dark-lighter/50 focus:border-primary/50 focus:outline-none transition-all"
+                                    className="w-full px-4 py-3 rounded-xl bg-surface-dark border border-[#D4C8E8] text-dark placeholder-dark-lighter/50 focus:border-primary/50 focus:outline-none transition-all"
                                     autoFocus
                                 />
                             </div>
@@ -163,7 +163,7 @@ export default function SmartGoalWizard({ isOpen, onClose }: SmartGoalWizardProp
                                             onClick={() => setLinkedHabitId(h.id === linkedHabitId ? '' : h.id)}
                                             className={`px-3 py-2 rounded-lg text-left text-xs flex items-center gap-2 transition-all ${linkedHabitId === h.id
                                                 ? 'bg-yellow-500/10 border border-yellow-500/30 text-white'
-                                                : 'bg-surface-dark border border-[#E6DDF2] text-dark-light hover:border-primary/30'
+                                                : 'bg-surface-dark border border-[#D4C8E8] text-dark-light hover:border-primary/30'
                                                 }`}
                                         >
                                             <span>{h.icon}</span>
@@ -186,7 +186,7 @@ export default function SmartGoalWizard({ isOpen, onClose }: SmartGoalWizardProp
                                         value={targetValue}
                                         onChange={e => setTargetValue(e.target.value)}
                                         placeholder="100"
-                                        className="w-full px-4 py-3 rounded-xl bg-surface-dark border border-[#E6DDF2] text-dark placeholder-dark-lighter/50 focus:border-primary/50 focus:outline-none transition-all"
+                                        className="w-full px-4 py-3 rounded-xl bg-surface-dark border border-[#D4C8E8] text-dark placeholder-dark-lighter/50 focus:border-primary/50 focus:outline-none transition-all"
                                         autoFocus
                                     />
                                 </div>
@@ -197,7 +197,7 @@ export default function SmartGoalWizard({ isOpen, onClose }: SmartGoalWizardProp
                                         value={unit}
                                         onChange={e => setUnit(e.target.value)}
                                         placeholder="km, reps, pages..."
-                                        className="w-full px-4 py-3 rounded-xl bg-surface-dark border border-[#E6DDF2] text-dark placeholder-dark-lighter/50 focus:border-primary/50 focus:outline-none transition-all"
+                                        className="w-full px-4 py-3 rounded-xl bg-surface-dark border border-[#D4C8E8] text-dark placeholder-dark-lighter/50 focus:border-primary/50 focus:outline-none transition-all"
                                     />
                                 </div>
                             </div>
@@ -227,7 +227,7 @@ export default function SmartGoalWizard({ isOpen, onClose }: SmartGoalWizardProp
                                         onClick={() => setDifficulty(opt.key)}
                                         className={`w-full px-4 py-3 rounded-xl text-left flex items-center justify-between transition-all ${difficulty === opt.key
                                             ? 'bg-yellow-500/10 border border-yellow-500/30'
-                                            : 'bg-surface-dark border border-[#E6DDF2] hover:border-primary/30'
+                                            : 'bg-surface-dark border border-[#D4C8E8] hover:border-primary/30'
                                             }`}
                                     >
                                         <div>
@@ -255,7 +255,7 @@ export default function SmartGoalWizard({ isOpen, onClose }: SmartGoalWizardProp
                                     onChange={e => setWhyItMatters(e.target.value)}
                                     placeholder="This matters because..."
                                     rows={3}
-                                    className="w-full px-4 py-3 rounded-xl bg-surface-dark border border-[#E6DDF2] text-dark placeholder-dark-lighter/50 focus:border-primary/50 focus:outline-none transition-all resize-none"
+                                    className="w-full px-4 py-3 rounded-xl bg-surface-dark border border-[#D4C8E8] text-dark placeholder-dark-lighter/50 focus:border-primary/50 focus:outline-none transition-all resize-none"
                                     autoFocus
                                 />
                             </div>
@@ -277,7 +277,7 @@ export default function SmartGoalWizard({ isOpen, onClose }: SmartGoalWizardProp
                                     value={deadline}
                                     onChange={e => setDeadline(e.target.value)}
                                     min={format(addDays(new Date(), 1), 'yyyy-MM-dd')}
-                                    className="w-full px-4 py-3 rounded-xl bg-surface-dark border border-[#E6DDF2] text-white focus:border-primary/50 focus:outline-none transition-all"
+                                    className="w-full px-4 py-3 rounded-xl bg-surface-dark border border-[#D4C8E8] text-white focus:border-primary/50 focus:outline-none transition-all"
                                 />
                             </div>
                             <div className="flex flex-wrap gap-2">
@@ -287,7 +287,7 @@ export default function SmartGoalWizard({ isOpen, onClose }: SmartGoalWizardProp
                                         onClick={() => setDeadline(preset.getValue())}
                                         className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${deadline === preset.getValue()
                                             ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'
-                                            : 'bg-surface-dark text-dark-lighter border border-[#E6DDF2] hover:border-primary/30'
+                                            : 'bg-surface-dark text-dark-lighter border border-[#D4C8E8] hover:border-primary/30'
                                             }`}
                                     >
                                         {preset.label}
@@ -341,10 +341,10 @@ export default function SmartGoalWizard({ isOpen, onClose }: SmartGoalWizardProp
                 </div>
 
                 {/* Footer Navigation */}
-                <div className="px-5 py-4 border-t border-[#E6DDF2] flex items-center justify-between">
+                <div className="px-5 py-4 border-t border-[#D4C8E8] flex items-center justify-between">
                     <button
                         onClick={currentStep === 0 ? onClose : handleBack}
-                        className="px-4 py-2 rounded-xl text-sm text-dark-lighter hover:text-dark hover:bg-[#E6DDF2] transition-all"
+                        className="px-4 py-2 rounded-xl text-sm text-dark-lighter hover:text-dark hover:bg-[#D4C8E8] transition-all"
                     >
                         {currentStep === 0 ? 'Cancel' : (
                             <span className="flex items-center gap-1">
@@ -367,7 +367,7 @@ export default function SmartGoalWizard({ isOpen, onClose }: SmartGoalWizardProp
                             disabled={!canProceed()}
                             className={`px-6 py-2.5 rounded-xl font-bold text-sm flex items-center gap-1 transition-all active:scale-[0.98] ${canProceed()
                                 ? 'bg-gradient-to-r from-yellow-400 to-amber-500 text-black shadow-lg shadow-yellow-500/20'
-                                : 'bg-[#E6DDF2] text-dark-lighter cursor-not-allowed'
+                                : 'bg-[#D4C8E8] text-dark-lighter cursor-not-allowed'
                                 }`}
                         >
                             Next <ChevronRight size={14} />

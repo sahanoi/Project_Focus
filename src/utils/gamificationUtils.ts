@@ -11,7 +11,8 @@ export const calculateLevel = (xp: number): { level: number; progress: number; n
     return { level, progress, nextLevelXp };
 };
 
-export const calculateCharacterStats = (habits: Habit[]): CharacterStats => {
+export const calculateCharacterStats = (habits: Habit[], previousDate?: string): CharacterStats => {
+    const accountCreatedDate = previousDate || new Date().toISOString();
     // Base Stats (everyone starts with some potential)
     const stats = {
         ovr: 60,
@@ -28,6 +29,7 @@ export const calculateCharacterStats = (habits: Habit[]): CharacterStats => {
             level: 1,
             xp: 0,
             nextLevelXp: LEVEL_THRESHOLD,
+            accountCreatedDate,
             attributes: stats,
         };
     }
@@ -112,6 +114,15 @@ export const calculateCharacterStats = (habits: Habit[]): CharacterStats => {
         totalXp += validCompletions * 50 * difficultyMulti * streakMulti;
     });
 
+    // Add onboarding mission XP
+    // Mission 1: 100, 2: 150, 3: 200, 4: 150, 5: 100, 6: 250, 7: 500
+    const missionRewards = [0, 100, 150, 200, 150, 100, 250, 500];
+    for (let day = 1; day <= 7; day++) {
+        if (typeof window !== 'undefined' && localStorage.getItem(`mission_claimed_${day}`) === 'true') {
+            totalXp += missionRewards[day];
+        }
+    }
+
     const xp = Math.round(totalXp);
     const { level, nextLevelXp } = calculateLevel(xp);
 
@@ -119,6 +130,7 @@ export const calculateCharacterStats = (habits: Habit[]): CharacterStats => {
         level,
         xp,
         nextLevelXp,
+        accountCreatedDate,
         attributes: stats
     };
 };

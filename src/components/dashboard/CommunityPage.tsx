@@ -37,7 +37,7 @@ export default function CommunityPage() {
     return (
         <div className="h-full flex flex-col bg-surface dark:bg-night-bg overflow-hidden transition-colors duration-300">
             {/* Header */}
-            <header className="flex-shrink-0 bg-white dark:bg-night-surface border-b border-[#E6DDF2] dark:border-night-border px-6 lg:px-8 py-6 transition-colors">
+            <header className="flex-shrink-0 bg-white dark:bg-night-surface border-b border-[#D4C8E8] dark:border-night-border px-6 lg:px-8 py-6 transition-colors">
                 <div className="max-w-6xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-4">
                     <div>
                         <div className="flex items-center gap-3 mb-2">
@@ -49,12 +49,12 @@ export default function CommunityPage() {
                         <p className="text-dark-lighter dark:text-night-text-muted transition-colors">Compete, share, and stay accountable with friends.</p>
                     </div>
 
-                    <div className="flex items-center gap-4 bg-surface-dark dark:bg-night-bg px-4 py-3 rounded-2xl border border-[#E6DDF2] dark:border-night-border shadow-inner transition-colors">
+                    <div className="flex items-center gap-4 bg-surface-dark dark:bg-night-bg px-4 py-3 rounded-2xl border border-[#D4C8E8] dark:border-night-border shadow-inner transition-colors">
                         <div className="text-right">
                             <p className="text-[10px] font-bold text-dark-lighter dark:text-night-text-muted uppercase tracking-wider mb-0.5 transition-colors">Season 1 Ends</p>
                             <p className="text-dark dark:text-night-text font-black tracking-tight transition-colors">4 Days, 12 Hrs</p>
                         </div>
-                        <div className="w-[1px] h-8 bg-[#E6DDF2] dark:bg-night-border mx-2 transition-colors" />
+                        <div className="w-[1px] h-8 bg-[#D4C8E8] dark:bg-night-border mx-2 transition-colors" />
                         <div className="text-left">
                             <p className="text-[10px] font-bold text-dark-lighter dark:text-night-text-muted uppercase tracking-wider mb-0.5 transition-colors">Global Rank</p>
                             <p className="text-primary dark:text-primary-light font-black tracking-tight flex items-center gap-1 transition-colors">
@@ -89,7 +89,7 @@ export default function CommunityPage() {
                                         initial={{ opacity: 0, x: -20 }}
                                         animate={{ opacity: 1, x: 0 }}
                                         transition={{ delay: idx * 0.1 }}
-                                        className="bg-white dark:bg-night-surface p-5 rounded-3xl border border-[#E6DDF2] dark:border-night-border shadow-sm hover:shadow-md transition-all flex items-start gap-4 group"
+                                        className="bg-white dark:bg-night-surface p-5 rounded-3xl border border-[#D4C8E8] dark:border-night-border shadow-sm hover:shadow-md transition-all flex items-start gap-4 group"
                                     >
                                         <div className="w-12 h-12 rounded-2xl bg-surface dark:bg-night-bg flex items-center justify-center text-2xl shadow-inner flex-shrink-0 group-hover:scale-110 transition-all">
                                             {item.icon}
@@ -127,14 +127,14 @@ export default function CommunityPage() {
                                 </h2>
                             </div>
 
-                            <div className="bg-white dark:bg-night-surface rounded-3xl border border-[#E6DDF2] dark:border-night-border shadow-sm overflow-hidden transition-colors">
+                            <div className="bg-white dark:bg-night-surface rounded-3xl border border-[#D4C8E8] dark:border-night-border shadow-sm overflow-hidden transition-colors">
                                 {allUsers.map((u, idx) => {
                                     const isSelf = u.id === 'self';
                                     return (
                                         <div
                                             key={u.id}
                                             onClick={() => !isSelf && setSelectedUser(u as SocialUser)}
-                                            className={`p-4 flex items-center gap-4 transition-colors border-b border-[#E6DDF2]/50 dark:border-night-border/50 last:border-0 ${isSelf ? 'bg-primary/5 dark:bg-primary/10' : 'hover:bg-surface dark:hover:bg-night-bg cursor-pointer'
+                                            className={`p-4 flex items-center gap-4 transition-colors border-b border-[#D4C8E8]/50 dark:border-night-border/50 last:border-0 ${isSelf ? 'bg-primary/5 dark:bg-primary/10' : 'hover:bg-surface dark:hover:bg-night-bg cursor-pointer'
                                                 }`}
                                         >
                                             {/* Rank */}
@@ -147,7 +147,7 @@ export default function CommunityPage() {
 
                                             {/* Avatar */}
                                             <div className="relative">
-                                                <img src={u.avatarUrl} alt={u.name} className="w-10 h-10 rounded-full bg-surface dark:bg-night-bg border border-[#E6DDF2] dark:border-night-border transition-colors" />
+                                                <img src={u.avatarUrl} alt={u.name} className="w-10 h-10 rounded-full bg-surface dark:bg-night-bg border border-[#D4C8E8] dark:border-night-border transition-colors" />
                                                 <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-dark dark:bg-night-border text-white dark:text-night-text text-[9px] font-bold rounded-full flex items-center justify-center border-2 border-white dark:border-night-surface transition-colors">
                                                     {u.level}
                                                 </div>
