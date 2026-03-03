@@ -18,5 +18,6 @@
 *   **Key Logic Details:**
     *   `profiles` table uses a `stats` JSONB column.
     *   `habitStore` is the central Zustand state, persisting locally and syncing to Supabase.
+    *   **Vite Build Quirk:** Never use optional chaining (`import.meta?.env`) when accessing environment variables. Vite relies on static string replacement during the build and requires strict `import.meta.env.VITE_KEY` syntax, otherwise Vercel deployments will fail to inject the keys.
 
 *When starting a new chat session, acknowledge reading this Knowledge Bank to ensure alignment.*
