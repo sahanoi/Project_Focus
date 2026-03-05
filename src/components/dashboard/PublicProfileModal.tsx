@@ -1,4 +1,5 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
+import { useModalClose } from '../../hooks/useModalClose';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SocialUser } from '../../utils/dummySocialData';
 import { X, Trophy, Flame, Shield, ArrowUpRight } from 'lucide-react';
@@ -11,6 +12,8 @@ interface PublicProfileModalProps {
 }
 
 export default function PublicProfileModal({ user, onClose }: PublicProfileModalProps) {
+    const stableOnClose = useCallback(onClose, [onClose]);
+    useModalClose(!!user, stableOnClose);
     if (!user) return null;
 
     // Formatting radar data

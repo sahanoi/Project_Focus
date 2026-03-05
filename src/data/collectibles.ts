@@ -30,6 +30,16 @@ function uniqueCategories(habits: Habit[]): number {
 // ────────────────────────────────────────────
 
 export const COLLECTIBLES: Collectible[] = [
+    // ── WELCOME ──
+    {
+        id: 'challenger',
+        name: 'Challenger',
+        description: 'For having the courage to start. Welcome aboard!',
+        icon: '🌱',
+        rarity: 'common',
+        unlockHint: 'Start your journey',
+        condition: () => true, // auto-unlocked for everyone
+    },
     // ── COMMON ──
     {
         id: 'first_step',

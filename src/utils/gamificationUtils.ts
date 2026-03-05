@@ -14,15 +14,15 @@ export const calculateLevel = (xp: number): { level: number; progress: number; n
 
 export const calculateCharacterStats = (habits: Habit[], previousDate?: string, previousUnlocked?: string[]): CharacterStats => {
     const accountCreatedDate = previousDate || new Date().toISOString();
-    // Base Stats (everyone starts with some potential)
+    // Base Stats (everyone starts with baseline potential)
     const stats = {
-        ovr: 60,
-        dsc: 60, // Discipline
-        foc: 60, // Focus
-        stk: 60, // Streak
-        bal: 60, // Balance
-        grt: 60, // Grit
-        vit: 60, // Vitality
+        ovr: 50,
+        dsc: 50, // Discipline
+        foc: 50, // Focus
+        stk: 50, // Streak
+        bal: 50, // Balance
+        grt: 50, // Grit
+        vit: 50, // Vitality
     };
 
     if (habits.length === 0) {
@@ -62,8 +62,8 @@ export const calculateCharacterStats = (habits: Habit[], previousDate?: string, 
 
     // 3. STK (Streak) — Average streak consistency
     const avgStreak = habits.reduce((acc, h) => acc + calculateCurrentStreak(h), 0) / habits.length;
-    const streakBonus = Math.min(40, avgStreak * 2);
-    stats.stk = Math.round(55 + streakBonus);
+    const streakBonus = Math.min(45, avgStreak * 2.5);
+    stats.stk = Math.round(50 + streakBonus);
 
     // 4. BAL (Balance) — Category diversity
     const categories = new Set(habits.map(h => h.category));
@@ -78,7 +78,7 @@ export const calculateCharacterStats = (habits: Habit[], previousDate?: string, 
     const vitHabits = habits.filter(h => h.category === 'health' || h.category === 'fitness');
     if (vitHabits.length > 0) {
         const vitRate = vitHabits.reduce((acc, h) => acc + calculateCompletionRate(h, startDate, todayStr), 0) / vitHabits.length;
-        stats.vit = Math.round(55 + (vitRate / 2.2));
+        stats.vit = Math.round(50 + (vitRate / 2));
     } else {
         stats.vit = 50;
     }

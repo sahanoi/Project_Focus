@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
+import { useModalClose } from '../../hooks/useModalClose';
 import { useHabitStore } from '../../store/habitStore';
 import { calculateHabitLevel, getLevelColor } from '../../utils/habitLevelUtils';
 import { format, subDays, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths } from 'date-fns';
@@ -35,7 +36,8 @@ export default function QuickLogModal() {
     const levelInfo = calculateHabitLevel(habit);
     const levelColor = getLevelColor(levelInfo.level);
 
-    const handleClose = () => setSelectedHabitId(null);
+    const handleClose = useCallback(() => setSelectedHabitId(null), [setSelectedHabitId]);
+    useModalClose(!!habit, handleClose);
 
     const handleToggle = () => {
         if (habit.type === 'numerical') {
@@ -196,8 +198,8 @@ export default function QuickLogModal() {
                         <button
                             onClick={() => setShowNote(!showNote)}
                             className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium transition-all mt-2 ${showNote || completion?.note
-                                    ? 'bg-primary/5 text-primary border border-primary/20'
-                                    : 'text-dark-lighter hover:text-primary hover:bg-primary/5'
+                                ? 'bg-primary/5 text-primary border border-primary/20'
+                                : 'text-dark-lighter hover:text-primary hover:bg-primary/5'
                                 }`}
                         >
                             <MessageSquare size={14} />

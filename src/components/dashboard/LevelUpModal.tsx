@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useHabitStore } from '../../store/habitStore';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, Trophy, ArrowUpCircle } from 'lucide-react';
+import { useModalClose } from '../../hooks/useModalClose';
 
 export default function LevelUpModal() {
     const { showLevelUpModal, levelUpData, dismissLevelUpModal } = useHabitStore();
+    const stableDismiss = useCallback(dismissLevelUpModal, [dismissLevelUpModal]);
+    useModalClose(showLevelUpModal, stableDismiss);
 
     if (!showLevelUpModal || !levelUpData) return null;
 

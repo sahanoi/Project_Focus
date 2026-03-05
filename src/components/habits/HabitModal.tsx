@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import { useModalClose } from '../../hooks/useModalClose';
 import { useHabitStore } from '../../store/habitStore';
 import {
     Habit, HabitType, HabitCategory, HABIT_CATEGORIES, HABIT_COLORS,
@@ -31,6 +32,8 @@ const DAY_EMOJIS = ['🌞', '🔵', '🟢', '🟡', '🟠', '🔴', '🟣'];
 
 export default function HabitModal({ isOpen, onClose, editHabit }: HabitModalProps) {
     const { addHabit, updateHabit, addGoal, updateGoal, goals } = useHabitStore();
+    const stableOnClose = useCallback(onClose, [onClose]);
+    useModalClose(isOpen, stableOnClose);
 
     const [name, setName] = useState('');
     const [type, setType] = useState<HabitType>('regular');
