@@ -194,6 +194,7 @@ const DEFAULT_STATS: CharacterStats = {
     xp: 0,
     nextLevelXp: 1000,
     accountCreatedDate: new Date().toISOString(),
+    unlockedCollectibles: [],
     attributes: { ovr: 60, dsc: 60, foc: 60, stk: 60, bal: 60, grt: 60, vit: 60 }
 };
 
@@ -293,6 +294,7 @@ export const useHabitStore = create<HabitStore>()(
                             xp: dbStats.xp ?? stats.xp,
                             nextLevelXp: dbStats.nextLevelXp ?? stats.nextLevelXp,
                             accountCreatedDate: dbStats.accountCreatedDate || profile.updated_at || stats.accountCreatedDate,
+                            unlockedCollectibles: dbStats.unlockedCollectibles || stats.unlockedCollectibles || [],
                             attributes: dbStats.attributes || stats.attributes
                         };
                     }
@@ -312,7 +314,7 @@ export const useHabitStore = create<HabitStore>()(
             recalculateStats: () => {
                 const state = get();
                 const { habits, achievements, stats: currentStats } = state;
-                const newStats = calculateCharacterStats(habits, get().stats?.accountCreatedDate);
+                const newStats = calculateCharacterStats(habits, get().stats?.accountCreatedDate, get().stats?.unlockedCollectibles);
                 const { unlocked, newlyUnlocked } = evaluateAchievements(habits, achievements);
 
                 const leveledUp = newStats.level > currentStats.level;
@@ -373,7 +375,7 @@ export const useHabitStore = create<HabitStore>()(
                     const newHabits = [...state.habits, newHabit];
                     return {
                         habits: newHabits,
-                        stats: calculateCharacterStats(newHabits, get().stats?.accountCreatedDate)
+                        stats: calculateCharacterStats(newHabits, get().stats?.accountCreatedDate, get().stats?.unlockedCollectibles)
                     };
                 });
 
@@ -413,7 +415,7 @@ export const useHabitStore = create<HabitStore>()(
                     );
                     return {
                         habits: newHabits,
-                        stats: calculateCharacterStats(newHabits, get().stats?.accountCreatedDate)
+                        stats: calculateCharacterStats(newHabits, get().stats?.accountCreatedDate, get().stats?.unlockedCollectibles)
                     };
                 });
 
@@ -449,7 +451,7 @@ export const useHabitStore = create<HabitStore>()(
                             ...r,
                             habitIds: r.habitIds.filter(hid => hid !== id)
                         })),
-                        stats: calculateCharacterStats(newHabits, get().stats?.accountCreatedDate)
+                        stats: calculateCharacterStats(newHabits, get().stats?.accountCreatedDate, get().stats?.unlockedCollectibles)
                     };
                 });
 
@@ -492,7 +494,7 @@ export const useHabitStore = create<HabitStore>()(
                     const newHabits = [...state.habits, duplicate];
                     return {
                         habits: newHabits,
-                        stats: calculateCharacterStats(newHabits, get().stats?.accountCreatedDate)
+                        stats: calculateCharacterStats(newHabits, get().stats?.accountCreatedDate, get().stats?.unlockedCollectibles)
                     };
                 });
 
@@ -614,7 +616,7 @@ export const useHabitStore = create<HabitStore>()(
 
                     return {
                         habits: newHabits,
-                        stats: calculateCharacterStats(newHabits, get().stats?.accountCreatedDate)
+                        stats: calculateCharacterStats(newHabits, get().stats?.accountCreatedDate, get().stats?.unlockedCollectibles)
                     };
                 });
 
@@ -655,7 +657,7 @@ export const useHabitStore = create<HabitStore>()(
 
                     return {
                         habits: newHabits,
-                        stats: calculateCharacterStats(newHabits, get().stats?.accountCreatedDate)
+                        stats: calculateCharacterStats(newHabits, get().stats?.accountCreatedDate, get().stats?.unlockedCollectibles)
                     };
                 });
 
@@ -843,7 +845,7 @@ export const useHabitStore = create<HabitStore>()(
                 const habits = generateDummyHabits();
                 const goals = generateDummyGoals(habits);
                 const routines = generateDummyRoutines(habits);
-                const stats = calculateCharacterStats(habits, get().stats?.accountCreatedDate);
+                const stats = calculateCharacterStats(habits, get().stats?.accountCreatedDate, get().stats?.unlockedCollectibles);
 
                 set({ habits, goals, routines, stats });
             },

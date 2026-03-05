@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useHabitStore } from '../../store/habitStore';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
-import { Award, Star, Edit3, Check, X, Camera, Info } from 'lucide-react';
+import { Award, Star, Edit3, Check, X, Camera, Info, Lock } from 'lucide-react';
 import { getUserTierName } from '../../utils/featureGateUtils';
+import { COLLECTIBLES } from '../../data/collectibles';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // ─────────────────────────────────────────────
@@ -479,17 +480,70 @@ export default function ProfilePage() {
                 </div>
             </div>
 
-            {/* ── Collectibles ── */}
+            {/* ── Collectibles Showcase ── */}
             <h2 className="text-lg font-bold text-dark dark:text-night-text mb-4 flex items-center gap-2 transition-colors">
                 <Star className="text-warning" size={20} />
                 Showcase & Collectibles
+                <span className="text-xs font-bold bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary-light px-2 py-0.5 rounded-full ml-auto">
+                    {stats.unlockedCollectibles?.length || 0} / {COLLECTIBLES.length}
+                </span>
             </h2>
-            <div className="card dark:bg-night-surface dark:border-night-border transition-colors text-center py-14 border-dashed border-2 hover:border-primary/40 dark:hover:border-primary-light/40 transition-all">
-                <Award size={42} className="mx-auto text-dark-lighter/25 dark:text-night-text-muted/25 mb-3 transition-colors" />
-                <h3 className="text-base font-bold text-dark dark:text-night-text mb-1 transition-colors">Collectibles Coming Soon</h3>
-                <p className="text-sm text-dark-lighter dark:text-night-text-muted max-w-xs mx-auto transition-colors">
-                    Earn rare items, pin your top achievements, and customize your explorer card as you level up!
-                </p>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 mb-6">
+                {COLLECTIBLES.map((c, i) => {
+                    const isUnlocked = stats.unlockedCollectibles?.includes(c.id);
+                    const rarityColors: Record<string, string> = {
+                        common: 'border-gray-300 dark:border-gray-600',
+                        rare: 'border-blue-400 dark:border-blue-500',
+                        epic: 'border-purple-500 dark:border-purple-400',
+                        legendary: 'border-yellow-400 dark:border-yellow-500',
+                    };
+                    const rarityGlow: Record<string, string> = {
+                        common: '',
+                        rare: 'shadow-blue-400/20',
+                        epic: 'shadow-purple-500/30',
+                        legendary: 'shadow-yellow-400/40 shadow-lg',
+                    };
+                    const rarityBg: Record<string, string> = {
+                        common: 'bg-gray-50 dark:bg-night-bg',
+                        rare: 'bg-blue-50 dark:bg-blue-900/20',
+                        epic: 'bg-purple-50 dark:bg-purple-900/20',
+                        legendary: 'bg-yellow-50/80 dark:bg-yellow-900/20',
+                    };
+                    const rarityLabel: Record<string, string> = {
+                        common: 'text-gray-500',
+                        rare: 'text-blue-500',
+                        epic: 'text-purple-500',
+                        legendary: 'text-yellow-500',
+                    };
+
+                    return (
+                        <motion.div
+                            key={c.id}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: i * 0.04 }}
+                            className={`relative rounded-2xl border-2 p-3 text-center transition-all ${isUnlocked
+                                    ? `${rarityColors[c.rarity]} ${rarityGlow[c.rarity]} ${rarityBg[c.rarity]} hover:scale-105 cursor-default`
+                                    : 'border-dashed border-gray-200 dark:border-night-border bg-gray-50/50 dark:bg-night-bg/50 opacity-50 grayscale'
+                                }`}
+                            title={isUnlocked ? c.description : c.unlockHint}
+                        >
+                            <div className={`text-2xl mb-1 ${!isUnlocked ? 'blur-[2px]' : ''}`}>{c.icon}</div>
+                            <div className={`text-[11px] font-bold leading-tight ${isUnlocked ? 'text-dark dark:text-night-text' : 'text-gray-400 dark:text-night-text-muted'
+                                } transition-colors`}>
+                                {isUnlocked ? c.name : '???'}
+                            </div>
+                            <div className={`text-[9px] font-bold uppercase tracking-wider mt-0.5 ${rarityLabel[c.rarity]}`}>
+                                {c.rarity}
+                            </div>
+                            {!isUnlocked && (
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                    <Lock size={14} className="text-gray-400 dark:text-night-text-muted" />
+                                </div>
+                            )}
+                        </motion.div>
+                    );
+                })}
             </div>
 
             {/* ── Edit Modal ── */}

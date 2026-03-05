@@ -1,5 +1,6 @@
 import { Habit, CharacterStats, HabitCategory } from '../types';
 import { calculateCompletionRate, calculateCurrentStreak, calculateLongestStreak } from './statsUtils';
+import { evaluateCollectibles } from '../data/collectibles';
 
 // XP Table: Level = floor(TotalXP / 1000) + 1
 export const LEVEL_THRESHOLD = 1000;
@@ -11,7 +12,7 @@ export const calculateLevel = (xp: number): { level: number; progress: number; n
     return { level, progress, nextLevelXp };
 };
 
-export const calculateCharacterStats = (habits: Habit[], previousDate?: string): CharacterStats => {
+export const calculateCharacterStats = (habits: Habit[], previousDate?: string, previousUnlocked?: string[]): CharacterStats => {
     const accountCreatedDate = previousDate || new Date().toISOString();
     // Base Stats (everyone starts with some potential)
     const stats = {
@@ -30,6 +31,7 @@ export const calculateCharacterStats = (habits: Habit[], previousDate?: string):
             xp: 0,
             nextLevelXp: LEVEL_THRESHOLD,
             accountCreatedDate,
+            unlockedCollectibles: previousUnlocked || [],
             attributes: stats,
         };
     }
@@ -126,11 +128,18 @@ export const calculateCharacterStats = (habits: Habit[], previousDate?: string):
     const xp = Math.round(totalXp);
     const { level, nextLevelXp } = calculateLevel(xp);
 
-    return {
+    const partialStats: CharacterStats = {
         level,
         xp,
         nextLevelXp,
         accountCreatedDate,
+        unlockedCollectibles: previousUnlocked || [],
         attributes: stats
     };
+
+    // Evaluate collectible unlocks
+    const { allUnlocked } = evaluateCollectibles(partialStats, habits, previousUnlocked || []);
+    partialStats.unlockedCollectibles = allUnlocked;
+
+    return partialStats;
 };
