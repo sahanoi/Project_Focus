@@ -15,6 +15,7 @@ function statsAtLevel(level: number): CharacterStats {
         xp: 0,
         nextLevelXp: 1000,
         accountCreatedDate: '2024-01-01T00:00:00.000Z',
+        unlockedCollectibles: [],
         attributes: { ovr: 60, dsc: 60, foc: 60, stk: 60, bal: 60, grt: 60, vit: 60 },
     };
 }

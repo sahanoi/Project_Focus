@@ -111,11 +111,26 @@ export interface Completion {
 //  RPG / Gamification Types
 // ==========================================
 
+export type CollectibleRarity = 'common' | 'rare' | 'epic' | 'legendary';
+
+export interface Collectible {
+    id: string;
+    name: string;
+    description: string;
+    icon: string;           // emoji
+    rarity: CollectibleRarity;
+    /** Human-readable unlock hint shown on locked cards */
+    unlockHint: string;
+    /** Programmatic condition — evaluated by the unlock engine */
+    condition: (stats: CharacterStats, habits: Habit[]) => boolean;
+}
+
 export interface CharacterStats {
     level: number;
     xp: number;
     nextLevelXp: number;
     accountCreatedDate: string; // ISO string to track onboard day
+    unlockedCollectibles: string[]; // IDs of earned collectibles
     attributes: {
         ovr: number; // Overall Rating (weighted average)
         dsc: number; // Discipline (daily habit completion rate)
