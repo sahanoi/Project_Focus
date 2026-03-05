@@ -18,7 +18,7 @@ export default function CommunityPage() {
         {
             id: 'self',
             name: user?.email?.split('@')[0] || 'You',
-            avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=You&backgroundColor=E6DDF2',
+            avatarUrl: 'https://api.dicebear.com/7.x/notionists/svg?seed=You&backgroundColor=E6DDF2',
             level: stats.level,
             xpThisWeek: stats.xp % 5000, // mock weekly XP for current user
             stats: stats,

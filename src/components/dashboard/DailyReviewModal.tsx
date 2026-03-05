@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
+import { useModalClose } from '../../hooks/useModalClose';
 import { useHabitStore } from '../../store/habitStore';
 import { format } from 'date-fns';
 import { X, Sparkles, Moon, CheckCircle2, XCircle, Snowflake } from 'lucide-react';
@@ -18,6 +19,8 @@ const MOOD_OPTIONS = [
 ];
 
 export default function DailyReviewModal({ isOpen, onClose }: DailyReviewModalProps) {
+    const stableOnClose = useCallback(onClose, [onClose]);
+    useModalClose(isOpen, stableOnClose);
     const { habits, selectedDate, freezeStreak } = useHabitStore();
     const [mood, setMood] = useState<number | null>(null);
     const [journal, setJournal] = useState('');

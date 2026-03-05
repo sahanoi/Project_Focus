@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useModalClose } from '../../hooks/useModalClose';
 import { useHabitStore } from '../../store/habitStore';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
@@ -12,9 +13,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 // ─────────────────────────────────────────────
 
 const AVATAR_SEEDS = [
-    'Felix', 'Aneka', 'Jocelyn', 'Brian', 'Buster',
-    'Mittens', 'George', 'Cleo', 'Shadow', 'Lucky',
-    'Hunter', 'Zoe', 'Daisy', 'Max', 'Luna',
+    'Felix', 'Aneka', 'Jocelyn', 'Brian', 'Sophie',
+    'Marcus', 'Cleo', 'Zara', 'Dominic', 'Luna',
+    'Kai', 'Priya', 'Ethan', 'Ava', 'Oscar',
+    'Nadia', 'Leo', 'Maya', 'Rishi', 'Elena',
 ];
 
 function polarToCartesian(cx: number, cy: number, r: number, angleDeg: number) {
@@ -132,6 +134,8 @@ interface EditModalProps {
 }
 
 function EditProfileModal({ currentUsername, currentBio, currentAvatarSeed, onClose, onSave }: EditModalProps) {
+    const stableOnClose = useCallback(onClose, [onClose]);
+    useModalClose(true, stableOnClose);
     const [username, setUsername] = useState(currentUsername);
     const [bio, setBio] = useState(currentBio);
     const [avatarSeed, setAvatarSeed] = useState(currentAvatarSeed);
@@ -193,7 +197,7 @@ function EditProfileModal({ currentUsername, currentBio, currentAvatarSeed, onCl
                                 title={seed}
                             >
                                 <img
-                                    src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}&backgroundColor=b6e3f4,c0aede,ffdfbf,E6DDF2`}
+                                    src={`https://api.dicebear.com/7.x/notionists/svg?seed=${seed}&backgroundColor=b6e3f4,c0aede,ffdfbf,E6DDF2`}
                                     alt={seed}
                                     className="w-full h-full"
                                 />
@@ -307,7 +311,7 @@ export default function ProfilePage() {
         setAvatarSeed(newSeed);
     };
 
-    const avatarUrl = `https://api.dicebear.com/7.x/avataaars/svg?seed=${avatarSeed}&backgroundColor=b6e3f4,c0aede,ffdfbf,E6DDF2`;
+    const avatarUrl = `https://api.dicebear.com/7.x/notionists/svg?seed=${avatarSeed}&backgroundColor=b6e3f4,c0aede,ffdfbf,E6DDF2`;
 
     // GPI chart data — all 7 attributes
     const gpiData = [
@@ -473,10 +477,32 @@ export default function ProfilePage() {
                         )}
                     </AnimatePresence>
 
-                    {/* Dark radar background container */}
-                    <div className="flex-1 flex items-center justify-center bg-[#130D24] dark:bg-[#0d0820] rounded-2xl p-4 min-h-[260px]">
-                        <GPIRadarChart data={gpiData} />
-                    </div>
+                    {/* Dark radar background container — gated behind 3 completions */}
+                    {totalCompletions >= 3 ? (
+                        <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-[#1a103d] to-[#0f0a26] dark:from-[#0d0820] dark:to-[#080612] rounded-2xl p-4 min-h-[260px]">
+                            <GPIRadarChart data={gpiData} />
+                        </div>
+                    ) : (
+                        <div className="flex-1 flex flex-col items-center justify-center bg-gradient-to-br from-gray-100 to-gray-50 dark:from-night-bg dark:to-[#0d0820] rounded-2xl p-6 min-h-[260px] text-center border-2 border-dashed border-gray-200 dark:border-night-border">
+                            <Lock size={28} className="text-gray-300 dark:text-night-text-muted mb-3" />
+                            <p className="text-sm font-bold text-dark dark:text-night-text mb-1 transition-colors">Chart Locked</p>
+                            <p className="text-xs text-dark-lighter dark:text-night-text-muted mb-3 transition-colors">
+                                Complete 3 habits to unlock your Performance Index
+                            </p>
+                            <div className="flex items-center gap-1.5">
+                                {[0, 1, 2].map(i => (
+                                    <div
+                                        key={i}
+                                        className={`w-3 h-3 rounded-full transition-all ${i < totalCompletions
+                                            ? 'bg-primary scale-110'
+                                            : 'bg-gray-200 dark:bg-night-border'
+                                            }`}
+                                    />
+                                ))}
+                                <span className="text-xs font-bold text-dark-lighter dark:text-night-text-muted ml-1">{totalCompletions}/3</span>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -523,8 +549,8 @@ export default function ProfilePage() {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: i * 0.04 }}
                             className={`relative rounded-2xl border-2 p-3 text-center transition-all ${isUnlocked
-                                    ? `${rarityColors[c.rarity]} ${rarityGlow[c.rarity]} ${rarityBg[c.rarity]} hover:scale-105 cursor-default`
-                                    : 'border-dashed border-gray-200 dark:border-night-border bg-gray-50/50 dark:bg-night-bg/50 opacity-50 grayscale'
+                                ? `${rarityColors[c.rarity]} ${rarityGlow[c.rarity]} ${rarityBg[c.rarity]} hover:scale-105 cursor-default`
+                                : 'border-dashed border-gray-200 dark:border-night-border bg-gray-50/50 dark:bg-night-bg/50 opacity-50 grayscale'
                                 }`}
                             title={isUnlocked ? c.description : c.unlockHint}
                         >
@@ -544,6 +570,13 @@ export default function ProfilePage() {
                         </motion.div>
                     );
                 })}
+            </div>
+
+            {/* How to Earn hint */}
+            <div className="text-center py-3 px-6 bg-primary/5 dark:bg-primary/10 rounded-xl border border-primary/10 dark:border-primary/20 mb-6">
+                <p className="text-xs font-medium text-dark-lighter dark:text-night-text-muted transition-colors">
+                    💡 <span className="font-bold">How to earn:</span> Complete habits, build streaks, level up, and diversify your categories to unlock rare collectibles!
+                </p>
             </div>
 
             {/* ── Edit Modal ── */}

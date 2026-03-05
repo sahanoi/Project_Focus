@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
+import { useModalClose } from '../../hooks/useModalClose';
 import { useHabitStore } from '../../store/habitStore';
 import { HABIT_CATEGORIES } from '../../types';
 import { Target, ChevronRight, ChevronLeft, Check, Sparkles, X, Calendar, BarChart2, Award, Compass, Clock } from 'lucide-react';
@@ -29,6 +30,8 @@ const DEADLINE_PRESETS = [
 ];
 
 export default function SmartGoalWizard({ isOpen, onClose }: SmartGoalWizardProps) {
+    const stableOnClose = useCallback(onClose, [onClose]);
+    useModalClose(isOpen, stableOnClose);
     const { habits, addGoal } = useHabitStore();
     const [currentStep, setCurrentStep] = useState(0);
 

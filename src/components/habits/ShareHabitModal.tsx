@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useCallback } from 'react';
+import { useModalClose } from '../../hooks/useModalClose';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Habit } from '../../types';
 import { useHabitStore } from '../../store/habitStore';
@@ -22,6 +23,8 @@ interface ShareHabitModalProps {
 export default function ShareHabitModal({ isOpen, onClose, habit }: ShareHabitModalProps) {
     const { stats } = useHabitStore();
     const { user } = useAuth();
+    const stableOnClose = useCallback(onClose, [onClose]);
+    useModalClose(isOpen, stableOnClose);
 
     if (!isOpen) return null;
 
@@ -114,7 +117,7 @@ export default function ShareHabitModal({ isOpen, onClose, habit }: ShareHabitMo
                                 </div>
 
                                 <div className="flex items-center justify-center gap-2">
-                                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=You&backgroundColor=E6DDF2" alt="Avatar" className="w-8 h-8 rounded-full border-2 border-white" />
+                                    <img src="https://api.dicebear.com/7.x/notionists/svg?seed=You&backgroundColor=E6DDF2" alt="Avatar" className="w-8 h-8 rounded-full border-2 border-white" />
                                     <span className={`text-xs font-bold opacity-90 ${themeColors.text}`}>
                                         {user?.email?.split('@')[0] || 'Focus Player'} • Lvl {stats.level}
                                     </span>

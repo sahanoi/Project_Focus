@@ -27,6 +27,7 @@ interface HabitStore {
     isLoading: boolean;
     achievements: UnlockedAchievement[];
     newAchievement: Achievement | null; // for toast notification
+    newlyUnlockedCollectibles: string[]; // IDs of collectibles unlocked in latest recalculation
     showLevelUpModal: boolean;
     levelUpData: { oldLevel: number; newLevel: number; oldStats: CharacterStats; newStats: CharacterStats } | null;
 
@@ -73,6 +74,7 @@ interface HabitStore {
     recalculateStats: () => void;
     dismissAchievementToast: () => void;
     dismissLevelUpModal: () => void;
+    clearNewlyUnlockedCollectibles: () => void;
 }
 
 // ==========================================
@@ -219,6 +221,7 @@ export const useHabitStore = create<HabitStore>()(
             isLoading: false,
             achievements: [],
             newAchievement: null,
+            newlyUnlockedCollectibles: [],
             showLevelUpModal: false,
             levelUpData: null,
 
@@ -319,10 +322,15 @@ export const useHabitStore = create<HabitStore>()(
 
                 const leveledUp = newStats.level > currentStats.level;
 
+                const oldCollectibles = currentStats.unlockedCollectibles || [];
+                const newCollectibles = newStats.unlockedCollectibles || [];
+                const justUnlocked = newCollectibles.filter((id: string) => !oldCollectibles.includes(id));
+
                 set({
                     stats: newStats,
                     achievements: unlocked,
                     newAchievement: newlyUnlocked.length > 0 ? newlyUnlocked[0] : null,
+                    ...(justUnlocked.length > 0 && { newlyUnlockedCollectibles: justUnlocked }),
                     ...(leveledUp && {
                         showLevelUpModal: true,
                         levelUpData: {
@@ -346,6 +354,7 @@ export const useHabitStore = create<HabitStore>()(
                             nextLevelXp: newStats.nextLevelXp,
                             accountCreatedDate: newStats.accountCreatedDate,
                             attributes: newStats.attributes,
+                            unlockedCollectibles: newStats.unlockedCollectibles,
                         },
                         updated_at: new Date().toISOString()
                     }).eq('id', user.id);
@@ -354,6 +363,7 @@ export const useHabitStore = create<HabitStore>()(
 
             dismissAchievementToast: () => set({ newAchievement: null }),
             dismissLevelUpModal: () => set({ showLevelUpModal: false, levelUpData: null }),
+            clearNewlyUnlockedCollectibles: () => set({ newlyUnlockedCollectibles: [] }),
 
             // ==========================================
             // Habit CRUD

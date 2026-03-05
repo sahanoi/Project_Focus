@@ -13,6 +13,7 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { useThemeStore } from './store/themeStore';
 import { Habit } from './types';
 import { Loader2 } from 'lucide-react';
+import CollectibleToast from './components/ui/CollectibleToast';
 
 import FUTDashboard from './components/dashboard/FUTDashboard';
 import ProfilePage from './components/dashboard/ProfilePage';
@@ -66,8 +67,8 @@ function AuthenticatedApp() {
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center min-h-screen bg-neutral-950">
-                <Loader2 className="w-8 h-8 text-yellow-500 animate-spin" />
+            <div className="flex items-center justify-center min-h-screen bg-surface dark:bg-night-bg transition-colors">
+                <Loader2 className="w-8 h-8 text-primary dark:text-primary-light animate-spin" />
             </div>
         );
     }
@@ -79,10 +80,10 @@ function AuthenticatedApp() {
     // Only show full-screen loading on initial data fetch, not on subsequent re-renders
     if (!initialLoadDone) {
         return (
-            <div className="flex items-center justify-center min-h-screen bg-neutral-950">
+            <div className="flex items-center justify-center min-h-screen bg-surface dark:bg-night-bg transition-colors">
                 <div className="text-center space-y-3">
-                    <Loader2 className="w-8 h-8 text-yellow-500 animate-spin mx-auto" />
-                    <p className="text-gray-400 text-sm">Loading your data...</p>
+                    <Loader2 className="w-8 h-8 text-primary dark:text-primary-light animate-spin mx-auto" />
+                    <p className="text-dark-lighter dark:text-night-text-muted text-sm">Loading your data...</p>
                 </div>
             </div>
         );
@@ -139,6 +140,9 @@ function AuthenticatedApp() {
 
             {/* Achievement Unlock Toast */}
             <AchievementToast />
+
+            {/* Collectible Unlock Toast */}
+            <CollectibleToast />
 
             {/* Level Up Celebration */}
             <LevelUpModal />
