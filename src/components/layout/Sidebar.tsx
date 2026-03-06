@@ -3,6 +3,7 @@ import { useHabitStore } from '../../store/habitStore';
 import { useAuth } from '../../contexts/AuthContext';
 import { useThemeStore } from '../../store/themeStore';
 import { LayoutDashboard, BarChart2, Settings, User, LogOut, Plus, Menu, X, Award, Globe, Lock, Sun, Moon } from 'lucide-react';
+import AppLogo from '../ui/AppLogo';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TabView } from '../../types';
 import { isAnalyticsEnabled, canAddHabit, getUserTierName } from '../../utils/featureGateUtils';
@@ -42,9 +43,7 @@ export default function Sidebar({ activeTab, setActiveTab, onAddHabit }: Sidebar
             {/* Brand / Logo */}
             <div className="p-6 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-gradient-to-tr from-primary to-primary-light rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-primary/20">
-                        F
-                    </div>
+                    <AppLogo size={32} />
                     <h1 className="text-xl font-bold text-dark dark:text-night-text tracking-tight transition-colors">Focus FTP</h1>
                 </div>
                 {/* Mobile close button */}
