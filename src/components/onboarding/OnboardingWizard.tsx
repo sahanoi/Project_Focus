@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useHabitStore } from '../../store/habitStore';
 import { HABIT_CATEGORIES, HABIT_TEMPLATES, HabitCategory, HabitTemplate } from '../../types';
 import { Sparkles, ChevronRight, Check, Zap, Target, Eye, ArrowLeft, Flame, Unlock } from 'lucide-react';
+import AppLogo from '../ui/AppLogo';
 import { motion, AnimatePresence } from 'framer-motion';
 
 /** Anchor habits — zero-resistance daily habits users already do. */
@@ -74,9 +75,9 @@ export default function OnboardingWizard({ onComplete }: OnboardingProps) {
                             initial={{ scale: 0.8 }}
                             animate={{ scale: 1 }}
                             transition={{ duration: 0.5, delay: 0.1 }}
-                            className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-primary to-primary-light shadow-lg shadow-primary/20"
+                            className="inline-flex items-center justify-center"
                         >
-                            <Zap size={40} className="text-white" />
+                            <AppLogo size={80} />
                         </motion.div>
                         <h1 className="text-4xl font-black text-dark dark:text-night-text tracking-tight">
                             Focus FTP

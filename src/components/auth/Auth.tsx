@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { Loader2, Mail, Lock, Sparkles, ArrowRight, KeyRound, CheckCircle2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import AppLogo from '../ui/AppLogo';
 import { useAuth } from '../../contexts/AuthContext';
 
 export default function Auth() {
@@ -117,11 +118,9 @@ export default function Auth() {
                         initial={{ y: 20, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
                         transition={{ duration: 0.5, delay: 0.2 }}
-                        className="inline-flex items-center justify-center p-0.5 bg-gradient-to-tr from-primary via-primary-light to-primary rounded-[22px] shadow-2xl shadow-primary/30 mb-6 group"
+                        className="inline-flex items-center justify-center mb-6 group"
                     >
-                        <div className="bg-white dark:bg-neutral-900 w-16 h-16 rounded-[20px] flex items-center justify-center transition-transform group-hover:scale-[0.98]">
-                            <span className="text-transparent bg-clip-text bg-gradient-to-tr from-primary to-primary-light font-black text-3xl">F</span>
-                        </div>
+                        <AppLogo size={64} />
                     </motion.div>
                     <h1 className="text-4xl font-black text-neutral-900 dark:text-white tracking-tight leading-none mb-2">
                         Focus FTP
