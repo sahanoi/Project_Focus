@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useHabitStore } from '../../store/habitStore';
 import { useAuth } from '../../contexts/AuthContext';
 import { useThemeStore } from '../../store/themeStore';
-import { LayoutDashboard, BarChart2, Settings, User, LogOut, Plus, Menu, X, Award, Globe, Lock, Sun, Moon } from 'lucide-react';
+import { LayoutDashboard, BarChart2, Settings, User, LogOut, Plus, Menu, X, Award, Globe, Lock, Sun, Moon, ChevronLeft, ChevronRight } from 'lucide-react';
 import AppLogo from '../ui/AppLogo';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TabView } from '../../types';
@@ -44,8 +44,9 @@ export default function Sidebar({ activeTab, setActiveTab, onAddHabit, isCollaps
         <>
             {/* Brand / Logo */}
             <div
-                className={`p-6 flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'} cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 transition-colors`}
+                className={`p-4 px-5 flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'} cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 transition-colors group`}
                 onClick={() => setIsCollapsed?.(!isCollapsed)}
+                title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
             >
                 <div className="flex items-center gap-3">
                     <AppLogo size={32} />
@@ -60,6 +61,10 @@ export default function Sidebar({ activeTab, setActiveTab, onAddHabit, isCollaps
                         <X size={20} />
                     </button>
                 )}
+                {/* Collapse/Expand arrow — desktop only */}
+                <div className={`hidden lg:flex items-center justify-center w-6 h-6 rounded-full bg-[#D4C8E8]/60 dark:bg-night-border/60 group-hover:bg-primary/20 dark:group-hover:bg-primary/30 text-dark-lighter dark:text-night-text-muted group-hover:text-primary dark:group-hover:text-primary-light transition-all flex-shrink-0 ${isCollapsed ? 'mt-1' : ''}`}>
+                    {isCollapsed ? <ChevronRight size={13} /> : <ChevronLeft size={13} />}
+                </div>
             </div>
 
             {/* Navigation */}
