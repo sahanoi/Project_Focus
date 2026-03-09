@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useHabitStore } from '../../store/habitStore';
 import { Search, Zap, Check } from 'lucide-react';
 
@@ -46,8 +47,16 @@ export default function LogEntryBar() {
     return (
         <div className="flex items-center gap-4 flex-1">
             {/* Search/Log Input */}
-            <div className="relative flex-1 max-w-md">
-                <div className="flex items-center bg-white dark:bg-night-surface rounded-lg border border-[#D4C8E8] dark:border-night-border px-3 py-2 focus-within:border-primary/50 dark:focus-within:border-primary-light/50 transition-colors shadow-sm">
+            <motion.div
+                layout
+                className="relative"
+                animate={{
+                    flex: showDropdown ? '1 1 auto' : '0 1 28rem',
+                    maxWidth: showDropdown ? '100%' : '28rem' // 28rem ≈ max-w-md
+                }}
+                transition={{ duration: 0.3, ease: 'easeInOut' }}
+            >
+                <div className="flex items-center bg-white dark:bg-night-surface rounded-lg border border-[#D4C8E8] dark:border-night-border px-3 py-2 focus-within:border-primary/50 dark:focus-within:border-primary-light/50 transition-colors shadow-sm w-full">
                     <Search size={16} className="text-dark-lighter dark:text-night-text-muted mr-2 flex-shrink-0 transition-colors" />
                     <input
                         type="text"
@@ -95,23 +104,33 @@ export default function LogEntryBar() {
                         })}
                     </div>
                 )}
-            </div>
+            </motion.div>
 
             {/* Quick Toggle Pills */}
-            <div className="flex items-center gap-2">
-                <Zap size={14} className="text-warning" />
-                {topUncompleted.map(h => (
-                    <button
-                        key={h.id}
-                        onClick={() => handleQuickToggle(h.id)}
-                        className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white dark:bg-night-surface border border-[#D4C8E8] dark:border-night-border hover:border-primary/30 dark:hover:border-primary-light/30 hover:bg-primary/5 dark:hover:bg-primary/10 hover:-translate-y-0.5 text-xs text-dark-light dark:text-night-text transition-all group shadow-sm"
-                        title={`Quick complete: ${h.name}`}
+            <AnimatePresence>
+                {!showDropdown && (
+                    <motion.div
+                        initial={{ opacity: 0, width: 0, scale: 0.8, filter: 'blur(4px)' }}
+                        animate={{ opacity: 1, width: 'auto', scale: 1, filter: 'blur(0px)' }}
+                        exit={{ opacity: 0, width: 0, scale: 0.8, filter: 'blur(4px)' }}
+                        transition={{ duration: 0.25, ease: 'easeOut' }}
+                        className="flex items-center gap-2 overflow-hidden flex-nowrap"
                     >
-                        <span className="text-sm">{h.icon}</span>
-                        <span className="hidden xl:inline max-w-[80px] truncate">{h.name.replace(/\s*[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/u, '')}</span>
-                    </button>
-                ))}
-            </div>
+                        <Zap size={14} className="text-warning flex-shrink-0" />
+                        {topUncompleted.map(h => (
+                            <button
+                                key={h.id}
+                                onClick={() => handleQuickToggle(h.id)}
+                                className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white dark:bg-night-surface border border-[#D4C8E8] dark:border-night-border hover:border-primary/30 dark:hover:border-primary-light/30 hover:bg-primary/5 dark:hover:bg-primary/10 hover:-translate-y-0.5 text-xs text-dark-light dark:text-night-text transition-all group shadow-sm flex-shrink-0"
+                                title={`Quick complete: ${h.name}`}
+                            >
+                                <span className="text-sm">{h.icon}</span>
+                                <span className="hidden xl:inline max-w-[80px] truncate">{h.name.replace(/\s*[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/u, '')}</span>
+                            </button>
+                        ))}
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }
