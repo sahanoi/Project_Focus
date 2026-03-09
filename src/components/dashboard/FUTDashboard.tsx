@@ -32,7 +32,7 @@ export default function FUTDashboard({ onAddHabit, onEditHabit, onAddGoal }: FUT
     return (
         <div className="flex flex-col h-full bg-surface-dark dark:bg-night-surface text-dark dark:text-night-text overflow-hidden transition-colors duration-300">
             {/* Top Bar / Header Area */}
-            <div className="border-b border-[#D4C8E8] dark:border-night-border bg-surface dark:bg-night-bg shadow-sm fade-down z-10 transition-colors">
+            <div className="relative border-b border-[#D4C8E8] dark:border-night-border bg-surface dark:bg-night-bg shadow-sm fade-down z-50 transition-colors">
                 {/* Row 1: Search + XP */}
                 <div className="flex items-center justify-between px-4 lg:px-8 py-2 gap-4">
                     <div className="flex-1 max-w-2xl">
@@ -73,14 +73,14 @@ export default function FUTDashboard({ onAddHabit, onEditHabit, onAddGoal }: FUT
 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             {goals.slice(0, 3).map(g => (
-                                <div key={g.id} className="card bg-white dark:bg-night-surface relative overflow-hidden group hover:-translate-y-1 transition-all border border-primary-light/50 dark:border-night-border shadow-sm">
+                                <div key={g.id} className="luxury-glass relative overflow-hidden group hover:-translate-y-1 transition-all p-5">
                                     <div className="absolute top-0 right-0 p-4">
                                         {g.achieved && <Check size={20} className="text-success" />}
                                     </div>
                                     <h3 className="font-bold text-lg mb-1 text-dark dark:text-night-text transition-colors">{g.name}</h3>
                                     <div className="flex items-center gap-2">
                                         <span className="text-sm font-semibold text-primary dark:text-primary-light transition-colors">{g.targetValue} {g.unit}</span>
-                                        {g.deadline && <span className="text-xs text-dark-lighter dark:text-night-text-muted font-medium bg-surface-dark dark:bg-night-bg px-2 py-0.5 rounded-full transition-colors">by {g.deadline}</span>}
+                                        {g.deadline && <span className="text-xs text-dark-lighter dark:text-night-text-muted font-medium bg-surface-dark/50 dark:bg-night-bg/50 px-2 py-0.5 rounded-full transition-colors">by {g.deadline}</span>}
                                     </div>
                                     {/* Progress simulation (requires active habit matching in future) */}
                                     <div className="w-full h-2 bg-gray-100 dark:bg-night-bg rounded-full mt-4 transition-colors">
@@ -119,7 +119,7 @@ export default function FUTDashboard({ onAddHabit, onEditHabit, onAddGoal }: FUT
                                     <motion.div
                                         key={routine.id}
                                         layout
-                                        className="card-flat border border-gray-100 dark:border-night-border shadow-sm bg-white dark:bg-night-surface overflow-hidden transition-all duration-300"
+                                        className="luxury-glass magnetic-element overflow-hidden transition-all duration-300 p-4 mb-4"
                                     >
                                         {/* Routine Header */}
                                         <div
@@ -127,14 +127,14 @@ export default function FUTDashboard({ onAddHabit, onEditHabit, onAddGoal }: FUT
                                             onClick={() => toggleRoutine(routine.id)}
                                         >
                                             <div className="flex items-center gap-4">
-                                                <div className="w-12 h-12 rounded-xl bg-surface-dark dark:bg-night-bg flex items-center justify-center text-2xl group-hover:scale-105 transition-all">
+                                                <div className="w-12 h-12 rounded-xl bg-surface-dark/50 dark:bg-night-bg/50 flex items-center justify-center text-2xl group-hover:scale-105 transition-all shadow-inner">
                                                     {routine.icon}
                                                 </div>
                                                 <div>
                                                     <h3 className="font-bold text-lg text-dark dark:text-night-text group-hover:text-primary dark:group-hover:text-primary-light transition-colors">{routine.name}</h3>
                                                     <div className="flex items-center gap-3 mt-1">
                                                         <span className="text-sm font-medium text-dark-lighter dark:text-night-text-muted transition-colors">{routineHabits.length} Habits</span>
-                                                        <span className="text-xs font-bold text-primary-dark dark:text-primary-light bg-primary/10 dark:bg-primary/20 px-2 py-0.5 rounded-md transition-colors">+{routine.bonusXp} XP</span>
+                                                        <span className="text-xs font-bold text-primary-dark dark:text-primary-light bg-primary/10 dark:bg-primary/20 px-2 py-0.5 rounded-md transition-colors backdrop-blur-sm">+{routine.bonusXp} XP</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -167,7 +167,7 @@ export default function FUTDashboard({ onAddHabit, onEditHabit, onAddGoal }: FUT
 
                             {/* Uncategorized Habits (Fallback if no routines exist) */}
                             {routines.length === 0 && (
-                                <div className="card shadow-sm border border-gray-100 dark:border-night-border bg-white dark:bg-night-surface p-6 transition-colors">
+                                <div className="luxury-glass p-6 transition-colors">
                                     <h3 className="font-bold text-dark-lighter dark:text-night-text-muted mb-4 inline-flex items-center gap-2 transition-colors">
                                         All Habits
                                     </h3>
@@ -196,7 +196,7 @@ export default function FUTDashboard({ onAddHabit, onEditHabit, onAddGoal }: FUT
                     </button>
 
                     {/* Weekly Digest Widget */}
-                    <div className="card shadow-sm border border-gray-100 dark:border-night-border bg-white dark:bg-night-surface transition-colors">
+                    <div className="luxury-glass p-5 transition-colors">
                         <div className="flex items-center justify-between mb-4">
                             <h4 className="font-bold text-dark dark:text-night-text text-sm tracking-wide transition-colors">Weekly Overview</h4>
                         </div>
@@ -204,7 +204,7 @@ export default function FUTDashboard({ onAddHabit, onEditHabit, onAddGoal }: FUT
                     </div>
 
                     {/* Streak Life Line Widget */}
-                    <div className="card shadow-sm border border-gray-100 dark:border-night-border bg-white dark:bg-night-surface transition-colors">
+                    <div className="luxury-glass p-5 transition-colors">
                         <div className="flex items-center justify-between mb-4">
                             <h4 className="font-bold text-dark dark:text-night-text text-sm tracking-wide transition-colors">Steadfast Streaks</h4>
                         </div>
@@ -212,7 +212,7 @@ export default function FUTDashboard({ onAddHabit, onEditHabit, onAddGoal }: FUT
                     </div>
 
                     {/* Activity Heatmap */}
-                    <div className="card shadow-sm border border-gray-100 dark:border-night-border bg-white dark:bg-night-surface transition-colors">
+                    <div className="luxury-glass p-5 transition-colors">
                         <div className="flex items-center justify-between mb-4">
                             <h4 className="font-bold text-dark dark:text-night-text text-sm tracking-wide transition-colors">Activity</h4>
                         </div>
@@ -220,7 +220,7 @@ export default function FUTDashboard({ onAddHabit, onEditHabit, onAddGoal }: FUT
                     </div>
 
                     {/* Stats Radar Widget */}
-                    <div className="card shadow-sm border border-gray-100 dark:border-night-border bg-white dark:bg-night-surface transition-colors">
+                    <div className="luxury-glass p-5 transition-colors">
                         <div className="flex items-center justify-between mb-4">
                             <h4 className="font-bold text-dark dark:text-night-text text-sm tracking-wide transition-colors">RPG Stats</h4>
                         </div>
