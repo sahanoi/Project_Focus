@@ -88,15 +88,11 @@ export default function DailyMissionCard() {
                 animate={{ opacity: 1, y: 0 }}
                 className="relative rounded-3xl bg-gradient-to-br from-primary-light/20 to-primary/10 dark:from-primary/20 dark:to-primary-dark/10 border-2 border-primary-light/30 dark:border-primary/30 shadow-sm"
             >
-                {/* Background decoration */}
-                <div className="absolute -right-10 -top-10 text-primary-light opacity-10">
-                    <Target size={150} />
-                </div>
 
                 <div className="p-6 relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
 
                     <div className="flex items-start gap-4">
-                        <div className="w-12 h-12 rounded-2xl bg-white dark:bg-night-surface shadow-sm flex items-center justify-center flex-shrink-0">
+                        <div className="w-12 h-12 rounded-2xl bg-surface-dark/50 dark:bg-night-bg/50 shadow-inner flex items-center justify-center flex-shrink-0">
                             <Sparkles className="text-warning" size={24} />
                         </div>
 
@@ -124,7 +120,7 @@ export default function DailyMissionCard() {
                             </motion.button>
                         ) : (
                             <div className="flex flex-col items-center gap-2">
-                                <div className="flex items-center gap-2 text-dark-lighter dark:text-night-text-muted text-sm font-medium bg-white/50 dark:bg-night-surface/50 px-4 py-2 rounded-lg">
+                                <div className="flex items-center gap-2 text-dark-lighter dark:text-night-text-muted text-sm font-medium bg-surface-dark/50 dark:bg-night-bg/50 px-4 py-2 rounded-lg">
                                     <div className="w-4 h-4 rounded-full border-2 border-dark-lighter/50 dark:border-night-text-muted/50" />
                                     Pending...
                                 </div>

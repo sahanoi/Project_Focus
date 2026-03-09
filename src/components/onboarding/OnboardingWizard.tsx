@@ -95,13 +95,13 @@ export default function OnboardingWizard({ onComplete }: OnboardingProps) {
                             value={name}
                             onChange={e => setName(e.target.value)}
                             placeholder="Your name..."
-                            className="w-full px-4 py-3 rounded-xl bg-white dark:bg-night-surface border border-[#D4C8E8] dark:border-night-border text-dark dark:text-night-text placeholder-dark-lighter/40 dark:placeholder-night-text-muted/40 focus:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/10 transition-all text-lg shadow-sm"
+                            className="w-full px-4 py-3 rounded-xl luxury-glass border border-[#D4C8E8] dark:border-night-border text-dark dark:text-night-text placeholder-dark-lighter/40 dark:placeholder-night-text-muted/40 focus:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/10 transition-all text-lg shadow-sm"
                             autoFocus
                         />
                     </div>
 
                     {/* Philosophy */}
-                    <div className="bg-white dark:bg-night-surface rounded-xl p-5 border border-[#D4C8E8] dark:border-night-border text-left space-y-3 shadow-sm">
+                    <div className="luxury-glass rounded-xl p-5 border border-[#D4C8E8] dark:border-night-border text-left space-y-3 shadow-sm">
                         <p className="text-sm text-dark-light">
                             <span className="text-primary font-bold">Your life companion.</span> Track habits, build routines, and watch yourself evolve — no forced gamification, just natural growth.
                         </p>
@@ -340,7 +340,7 @@ export default function OnboardingWizard({ onComplete }: OnboardingProps) {
                                 initial={{ opacity: 0, x: -20 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{ delay: 0.3 + i * 0.3 }}
-                                className="flex items-start gap-4 px-5 py-4 rounded-xl bg-white dark:bg-night-surface border border-[#D4C8E8] dark:border-night-border shadow-sm text-left"
+                                className="flex items-start gap-4 px-5 py-4 rounded-xl luxury-glass border border-[#D4C8E8] dark:border-night-border shadow-sm text-left"
                             >
                                 <span className="text-2xl mt-0.5">{b.icon}</span>
                                 <p className="text-sm font-medium text-dark dark:text-night-text leading-relaxed">{b.text}</p>

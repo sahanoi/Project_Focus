@@ -53,7 +53,7 @@ export default function HabitDetailPage({ habitId, onBack, onEdit }: HabitDetail
     if (!habit) {
         return (
             <div className="max-w-4xl mx-auto px-4 py-8 text-center text-dark dark:text-night-text transition-colors">
-                <p className="text-dark-lighter dark:text-night-text-muted bg-white dark:bg-night-surface p-8 rounded-3xl shadow-sm border border-[#D4C8E8] dark:border-night-border transition-colors">Habit not found.</p>
+                <p className="text-dark-lighter dark:text-night-text-muted luxury-glass p-8 transition-colors">Habit not found.</p>
                 <button onClick={onBack} className="btn-primary mt-4">← Go Back</button>
             </div>
         );
@@ -215,7 +215,7 @@ export default function HabitDetailPage({ habitId, onBack, onEdit }: HabitDetail
     return (
         <div className="max-w-5xl mx-auto px-4 py-8 animate-fade-in-up">
             {/* Header */}
-            <div className="flex items-center gap-4 mb-8 bg-white dark:bg-night-surface p-6 rounded-3xl shadow-sm border border-[#D4C8E8] dark:border-night-border transition-colors">
+            <div className="flex items-center gap-4 mb-8 luxury-glass p-6 transition-colors">
                 <button onClick={onBack} className="btn-icon bg-gray-50 dark:bg-night-bg hover:bg-gray-100 dark:hover:bg-primary/20 text-dark-lighter dark:text-night-text transition-colors">
                     <ArrowLeft size={20} />
                 </button>
@@ -241,12 +241,12 @@ export default function HabitDetailPage({ habitId, onBack, onEdit }: HabitDetail
                 <div className="flex items-center gap-2">
                     <button
                         onClick={() => setShowShareModal(true)}
-                        className="btn-secondary flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold bg-white dark:bg-night-bg border-2 border-gray-200 dark:border-night-border text-dark-lighter dark:text-night-text hover:border-indigo-400 dark:hover:border-indigo-400 hover:text-indigo-500 transition-colors"
+                        className="btn-secondary flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold bg-surface-dark/50 dark:bg-night-bg border-2 border-gray-200 dark:border-night-border text-dark-lighter dark:text-night-text hover:border-indigo-400 dark:hover:border-indigo-400 hover:text-indigo-500 transition-colors"
                         title="Share Habit Template"
                     >
                         <Share2 size={16} />
                     </button>
-                    <button onClick={() => onEdit(habit)} className="btn-secondary flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold bg-white dark:bg-night-bg border-2 border-gray-200 dark:border-night-border text-dark-lighter dark:text-night-text hover:border-primary dark:hover:border-primary-light hover:text-primary dark:hover:text-primary-light transition-colors">
+                    <button onClick={() => onEdit(habit)} className="btn-secondary flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold bg-surface-dark/50 dark:bg-night-bg border-2 border-gray-200 dark:border-night-border text-dark-lighter dark:text-night-text hover:border-primary dark:hover:border-primary-light hover:text-primary dark:hover:text-primary-light transition-colors">
                         <Edit3 size={16} /> Edit Habit
                     </button>
                 </div>

@@ -130,6 +130,30 @@ body {
   .challenge-timer {
     @apply inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-primary/10 text-primary-dark font-bold text-sm border border-primary/20;
   }
+
+  /* ---- Premium Agency Senior Developer Patterns ---- */
+  .luxury-glass {
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 1.5rem;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+  }
+
+  .dark .luxury-glass {
+    background: rgba(32, 28, 41, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  }
+
+  .magnetic-element {
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .magnetic-element:hover {
+    transform: scale(1.02) translateY(-2px);
+  }
 }
 
 /* ==========================================

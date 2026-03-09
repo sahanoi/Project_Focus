@@ -75,11 +75,11 @@ export default function QuickLogModal() {
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-dark/20 backdrop-blur-sm animate-in fade-in duration-200">
             <div
-                className="w-full max-w-3xl bg-white rounded-3xl border border-[#D4C8E8] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col md:flex-row"
+                className="w-full max-w-3xl luxury-glass rounded-3xl border border-[#D4C8E8] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col md:flex-row"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* LEFT SIDE: Log Controls */}
-                <div className="flex-1 flex flex-col border-b md:border-b-0 md:border-r border-gray-100 bg-white">
+                <div className="flex-1 flex flex-col border-b md:border-b-0 md:border-r border-gray-100 luxury-glass">
                     {/* Header */}
                     <div className="relative p-6 pb-0 flex flex-col items-center">
                         <button
@@ -148,7 +148,7 @@ export default function QuickLogModal() {
                                 </div>
 
                                 {habit.dailyTarget && (
-                                    <div className="w-full bg-white rounded-2xl p-4 border border-gray-100 shadow-sm mb-6 max-w-[220px]">
+                                    <div className="w-full luxury-glass rounded-2xl p-4 border border-gray-100 shadow-sm mb-6 max-w-[220px]">
                                         <div className="flex justify-between text-[10px] font-bold text-dark-lighter uppercase tracking-wider mb-2">
                                             <span>Target: {habit.dailyTarget}</span>
                                             <span className={isCompleted ? 'text-success' : 'text-primary'}>
@@ -247,7 +247,7 @@ export default function QuickLogModal() {
 
                 {/* RIGHT SIDE: Calendar */}
                 <div className="w-full md:w-80 bg-[#F9F9FB] flex flex-col border-l border-gray-100">
-                    <div className="p-5 flex items-center justify-between border-b border-gray-200 bg-white">
+                    <div className="p-5 flex items-center justify-between border-b border-gray-200 luxury-glass">
                         <h3 className="font-bold text-darklex items-center gap-2"><Calendar size={18} className="text-primary" /> History</h3>
                         <button
                             onClick={handleClose}
@@ -259,7 +259,7 @@ export default function QuickLogModal() {
 
                     <div className="p-5 flex-1">
                         {/* Month Nav */}
-                        <div className="flex items-center justify-between mb-5 bg-white p-2 rounded-2xl shadow-sm border border-gray-100">
+                        <div className="flex items-center justify-between mb-5 luxury-glass p-2 rounded-2xl shadow-sm border border-gray-100">
                             <button
                                 onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
                                 className="p-1.5 hover:bg-gray-100 rounded-xl text-dark-lighter hover:text-dark transition-colors"
@@ -305,7 +305,7 @@ export default function QuickLogModal() {
                                             aspect-square rounded-xl flex items-center justify-center text-xs font-bold relative transition-all duration-300
                                             ${!isCurrentMonth ? 'text-dark-light' : 'text-dark-lighter hover:bg-gray-200'}
                                             ${isTargetDate ? 'ring-2 ring-primary ring-offset-2 bg-primary/10 text-dark shadow-sm scale-110 z-10' : ''}
-                                            ${dayCompleted ? 'bg-white shadow-sm border border-gray-100' : ''}
+                                            ${dayCompleted ? 'luxury-glass shadow-sm border border-gray-100' : ''}
                                         `}
                                     >
                                         <span>{format(date, 'd')}</span>

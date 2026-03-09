@@ -23,7 +23,7 @@ export default function Header({ onAddHabit }: HeaderProps) {
     const isToday = selectedDate === new Date().toISOString().split('T')[0];
 
     return (
-        <header className="bg-white border-b-2 border-gray-200 sticky top-0 z-40">
+        <header className="bg-white/80 dark:bg-night-bg/80 backdrop-blur-md border-b border-[#D4C8E8] dark:border-night-border sticky top-0 z-40 transition-colors">
             <div className="max-w-5xl mx-auto px-4">
                 {/* Top Bar */}
                 <div className="flex items-center justify-between py-3">

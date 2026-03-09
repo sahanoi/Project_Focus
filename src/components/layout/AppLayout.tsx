@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Sidebar from './Sidebar';
+import BottomNav from './BottomNav';
 import { useHabitStore } from '../../store/habitStore';
 
 interface AppLayoutProps {
@@ -9,6 +10,7 @@ interface AppLayoutProps {
 
 export default function AppLayout({ children, onAddHabit }: AppLayoutProps) {
     const { activeTab, setActiveTab } = useHabitStore();
+    const [isCollapsed, setIsCollapsed] = useState(false);
 
     // Type coercion for setActiveTab to match SidebarProps
     const handleTabChange = (tab: any) => {
@@ -21,14 +23,21 @@ export default function AppLayout({ children, onAddHabit }: AppLayoutProps) {
                 activeTab={activeTab}
                 setActiveTab={handleTabChange}
                 onAddHabit={onAddHabit}
+                isCollapsed={isCollapsed}
+                setIsCollapsed={setIsCollapsed}
             />
 
             {/* Main Content Wrapper */}
-            <main className="flex-1 pl-0 lg:pl-64 h-screen overflow-hidden pt-14 lg:pt-0">
+            <main className={`flex-1 pl-0 ${isCollapsed ? 'lg:pl-20' : 'lg:pl-64'} h-screen overflow-hidden pt-14 pb-24 lg:pt-0 lg:pb-0 transition-all duration-300`}>
                 <div className="h-full overflow-y-auto">
                     {children}
                 </div>
             </main>
+
+            <BottomNav
+                activeTab={activeTab}
+                setActiveTab={handleTabChange}
+            />
         </div>
     );
 }
