@@ -44,7 +44,7 @@ export default function Sidebar({ activeTab, setActiveTab, onAddHabit, isCollaps
         <>
             {/* Brand / Logo */}
             <div
-                className={`p-4 px-5 flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'} cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 transition-colors group`}
+                className={`flex items-center justify-between cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 transition-colors group ${isCollapsed ? 'px-3 py-4' : 'p-4 px-5'}`}
                 onClick={() => setIsCollapsed?.(!isCollapsed)}
                 title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
             >
@@ -61,10 +61,10 @@ export default function Sidebar({ activeTab, setActiveTab, onAddHabit, isCollaps
                         <X size={20} />
                     </button>
                 )}
-                {/* Collapse/Expand arrow — desktop only */}
-                <div className={`hidden lg:flex items-center justify-center w-6 h-6 rounded-full bg-[#D4C8E8]/60 dark:bg-night-border/60 group-hover:bg-primary/20 dark:group-hover:bg-primary/30 text-dark-lighter dark:text-night-text-muted group-hover:text-primary dark:group-hover:text-primary-light transition-all flex-shrink-0 ${isCollapsed ? 'mt-1' : ''}`}>
-                    {isCollapsed ? <ChevronRight size={13} /> : <ChevronLeft size={13} />}
-                </div>
+                {/* Collapse/Expand arrow — desktop only, no circle */}
+                <span className="hidden lg:flex text-dark-lighter/50 dark:text-night-text-muted/50 group-hover:text-primary dark:group-hover:text-primary-light transition-colors flex-shrink-0">
+                    {isCollapsed ? <ChevronRight size={11} /> : <ChevronLeft size={11} />}
+                </span>
             </div>
 
             {/* Navigation */}
