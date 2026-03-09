@@ -17,6 +17,7 @@ import CollectibleToast from './components/ui/CollectibleToast';
 
 import FUTDashboard from './components/dashboard/FUTDashboard';
 import ProfilePage from './components/dashboard/ProfilePage';
+import JourneyPage from './components/dashboard/JourneyPage';
 import AchievementsPage from './components/dashboard/AchievementsPage';
 import CommunityPage from './components/dashboard/CommunityPage';
 import AchievementToast from './components/dashboard/AchievementToast';
@@ -133,6 +134,7 @@ function AuthenticatedApp() {
                 <FUTDashboard onAddHabit={handleAddHabit} onEditHabit={handleEditHabit} onAddGoal={() => setShowGoalWizard(true)} />
             )}
             {activeTab === 'profile' && <ProfilePage />}
+            {activeTab === 'journey' && <JourneyPage />}
             {activeTab === 'community' && <CommunityPage />}
             {activeTab === 'statistics' && <StatsPage onEditHabit={handleEditHabit} />}
             {activeTab === 'settings' && <SettingsPage />}

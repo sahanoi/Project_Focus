@@ -192,7 +192,7 @@ export interface Goal {
     createdAt: string;
 }
 
-export type TabView = 'dashboard' | 'community' | 'statistics' | 'settings' | 'achievements' | 'profile';
+export type TabView = 'dashboard' | 'community' | 'statistics' | 'settings' | 'achievements' | 'profile' | 'journey';
 
 export type DateRange = 'week' | 'month' | 'quarter' | 'year' | 'all';
 

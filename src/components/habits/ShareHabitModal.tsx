@@ -9,7 +9,7 @@ import { useAuth } from '../../contexts/AuthContext';
 
 function getHabitColorClass(hex: string) {
     return {
-        bg: 'bg-white',
+        bg: 'luxury-glass',
         text: 'text-dark'
     };
 }
@@ -58,7 +58,7 @@ export default function ShareHabitModal({ isOpen, onClose, habit }: ShareHabitMo
                     transition={{ type: 'spring', damping: 25, stiffness: 300 }}
                     className="relative w-full max-w-md bg-surface rounded-3xl shadow-2xl overflow-hidden"
                 >
-                    <div className="p-4 flex items-center justify-between border-b border-[#D4C8E8] bg-white">
+                    <div className="p-4 flex items-center justify-between border-b border-[#D4C8E8] luxury-glass">
                         <h3 className="font-black text-dark tracking-wide flex items-center gap-2">
                             <Share2 size={18} className="text-primary" /> Share Template
                         </h3>
@@ -75,11 +75,11 @@ export default function ShareHabitModal({ isOpen, onClose, habit }: ShareHabitMo
                         {/* THE SHAREABLE CARD */}
                         <div className={`w-full max-w-sm aspect-[4/5] rounded-[2rem] p-8 shadow-xl flex flex-col justify-between relative overflow-hidden ${themeColors.bg} border-2 border-white/50 backdrop-blur-md`}>
                             {/* Decorative background elements */}
-                            <div className="absolute top-0 right-0 w-64 h-64 bg-white/20 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none" />
-                            <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full blur-2xl -ml-10 -mb-10 pointer-events-none" />
+                            <div className="absolute top-0 right-0 w-64 h-64 luxury-glass/20 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none" />
+                            <div className="absolute bottom-0 left-0 w-48 h-48 luxury-glass/10 rounded-full blur-2xl -ml-10 -mb-10 pointer-events-none" />
 
                             <div className="relative z-10 text-center space-y-4">
-                                <div className="w-20 h-20 mx-auto rounded-3xl bg-white/30 backdrop-blur-md border border-white/50 flex items-center justify-center text-4xl shadow-lg">
+                                <div className="w-20 h-20 mx-auto rounded-3xl luxury-glass/30 backdrop-blur-md border border-white/50 flex items-center justify-center text-4xl shadow-lg">
                                     {habit.icon}
                                 </div>
                                 <div>
@@ -93,9 +93,9 @@ export default function ShareHabitModal({ isOpen, onClose, habit }: ShareHabitMo
                             </div>
 
                             <div className="relative z-10 space-y-4 mt-8">
-                                <div className="bg-white/40 backdrop-blur-md border border-white/50 rounded-2xl p-4 flex items-center justify-between shadow-sm">
+                                <div className="luxury-glass/40 backdrop-blur-md border border-white/50 rounded-2xl p-4 flex items-center justify-between shadow-sm">
                                     <div className="flex items-center gap-3">
-                                        <div className={`w-10 h-10 rounded-xl bg-white/50 flex items-center justify-center ${themeColors.text}`}>
+                                        <div className={`w-10 h-10 rounded-xl luxury-glass/50 flex items-center justify-center ${themeColors.text}`}>
                                             <Zap size={20} />
                                         </div>
                                         <div className="text-left">
@@ -110,7 +110,7 @@ export default function ShareHabitModal({ isOpen, onClose, habit }: ShareHabitMo
                                                 {habit.type === 'numerical' ? `${habit.goalValue || 0} ${habit.unit || ''}` : 'Daily'}
                                             </p>
                                         </div>
-                                        <div className={`w-10 h-10 rounded-xl bg-white/50 flex items-center justify-center ${themeColors.text}`}>
+                                        <div className={`w-10 h-10 rounded-xl luxury-glass/50 flex items-center justify-center ${themeColors.text}`}>
                                             <Target size={20} />
                                         </div>
                                     </div>
@@ -135,7 +135,7 @@ export default function ShareHabitModal({ isOpen, onClose, habit }: ShareHabitMo
                             </button>
                             <button
                                 onClick={handleCopy}
-                                className="flex-1 py-3.5 bg-white text-dark border border-[#D4C8E8] rounded-xl font-bold shadow-sm hover:bg-surface-dark transition-colors flex items-center justify-center gap-2"
+                                className="flex-1 py-3.5 luxury-glass text-dark border border-[#D4C8E8] rounded-xl font-bold shadow-sm hover:bg-surface-dark transition-colors flex items-center justify-center gap-2"
                             >
                                 <Download size={18} /> Save Image
                             </button>

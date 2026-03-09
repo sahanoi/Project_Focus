@@ -12,9 +12,11 @@ interface SidebarProps {
     activeTab: TabView;
     setActiveTab: (tab: TabView) => void;
     onAddHabit: () => void;
+    isCollapsed?: boolean;
+    setIsCollapsed?: (collapsed: boolean) => void;
 }
 
-export default function Sidebar({ activeTab, setActiveTab, onAddHabit }: SidebarProps) {
+export default function Sidebar({ activeTab, setActiveTab, onAddHabit, isCollapsed = false, setIsCollapsed }: SidebarProps) {
     const { user, signOut } = useAuth();
     const { theme, setTheme } = useThemeStore();
     const stats = useHabitStore(s => s.stats);
@@ -41,23 +43,28 @@ export default function Sidebar({ activeTab, setActiveTab, onAddHabit }: Sidebar
     const sidebarContent = (
         <>
             {/* Brand / Logo */}
-            <div className="p-6 flex items-center justify-between">
+            <div
+                className={`p-6 flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'} cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 transition-colors`}
+                onClick={() => setIsCollapsed?.(!isCollapsed)}
+            >
                 <div className="flex items-center gap-3">
                     <AppLogo size={32} />
-                    <h1 className="text-xl font-bold text-dark dark:text-night-text tracking-tight transition-colors">Focus FTP</h1>
+                    {!isCollapsed && <h1 className="text-xl font-bold text-dark dark:text-night-text tracking-tight transition-colors">Focus FTP</h1>}
                 </div>
                 {/* Mobile close button */}
-                <button
-                    onClick={() => setMobileOpen(false)}
-                    className="lg:hidden p-2 rounded-lg hover:bg-white/50 dark:hover:bg-white/10 text-dark-lighter dark:text-night-text-muted transition-colors"
-                >
-                    <X size={20} />
-                </button>
+                {!isCollapsed && (
+                    <button
+                        onClick={(e) => { e.stopPropagation(); setMobileOpen(false); }}
+                        className="lg:hidden p-2 rounded-lg hover:bg-surface-dark/50 dark:hover:bg-white/10 text-dark-lighter dark:text-night-text-muted transition-colors"
+                    >
+                        <X size={20} />
+                    </button>
+                )}
             </div>
 
             {/* Navigation */}
             <nav className="flex-1 px-4 space-y-2 py-4">
-                <div className="text-xs font-bold text-dark-lighter uppercase px-2 mb-2 tracking-wider">Menu</div>
+                {!isCollapsed && <div className="text-xs font-bold text-dark-lighter uppercase px-2 mb-2 tracking-wider">Menu</div>}
 
                 {navItems.map((item) => {
                     const Icon = item.icon;
@@ -70,16 +77,17 @@ export default function Sidebar({ activeTab, setActiveTab, onAddHabit }: Sidebar
                                 if (isLocked) return;
                                 handleTabChange(item.id);
                             }}
-                            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group ${isActive
-                                ? 'bg-white dark:bg-night-border text-primary-dark dark:text-primary-light shadow-sm border border-primary/20'
+                            title={isCollapsed ? item.label : undefined}
+                            className={`w-full flex items-center ${isCollapsed ? 'justify-center' : 'gap-3'} px-3 py-2.5 rounded-lg transition-all duration-200 group ${isActive
+                                ? 'luxury-glass text-primary-dark dark:text-primary-light shadow-sm border border-primary/20'
                                 : isLocked
                                     ? 'text-dark-lighter/50 dark:text-night-text-muted/50 cursor-not-allowed'
-                                    : 'text-dark-lighter dark:text-night-text-muted hover:bg-white/50 dark:hover:bg-white/5 hover:text-dark-light dark:hover:text-night-text'
+                                    : 'text-dark-lighter dark:text-night-text-muted hover:bg-surface-dark/50 dark:hover:bg-white/5 hover:text-dark-light dark:hover:text-night-text'
                                 }`}
                         >
                             <Icon size={20} className={isActive ? 'text-primary dark:text-primary-light' : isLocked ? 'text-dark-lighter/40 dark:text-night-text-muted/40' : 'text-dark-lighter dark:text-night-text-muted group-hover:text-primary-dark dark:group-hover:text-primary'} />
-                            <span className="font-medium text-sm flex-1 text-left">{item.label}</span>
-                            {isLocked && (
+                            {!isCollapsed && <span className="font-medium text-sm flex-1 text-left">{item.label}</span>}
+                            {!isCollapsed && isLocked && (
                                 <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 flex items-center gap-0.5">
                                     <Lock size={8} /> Lvl 3
                                 </span>
@@ -90,45 +98,53 @@ export default function Sidebar({ activeTab, setActiveTab, onAddHabit }: Sidebar
 
                 <button
                     onClick={() => { if (!habitLimitReached) { onAddHabit(); setMobileOpen(false); } }}
-                    className={`w-full mt-6 p-3 rounded-xl flex items-center justify-center gap-2 font-bold transition-all shadow-lg ${habitLimitReached
+                    className={`w-full mt-6 p-3 rounded-xl flex items-center justify-center ${isCollapsed ? '' : 'gap-2'} font-bold transition-all shadow-lg ${habitLimitReached
                         ? 'bg-gray-300 dark:bg-night-border text-gray-500 dark:text-night-text-muted cursor-not-allowed shadow-none'
                         : 'bg-primary hover:bg-primary-dark text-white shadow-primary/20 hover:shadow-primary/30'
                         }`}
                     title={habitLimitReached ? `Level up to add more habits (${habitCount}/${canAddHabit(stats, 0) ? 'max' : 'max reached'})` : 'Add a new habit'}
                 >
                     <Plus size={18} />
-                    <span>{habitLimitReached ? 'Level up for more' : 'New Habit'}</span>
+                    {!isCollapsed && <span>{habitLimitReached ? 'Level up for more' : 'New Habit'}</span>}
                 </button>
             </nav>
 
             {/* User Profile / Bottom */}
-            <div className="p-4 border-t border-[#D4C8E8] dark:border-night-border bg-surface/50 dark:bg-night-surface/50 space-y-2 transition-colors">
-                <div className="flex items-center justify-between p-2 rounded-lg gap-2">
+            <div className={`px-4 pb-4 pt-2 border-t border-[#D4C8E8] dark:border-night-border bg-surface/50 dark:bg-night-surface/50 space-y-2 transition-colors flex ${isCollapsed ? 'flex-col items-center' : 'flex-col'}`}>
+                <button
+                    onClick={() => handleTabChange('profile')}
+                    className={`w-full flex items-center ${isCollapsed ? 'justify-center p-2' : 'justify-between p-2'} rounded-lg gap-2 hover:bg-black/5 dark:hover:bg-white/5 transition-colors group`}
+                    title={isCollapsed ? "Profile" : undefined}
+                >
                     <div className="flex items-center gap-3 min-w-0">
-                        <div className="w-8 h-8 bg-white dark:bg-night-bg border border-[#D4C8E8] dark:border-night-border rounded-full flex items-center justify-center text-primary dark:text-primary-light transition-colors flex-shrink-0">
+                        <div className="w-8 h-8 bg-surface-dark/50 dark:bg-night-bg border border-[#D4C8E8] group-hover:border-primary/50 dark:border-night-border rounded-full flex items-center justify-center text-primary dark:text-primary-light transition-colors flex-shrink-0 shadow-sm">
                             <User size={16} />
                         </div>
-                        <div className="flex-1 min-w-0 text-left">
-                            <div className="text-sm font-bold text-dark dark:text-night-text truncate transition-colors">{user?.email?.split('@')[0] || 'User'}</div>
-                            <div className="text-xs text-dark-lighter dark:text-night-text-muted truncate transition-colors">{tierName} • Lvl {stats.level}</div>
-                        </div>
+                        {!isCollapsed && (
+                            <div className="flex-1 min-w-0 text-left">
+                                <div className="text-sm font-bold text-dark dark:text-night-text truncate transition-colors group-hover:text-primary-dark dark:group-hover:text-primary-light">{user?.email?.split('@')[0] || 'User'}</div>
+                                <div className="text-xs text-dark-lighter dark:text-night-text-muted truncate transition-colors">{tierName} • Lvl {stats.level}</div>
+                            </div>
+                        )}
                     </div>
-                    {/* Theme Toggle */}
+                </button>
+                <div className={`flex ${isCollapsed ? 'flex-col w-full' : 'gap-2 w-full'} transition-all`}>
                     <button
                         onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                        className="p-2 rounded-lg bg-white dark:bg-night-bg border border-[#D4C8E8] dark:border-night-border hover:bg-gray-50 dark:hover:border-primary-light/50 text-dark-lighter dark:text-night-text-muted transition-colors flex-shrink-0"
+                        className={`flex items-center justify-center ${isCollapsed ? 'w-full p-2 mb-2' : 'flex-1 p-2'} rounded-lg bg-surface-dark/50 dark:bg-night-bg border border-[#D4C8E8] dark:border-night-border hover:bg-gray-50 dark:hover:border-primary-light/50 text-dark-lighter dark:text-night-text-muted transition-colors flex-shrink-0`}
                         title="Toggle Dark Mode"
                     >
                         {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
                     </button>
+                    <button
+                        onClick={signOut}
+                        title={isCollapsed ? "Sign Out" : undefined}
+                        className={`flex items-center justify-center gap-2 ${isCollapsed ? 'w-full p-2' : 'flex-1 px-3 py-2'} rounded-lg text-xs font-medium text-red-500 hover:bg-red-500/10 hover:text-red-600 border border-red-500/10 transition-all dark:text-red-400 dark:hover:bg-red-500/20`}
+                    >
+                        <LogOut size={14} />
+                        {!isCollapsed && "Sign Out"}
+                    </button>
                 </div>
-                <button
-                    onClick={signOut}
-                    className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs font-medium text-red-400 hover:bg-red-500/10 hover:text-red-500 border border-red-500/10 transition-all dark:hover:bg-red-500/20"
-                >
-                    <LogOut size={14} />
-                    Sign Out
-                </button>
             </div>
         </>
     );
@@ -138,14 +154,14 @@ export default function Sidebar({ activeTab, setActiveTab, onAddHabit }: Sidebar
             {/* Mobile hamburger button */}
             <button
                 onClick={() => setMobileOpen(true)}
-                className="lg:hidden fixed top-4 left-4 z-[60] p-2.5 bg-white border border-[#D4C8E8] rounded-xl shadow-md text-dark hover:bg-primary/5 transition-colors"
+                className="lg:hidden fixed top-4 left-4 z-[60] p-2.5 luxury-glass border border-[#D4C8E8] dark:border-night-border rounded-xl shadow-md text-dark dark:text-night-text hover:bg-primary/5 transition-colors"
                 aria-label="Open menu"
             >
                 <Menu size={20} />
             </button>
 
             {/* Desktop sidebar */}
-            <aside className="hidden lg:flex w-64 h-screen bg-[#E4DEF0] dark:bg-night-surface border-r border-[#D4C8E8] dark:border-night-border flex-col fixed left-0 top-0 z-50 transition-colors">
+            <aside className={`hidden lg:flex ${isCollapsed ? 'w-20' : 'w-64'} h-screen bg-[#E4DEF0] dark:bg-night-surface border-r border-[#D4C8E8] dark:border-night-border flex-col fixed left-0 top-0 z-50 transition-all duration-300`}>
                 {sidebarContent}
             </aside>
 
