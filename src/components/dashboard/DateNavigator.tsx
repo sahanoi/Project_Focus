@@ -50,34 +50,34 @@ export default function DateNavigator() {
     const isCurrentWeek = weekDays.some(d => d.isToday);
 
     return (
-        <div className="flex items-center gap-3 w-full">
+        <div className="flex items-center gap-2 w-full">
             {/* Week nav */}
             <button
                 onClick={() => navigateWeek(-1)}
-                className="p-1.5 rounded-lg hover:bg-white/70 dark:hover:bg-white/10 text-dark-lighter dark:text-night-text-muted transition-colors flex-shrink-0"
+                className="p-1 rounded-md hover:bg-white/70 dark:hover:bg-white/10 text-dark-lighter dark:text-night-text-muted transition-colors flex-shrink-0"
                 aria-label="Previous week"
             >
-                <ChevronLeft size={18} />
+                <ChevronLeft size={14} />
             </button>
 
             {/* Day pills */}
-            <div className="flex-1 flex gap-1.5 justify-center">
+            <div className="flex-1 flex gap-1 justify-center">
                 {weekDays.map((day) => (
                     <button
                         key={day.dateStr}
                         onClick={() => setSelectedDate(day.dateStr)}
-                        className={`relative flex flex-col items-center py-1.5 px-2.5 rounded-xl transition-all duration-200 min-w-[44px] group ${day.isSelected
-                            ? 'bg-primary text-white shadow-md shadow-primary/20 scale-105'
+                        className={`relative flex flex-col items-center py-1 px-1.5 rounded-lg transition-colors duration-200 min-w-[36px] group ${day.isSelected
+                            ? 'bg-primary text-white'
                             : day.isToday
                                 ? 'bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary-light hover:bg-primary/15 dark:hover:bg-primary/30'
                                 : 'hover:bg-white/70 dark:hover:bg-white/10 text-dark-lighter dark:text-night-text-muted'
                             }`}
                     >
-                        <span className={`text-[10px] font-bold uppercase tracking-wider ${day.isSelected ? 'text-white/80' : ''
+                        <span className={`text-[8px] font-bold uppercase tracking-[0.12em] ${day.isSelected ? 'text-white/80' : ''
                             }`}>
                             {day.dayLabel}
                         </span>
-                        <span className={`text-lg font-black leading-tight ${day.isSelected ? 'text-white' : day.isToday ? 'text-primary dark:text-primary-light' : 'text-dark dark:text-night-text'
+                        <span className={`text-sm font-black leading-none ${day.isSelected ? 'text-white' : day.isToday ? 'text-primary dark:text-primary-light' : 'text-dark dark:text-night-text'
                             }`}>
                             {day.dayNum}
                         </span>
@@ -96,10 +96,10 @@ export default function DateNavigator() {
             <div className="flex items-center gap-1.5 flex-shrink-0">
                 <button
                     onClick={() => navigateWeek(1)}
-                    className="p-1.5 rounded-lg hover:bg-white/70 dark:hover:bg-white/10 text-dark-lighter dark:text-night-text-muted transition-colors"
+                    className="p-1 rounded-md hover:bg-white/70 dark:hover:bg-white/10 text-dark-lighter dark:text-night-text-muted transition-colors"
                     aria-label="Next week"
                 >
-                    <ChevronRight size={18} />
+                    <ChevronRight size={14} />
                 </button>
 
                 {!isCurrentWeek && (
@@ -107,7 +107,7 @@ export default function DateNavigator() {
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         onClick={goToToday}
-                        className="px-2.5 py-1 rounded-lg bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary-light text-xs font-bold hover:bg-primary/15 dark:hover:bg-primary/30 transition-colors"
+                        className="px-2 py-0.5 rounded-md bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary-light text-[9px] font-bold hover:bg-primary/15 dark:hover:bg-primary/30 transition-colors"
                     >
                         Today
                     </motion.button>

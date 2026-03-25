@@ -46,11 +46,11 @@ export default function PublicProfileModal({ user, onClose }: PublicProfileModal
                     initial={{ opacity: 0, scale: 0.95, y: 20 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                    transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-                    className="relative w-full max-w-2xl bg-surface dark:bg-night-surface rounded-3xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col transition-colors"
+                    transition={{ type: 'tween', ease: 'easeOut', duration: 0.2 }}
+                    className="relative w-full max-w-2xl bg-surface dark:bg-night-surface rounded-3xl overflow-hidden max-h-[90vh] flex flex-col transition-colors"
                 >
                     {/* Header Banner */}
-                    <div className="flex-shrink-0 relative h-32 bg-gradient-to-tr from-indigo-500 via-primary to-primary-light dark:from-indigo-600 dark:via-primary-dark dark:to-primary">
+                    <div className="flex-shrink-0 relative h-32 bg-primary-dark">
                         <button
                             onClick={onClose}
                             className="absolute top-4 right-4 w-8 h-8 rounded-full bg-black/20 text-white flex items-center justify-center hover:bg-black/40 transition-colors backdrop-blur-md"
@@ -67,9 +67,9 @@ export default function PublicProfileModal({ user, onClose }: PublicProfileModal
                                 <img
                                     src={user.avatarUrl}
                                     alt={user.name}
-                                    className="w-28 h-28 sm:w-32 sm:h-32 rounded-3xl bg-white dark:bg-night-bg border-4 border-surface dark:border-night-surface shadow-xl object-cover transition-colors"
+                                    className="w-28 h-28 sm:w-32 sm:h-32 rounded-3xl bg-white dark:bg-night-bg border-4 border-surface dark:border-night-surface object-cover transition-colors"
                                 />
-                                <div className="absolute -bottom-3 -right-3 w-10 h-10 bg-dark dark:bg-night-bg text-white dark:text-night-text text-sm font-black rounded-xl flex items-center justify-center shadow-lg border-2 border-surface dark:border-night-surface transition-colors">
+                                <div className="absolute -bottom-3 -right-3 w-10 h-10 bg-dark dark:bg-night-bg text-white dark:text-night-text text-sm font-black rounded-xl flex items-center justify-center border-2 border-surface dark:border-night-surface transition-colors">
                                     {user.level}
                                 </div>
                             </div>
@@ -84,7 +84,7 @@ export default function PublicProfileModal({ user, onClose }: PublicProfileModal
                             </div>
 
                             <div className="mt-4 sm:mt-14 w-full sm:w-auto">
-                                <button className="w-full sm:w-auto px-6 py-2.5 bg-primary text-white font-bold rounded-xl shadow-lg hover:bg-primary-dark transition-colors flex items-center justify-center gap-2">
+                                <button className="w-full sm:w-auto px-6 py-2.5 bg-primary text-white font-bold rounded-xl hover:bg-primary-dark transition-colors flex items-center justify-center gap-2">
                                     <Shield size={16} /> Nudge
                                 </button>
                             </div>
@@ -95,13 +95,12 @@ export default function PublicProfileModal({ user, onClose }: PublicProfileModal
 
                             {/* Left Col: RPG Card */}
                             <div className="space-y-6">
-                                <div className="bg-white dark:bg-night-bg rounded-2xl p-6 border border-[#D4C8E8] dark:border-night-border shadow-sm relative overflow-hidden group transition-colors">
-                                    {/* Glassmorphism gradient effect inside card */}
-                                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 dark:from-primary/10 to-transparent pointer-events-none transition-colors" />
+                                <div className="bg-white dark:bg-night-bg rounded-2xl p-6 border border-[#D4C8E8] dark:border-night-border relative overflow-hidden group transition-colors">
+                                    <div className="absolute inset-0 bg-primary/5 dark:bg-primary/10 pointer-events-none transition-colors" />
 
                                     <div className="flex items-center justify-between relative z-10 mb-4">
                                         <h3 className="font-black text-dark dark:text-night-text text-lg uppercase tracking-wider transition-colors">RPG Card</h3>
-                                        <div className="bg-dark dark:bg-night-surface text-white dark:text-night-text border border-transparent dark:border-night-border px-3 py-1 rounded-lg font-black text-sm flex items-center gap-1 shadow-md transition-colors">
+                                        <div className="bg-dark dark:bg-night-surface text-white dark:text-night-text border border-transparent dark:border-night-border px-3 py-1 rounded-lg font-black text-sm flex items-center gap-1 transition-colors">
                                             OVR {user.stats.attributes?.ovr || 0}
                                         </div>
                                     </div>
@@ -129,13 +128,13 @@ export default function PublicProfileModal({ user, onClose }: PublicProfileModal
 
                                 {/* Active Streaks Box */}
                                 {user.activeStreaks.length > 0 && (
-                                    <div className="bg-orange-50 dark:bg-orange-950/20 rounded-2xl p-5 border border-orange-200 dark:border-orange-900/30 shadow-inner transition-colors">
+                                    <div className="bg-orange-50 dark:bg-orange-950/20 rounded-2xl p-5 border border-orange-200 dark:border-orange-900/30 transition-colors">
                                         <h4 className="font-bold text-orange-800 dark:text-orange-500 text-xs uppercase tracking-wider mb-3 flex items-center gap-2 transition-colors">
                                             <Flame size={14} /> Active Streaks
                                         </h4>
                                         <div className="flex flex-wrap gap-2">
                                             {user.activeStreaks.map(streak => (
-                                                <div key={streak.name} className="bg-white dark:bg-night-surface px-3 py-1.5 rounded-lg border border-orange-200 dark:border-orange-900/50 text-sm font-bold shadow-sm flex items-center gap-2 text-dark dark:text-night-text transition-colors">
+                                                <div key={streak.name} className="bg-white dark:bg-night-surface px-3 py-1.5 rounded-lg border border-orange-200 dark:border-orange-900/50 text-sm font-bold flex items-center gap-2 text-dark dark:text-night-text transition-colors">
                                                     <span>{streak.icon}</span> {streak.days}d
                                                 </div>
                                             ))}
@@ -160,8 +159,8 @@ export default function PublicProfileModal({ user, onClose }: PublicProfileModal
                                         {user.badges.map(badge => {
                                             const tierStyles = TIER_COLORS[badge.tier as keyof typeof TIER_COLORS];
                                             return (
-                                                <div key={badge.id} className={`flex items-center gap-4 p-3 rounded-xl border bg-white dark:bg-night-surface ${tierStyles.border} dark:border-opacity-20 shadow-sm group hover:scale-[1.02] transition-all`}>
-                                                    <div className={`w-12 h-12 rounded-lg flex items-center justify-center text-2xl shadow-inner ${tierStyles.bg} dark:bg-opacity-10`}>
+                                                <div key={badge.id} className={`flex items-center gap-4 p-3 rounded-xl border bg-white dark:bg-night-surface ${tierStyles.border} dark:border-opacity-20 group transition-colors`}>
+                                                    <div className={`w-12 h-12 rounded-lg flex items-center justify-center text-2xl ${tierStyles.bg} dark:bg-opacity-10`}>
                                                         {badge.icon}
                                                     </div>
                                                     <div>

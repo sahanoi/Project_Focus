@@ -4,29 +4,25 @@ import { useHabitStore } from '../../store/habitStore';
 import { COLLECTIBLES } from '../../data/collectibles';
 import { Award, X } from 'lucide-react';
 
-const RARITY_STYLES: Record<string, { border: string; glow: string; bg: string; label: string }> = {
+const RARITY_STYLES: Record<string, { border: string; bg: string; label: string }> = {
     common: {
         border: 'border-gray-300 dark:border-gray-500',
-        glow: '',
-        bg: 'from-gray-50 to-white dark:from-night-surface dark:to-night-bg',
+        bg: 'bg-gray-50 dark:bg-night-surface',
         label: 'text-gray-500',
     },
     rare: {
         border: 'border-blue-400 dark:border-blue-500',
-        glow: 'shadow-blue-400/30 shadow-lg',
-        bg: 'from-blue-50 to-white dark:from-blue-950/30 dark:to-night-bg',
+        bg: 'bg-blue-50 dark:bg-blue-950/30',
         label: 'text-blue-500',
     },
     epic: {
         border: 'border-purple-500 dark:border-purple-400',
-        glow: 'shadow-purple-500/30 shadow-lg',
-        bg: 'from-purple-50 to-white dark:from-purple-950/30 dark:to-night-bg',
+        bg: 'bg-purple-50 dark:bg-purple-950/30',
         label: 'text-purple-500',
     },
     legendary: {
         border: 'border-yellow-400 dark:border-yellow-500',
-        glow: 'shadow-yellow-400/40 shadow-xl',
-        bg: 'from-yellow-50 to-white dark:from-yellow-950/20 dark:to-night-bg',
+        bg: 'bg-yellow-50 dark:bg-yellow-950/20',
         label: 'text-yellow-500',
     },
 };
@@ -58,12 +54,12 @@ export default function CollectibleToast() {
                     initial={{ opacity: 0, y: 80, scale: 0.9 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 40, scale: 0.95 }}
-                    transition={{ type: 'spring', damping: 20, stiffness: 300 }}
-                    className={`fixed bottom-8 left-1/2 -translate-x-1/2 z-[200] w-[360px] max-w-[90vw] border-2 rounded-2xl bg-gradient-to-r ${style.bg} ${style.border} ${style.glow} backdrop-blur-md overflow-hidden`}
+                    transition={{ type: 'tween', ease: 'easeOut', duration: 0.2 }}
+                    className={`fixed bottom-8 left-1/2 -translate-x-1/2 z-[200] w-[360px] max-w-[90vw] border-2 rounded-2xl ${style.bg} ${style.border} overflow-hidden`}
                 >
                     <div className="flex items-center gap-4 p-4">
                         {/* Icon */}
-                        <div className="w-14 h-14 rounded-xl bg-white/80 dark:bg-night-surface border border-gray-100 dark:border-night-border flex items-center justify-center text-3xl shadow-sm flex-shrink-0">
+                        <div className="w-14 h-14 rounded-xl bg-white/80 dark:bg-night-surface border border-gray-100 dark:border-night-border flex items-center justify-center text-3xl flex-shrink-0">
                             {collectible.icon}
                         </div>
 

@@ -24,14 +24,11 @@ export default function StreakLifeLine() {
     return (
         <div className="space-y-3">
             {/* Overall Streak Status */}
-            <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-950/20 dark:to-red-950/20 border border-orange-200 dark:border-orange-900/40 p-4 transition-colors">
+            <div className="relative overflow-hidden rounded-xl bg-orange-50 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-900/40 p-4 transition-colors">
                 {/* Heartbeat pulse background */}
                 <div className="absolute inset-0 overflow-hidden">
                     <div
                         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full bg-orange-200/20"
-                        style={{
-                            animation: totalActiveStreaks > 0 ? 'streakPulse 2s ease-in-out infinite' : 'none',
-                        }}
                     />
                 </div>
 
@@ -40,12 +37,9 @@ export default function StreakLifeLine() {
                     <div className="relative">
                         <div
                             className={`w-12 h-12 rounded-xl flex items-center justify-center transition-colors ${totalActiveStreaks > 0
-                                ? 'bg-gradient-to-br from-orange-400 to-red-400 dark:from-orange-500 dark:to-red-600 shadow-lg shadow-orange-300/30 dark:shadow-orange-900/30'
+                                ? 'bg-orange-400 dark:bg-orange-500'
                                 : 'bg-[#D4C8E8] dark:bg-night-border'
                                 }`}
-                            style={{
-                                animation: topStreak?.currentStreak >= 7 ? 'streakBreathe 1.5s ease-in-out infinite' : 'none',
-                            }}
                         >
                             <Flame size={24} className={totalActiveStreaks > 0 ? 'text-white' : 'text-dark-lighter dark:text-night-text-muted transition-colors'} />
                         </div>
@@ -95,10 +89,7 @@ export default function StreakLifeLine() {
                                     className="h-full rounded-full transition-all duration-700 ease-out"
                                     style={{
                                         width: `${Math.max(streakPercent, s.currentStreak > 0 ? 8 : 0)}%`,
-                                        background: s.currentStreak > 0
-                                            ? `linear-gradient(90deg, ${s.color}88, ${s.color})`
-                                            : '', // Tailwind will handle dark bg via classes, but inline styles override
-                                        animation: s.currentStreak >= 3 ? 'lifeLinePulse 3s ease-in-out infinite' : 'none',
+                                        backgroundColor: s.currentStreak > 0 ? s.color : undefined,
                                     }}
                                 />
                             </div>

@@ -89,11 +89,11 @@ export default function DailyReviewModal({ isOpen, onClose }: DailyReviewModalPr
                 initial={{ opacity: 0, scale: 0.95, y: 10 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                className="w-full max-w-lg bg-white dark:bg-night-surface rounded-3xl border border-[#D4C8E8] dark:border-night-border shadow-2xl overflow-hidden transition-colors"
+                className="w-full max-w-lg bg-white dark:bg-night-surface rounded-3xl border border-[#D4C8E8] dark:border-night-border overflow-hidden transition-colors"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header */}
-                <div className="relative bg-gradient-to-r from-primary/5 to-primary-light/5 dark:from-primary/10 dark:to-primary-light/10 p-6 border-b border-[#D4C8E8] dark:border-night-border transition-colors">
+                <div className="relative bg-primary/5 dark:bg-primary/10 p-6 border-b border-[#D4C8E8] dark:border-night-border transition-colors">
                     <button onClick={onClose} className="absolute top-4 right-4 p-2 rounded-xl hover:bg-white/50 dark:hover:bg-white/10 text-dark-lighter dark:text-night-text-muted transition-colors">
                         <X size={20} />
                     </button>
@@ -118,7 +118,7 @@ export default function DailyReviewModal({ isOpen, onClose }: DailyReviewModalPr
                                 initial={{ width: 0 }}
                                 animate={{ width: `${completionRate}%` }}
                                 transition={{ delay: 0.3, duration: 0.8, ease: 'easeOut' }}
-                                className="h-full bg-gradient-to-r from-primary to-primary-light rounded-full"
+                                className="h-full bg-primary rounded-full"
                             />
                         </div>
                     </div>
@@ -197,8 +197,8 @@ export default function DailyReviewModal({ isOpen, onClose }: DailyReviewModalPr
                                     key={m.value}
                                     onClick={() => setMood(m.value)}
                                     className={`flex flex-col items-center gap-1 p-3 rounded-2xl transition-all duration-200 ${mood === m.value
-                                        ? 'bg-primary/10 dark:bg-primary/20 border-2 border-primary/30 dark:border-primary/50 scale-110 shadow-sm'
-                                        : 'bg-surface dark:bg-night-bg border-2 border-transparent hover:bg-primary/5 dark:hover:bg-primary/10 hover:scale-105'
+                                        ? 'bg-primary/10 dark:bg-primary/20 border-2 border-primary/30 dark:border-primary/50'
+                                        : 'bg-surface dark:bg-night-bg border-2 border-transparent hover:bg-primary/5 dark:hover:bg-primary/10'
                                         }`}
                                 >
                                     <span className="text-2xl">{m.emoji}</span>
@@ -224,10 +224,8 @@ export default function DailyReviewModal({ isOpen, onClose }: DailyReviewModalPr
                 {/* Footer */}
                 <div className="p-6 border-t border-[#D4C8E8] dark:border-night-border bg-surface/50 dark:bg-night-bg/50 transition-colors">
                     <motion.button
-                        whileHover={{ scale: 1.01 }}
-                        whileTap={{ scale: 0.98 }}
                         onClick={onClose}
-                        className="w-full py-3 rounded-xl bg-gradient-to-r from-primary to-primary-light text-white font-bold flex items-center justify-center gap-2 shadow-md shadow-primary/20"
+                        className="w-full py-3 rounded-xl bg-primary text-white font-bold flex items-center justify-center gap-2"
                     >
                         <Sparkles size={16} />
                         Done for Today
@@ -242,7 +240,7 @@ export default function DailyReviewModal({ isOpen, onClose }: DailyReviewModalPr
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 20 }}
-                        className="fixed bottom-8 left-1/2 -translate-x-1/2 px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-bold shadow-lg flex items-center gap-2"
+                        className="fixed bottom-8 left-1/2 -translate-x-1/2 px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-bold flex items-center gap-2"
                     >
                         <Snowflake size={14} />
                         Streak protected! ❄️

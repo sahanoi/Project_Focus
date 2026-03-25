@@ -76,11 +76,19 @@ export default function Auth() {
         try {
             const { error } = await supabase.auth.updateUser({ password: newPassword });
             if (error) throw error;
-            // Clears the recovery hash from the URL
-            window.history.replaceState(null, '', window.location.pathname);
+
+            // Clean up the URL
+            const url = new URL(window.location.href);
+            url.hash = '';
+            url.searchParams.delete('type');
+            window.history.replaceState(null, '', url.pathname + url.search);
+
             // Sign the user out to force them back to the sign-in screen
             await signOut();
             setMessage('Password updated successfully! Please sign in with your new password.');
+            setNewPassword('');
+            setIsForgotPassword(false);
+            setResetSent(false);
         } catch (err: any) {
             setError(err.message);
         } finally {
@@ -89,21 +97,39 @@ export default function Auth() {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-[#F8F6FB] dark:bg-[#0D0B14] p-4 relative overflow-hidden font-inter">
-            {/* Dynamic Background Elements */}
-            <div className="absolute inset-0 z-0 overflow-hidden">
-                <motion.div
-                    animate={{ x: [0, 50, 0], y: [0, 30, 0] }}
-                    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                    className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px]"
-                />
-                <motion.div
-                    animate={{ x: [0, -30, 0], y: [0, 50, 0] }}
-                    transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-                    className="absolute bottom-[-10%] left-[-5%] w-[600px] h-[600px] bg-primary-light/10 rounded-full blur-[120px]"
-                />
-                <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-primary/20 rounded-full blur-sm animate-pulse" />
-                <div className="absolute bottom-1/3 right-1/4 w-3 h-3 bg-primary-light/30 rounded-full blur-sm animate-pulse delay-700" />
+        <div className="flex flex-col items-center justify-center min-h-screen bg-[#F8F6FB] dark:bg-night-bg p-4 relative overflow-hidden font-inter">
+
+            {/* Global Floating Toasts for Auth */}
+            <div className="fixed top-6 left-0 right-0 z-50 flex flex-col items-center gap-3 px-4 pointer-events-none">
+                <AnimatePresence>
+                    {error && (
+                        <motion.div
+                            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+                            className="w-full max-w-sm p-4 bg-white dark:bg-neutral-900 border border-danger/30 text-danger-dark dark:text-danger-light rounded-2xl text-sm font-semibold flex items-center gap-3 pointer-events-auto"
+                        >
+                            <span className="bg-danger/10 dark:bg-danger/20 shrink-0 w-8 h-8 flex items-center justify-center rounded-full text-sm">!</span>
+                            <span className="flex-1">{error}</span>
+                            <button onClick={() => setError(null)} className="text-danger/50 hover:text-danger transition-colors p-1">✕</button>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
+                <AnimatePresence>
+                    {message && (
+                        <motion.div
+                            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+                            className="w-full max-w-sm p-4 bg-white dark:bg-neutral-900 border border-success/30 text-success-dark dark:text-success-light rounded-2xl text-sm font-semibold flex items-center gap-3 pointer-events-auto"
+                        >
+                            <span className="bg-success/10 dark:bg-success/20 shrink-0 w-8 h-8 flex items-center justify-center rounded-full text-sm">✨</span>
+                            <span className="flex-1">{message}</span>
+                            <button onClick={() => setMessage(null)} className="text-success/50 hover:text-success transition-colors p-1">✕</button>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </div>
 
             <motion.div
@@ -131,34 +157,8 @@ export default function Auth() {
                 </div>
 
                 {/* Main Glass Card */}
-                <div className="bg-white/70 dark:bg-neutral-900/40 backdrop-blur-xl border border-white/20 dark:border-neutral-800/50 rounded-[32px] p-8 md:p-10 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] dark:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)]">
-                    <AnimatePresence mode="wait">
-                        {error && (
-                            <motion.div
-                                initial={{ opacity: 0, y: -10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -10 }}
-                                className="mb-6 p-4 bg-danger/10 border border-danger/20 text-danger-dark dark:text-danger-light rounded-2xl text-sm font-semibold flex items-center gap-3"
-                            >
-                                <span className="bg-danger/20 w-6 h-6 flex items-center justify-center rounded-full text-xs">!</span>
-                                {error}
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
+                <div className="bg-white dark:bg-neutral-900 border border-dark-border dark:border-neutral-800/50 rounded-[32px] p-8 md:p-10">
 
-                    <AnimatePresence mode="wait">
-                        {message && (
-                            <motion.div
-                                initial={{ opacity: 0, y: -10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -10 }}
-                                className="mb-6 p-4 bg-success/10 border border-success/20 text-success-dark dark:text-success-light rounded-2xl text-sm font-semibold flex items-center gap-3"
-                            >
-                                <span className="bg-success/20 w-6 h-6 flex items-center justify-center rounded-full text-xs">✉️</span>
-                                {message}
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
 
                     {resetSent ? (
                         /* Check Your Inbox Screen */
@@ -208,22 +208,20 @@ export default function Auth() {
                                     />
                                 </div>
                             </div>
-                            <motion.button
+                            <button
                                 type="submit"
                                 disabled={loading}
-                                whileHover={{ scale: loading ? 1 : 1.02, y: -2 }}
-                                whileTap={{ scale: loading ? 1 : 0.98 }}
-                                className="w-full bg-gradient-to-r from-primary via-primary to-primary-light text-white font-black py-4 rounded-2xl transition-all flex items-center justify-center gap-3 shadow-xl shadow-primary/25 disabled:opacity-60 disabled:cursor-not-allowed group"
+                                className="w-full bg-primary hover:bg-primary-dark text-white font-black py-4 rounded-2xl transition-colors flex items-center justify-center gap-3 disabled:opacity-60 disabled:cursor-not-allowed"
                             >
                                 {loading ? (
                                     <Loader2 className="w-5 h-5 animate-spin" />
                                 ) : (
                                     <>
-                                        <KeyRound size={18} className="group-hover:rotate-12 transition-transform" />
+                                        <KeyRound size={18} />
                                         <span>Update Password</span>
                                     </>
                                 )}
-                            </motion.button>
+                            </button>
                         </form>
                     ) : (
                         <form onSubmit={isForgotPassword ? handleResetPassword : handleAuth} className="space-y-6">
@@ -279,12 +277,10 @@ export default function Auth() {
                                 </div>
                             )}
 
-                            <motion.button
+                            <button
                                 type="submit"
                                 disabled={loading}
-                                whileHover={{ scale: loading ? 1 : 1.02, y: -2 }}
-                                whileTap={{ scale: loading ? 1 : 0.98 }}
-                                className="w-full bg-gradient-to-r from-primary via-primary to-primary-light text-white font-black py-4 rounded-2xl transition-all flex items-center justify-center gap-3 shadow-xl shadow-primary/25 disabled:opacity-60 disabled:cursor-not-allowed group"
+                                className="w-full bg-primary hover:bg-primary-dark text-white font-black py-4 rounded-2xl transition-colors flex items-center justify-center gap-3 disabled:opacity-60 disabled:cursor-not-allowed"
                             >
                                 {loading ? (
                                     <Loader2 className="w-5 h-5 animate-spin" />
@@ -292,19 +288,19 @@ export default function Auth() {
                                     <>
                                         {isForgotPassword ? (
                                             <>
-                                                <Mail size={18} className="group-hover:-rotate-12 transition-transform" />
+                                                <Mail size={18} />
                                                 <span>Send Recovery Link</span>
                                             </>
                                         ) : (
                                             <>
-                                                <Sparkles size={18} className="group-hover:rotate-12 transition-transform" />
+                                                <Sparkles size={18} />
                                                 <span>{isSignUp ? 'Initialize Journey' : 'Enter Dashboard'}</span>
-                                                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                                                <ArrowRight size={18} />
                                             </>
                                         )}
                                     </>
                                 )}
-                            </motion.button>
+                            </button>
 
                             <div className="mt-8 text-center">
                                 <p className="text-neutral-500 dark:text-neutral-400 text-sm font-medium">

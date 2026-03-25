@@ -8,11 +8,22 @@ export type HabitType = 'regular' | 'numerical' | 'infinite' | 'challenge';
 // Level Gating — Progressive Feature Unlock
 // ==========================================
 
-export type UserTier = 'novice' | 'apprentice' | 'practitioner' | 'competent' | 'expert';
+export type UserTier = 'novice' | 'apprentice' | 'practitioner' | 'strategist' | 'competent' | 'expert';
+
+/** Tier order for feature unlocks (low → high). Must match LEVEL_TO_TIER thresholds. */
+export const USER_TIER_ORDER: readonly UserTier[] = [
+    'novice',
+    'apprentice',
+    'practitioner',
+    'strategist',
+    'competent',
+    'expert',
+] as const;
 
 export const LEVEL_TO_TIER = (level: number): UserTier => {
-    if (level >= 5) return 'expert';
-    if (level >= 4) return 'competent';
+    if (level >= 6) return 'expert';
+    if (level >= 5) return 'competent';
+    if (level >= 4) return 'strategist';
     if (level >= 3) return 'practitioner';
     if (level >= 2) return 'apprentice';
     return 'novice';
@@ -30,7 +41,11 @@ export interface FeatureGate {
 export const FEATURE_GATES: Record<UserTier, FeatureGate> = {
     novice: { maxHabits: 3, availableHabitTypes: ['regular'], analyticsEnabled: false, routinesEnabled: false, goalsEnabled: false, customScheduleEnabled: false },
     apprentice: { maxHabits: 6, availableHabitTypes: ['regular', 'numerical'], analyticsEnabled: false, routinesEnabled: false, goalsEnabled: false, customScheduleEnabled: false },
-    practitioner: { maxHabits: 12, availableHabitTypes: ['regular', 'numerical', 'infinite'], analyticsEnabled: true, routinesEnabled: false, goalsEnabled: true, customScheduleEnabled: true },
+    /** Level 3+: analytics, goals, custom schedules — habit types stay regular + numerical only until Strategist. */
+    practitioner: { maxHabits: 12, availableHabitTypes: ['regular', 'numerical'], analyticsEnabled: true, routinesEnabled: false, goalsEnabled: true, customScheduleEnabled: true },
+    /** Level 4+: Infinite Loop habits (separate tier from Challenge). */
+    strategist: { maxHabits: 18, availableHabitTypes: ['regular', 'numerical', 'infinite'], analyticsEnabled: true, routinesEnabled: false, goalsEnabled: true, customScheduleEnabled: true },
+    /** Level 5+: Challenge habits + routines. */
     competent: { maxHabits: 25, availableHabitTypes: ['regular', 'numerical', 'infinite', 'challenge'], analyticsEnabled: true, routinesEnabled: true, goalsEnabled: true, customScheduleEnabled: true },
     expert: { maxHabits: Infinity, availableHabitTypes: ['regular', 'numerical', 'infinite', 'challenge'], analyticsEnabled: true, routinesEnabled: true, goalsEnabled: true, customScheduleEnabled: true },
 };

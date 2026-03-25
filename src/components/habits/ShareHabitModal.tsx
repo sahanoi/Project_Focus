@@ -9,8 +9,8 @@ import { useAuth } from '../../contexts/AuthContext';
 
 function getHabitColorClass(hex: string) {
     return {
-        bg: 'luxury-glass',
-        text: 'text-dark'
+        bg: 'bg-surface dark:bg-night-surface',
+        text: 'text-dark dark:text-night-text'
     };
 }
 
@@ -55,31 +55,27 @@ export default function ShareHabitModal({ isOpen, onClose, habit }: ShareHabitMo
                     initial={{ opacity: 0, scale: 0.95, y: 20 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                    transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-                    className="relative w-full max-w-md bg-surface rounded-3xl shadow-2xl overflow-hidden"
+                    transition={{ type: 'tween', ease: 'easeOut', duration: 0.2 }}
+                    className="relative w-full max-w-md bg-surface dark:bg-night-surface rounded-3xl border border-dark-border dark:border-night-border overflow-hidden"
                 >
-                    <div className="p-4 flex items-center justify-between border-b border-[#D4C8E8] luxury-glass">
-                        <h3 className="font-black text-dark tracking-wide flex items-center gap-2">
+                    <div className="p-4 flex items-center justify-between border-b border-dark-border dark:border-night-border">
+                        <h3 className="font-black text-dark dark:text-night-text tracking-wide flex items-center gap-2">
                             <Share2 size={18} className="text-primary" /> Share Template
                         </h3>
                         <button
                             onClick={onClose}
-                            className="p-2 rounded-xl text-dark-lighter hover:bg-surface-dark transition-colors"
+                            className="p-2 rounded-xl text-dark-lighter dark:text-night-text-muted hover:bg-surface-dark dark:hover:bg-night-bg transition-colors"
                         >
                             <X size={20} />
                         </button>
                     </div>
 
-                    <div className="p-8 pb-10 bg-[#f8f9fa] flex flex-col items-center">
+                    <div className="p-8 pb-10 bg-[#f8f9fa] dark:bg-night-bg flex flex-col items-center">
 
                         {/* THE SHAREABLE CARD */}
-                        <div className={`w-full max-w-sm aspect-[4/5] rounded-[2rem] p-8 shadow-xl flex flex-col justify-between relative overflow-hidden ${themeColors.bg} border-2 border-white/50 backdrop-blur-md`}>
-                            {/* Decorative background elements */}
-                            <div className="absolute top-0 right-0 w-64 h-64 luxury-glass/20 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none" />
-                            <div className="absolute bottom-0 left-0 w-48 h-48 luxury-glass/10 rounded-full blur-2xl -ml-10 -mb-10 pointer-events-none" />
-
+                        <div className={`w-full max-w-sm aspect-[4/5] rounded-[2rem] p-8 flex flex-col justify-between relative overflow-hidden ${themeColors.bg} border-2 border-dark-border dark:border-night-border`}>
                             <div className="relative z-10 text-center space-y-4">
-                                <div className="w-20 h-20 mx-auto rounded-3xl luxury-glass/30 backdrop-blur-md border border-white/50 flex items-center justify-center text-4xl shadow-lg">
+                                <div className="w-20 h-20 mx-auto rounded-3xl bg-primary/10 dark:bg-primary/15 border border-dark-border dark:border-night-border flex items-center justify-center text-4xl">
                                     {habit.icon}
                                 </div>
                                 <div>
@@ -93,9 +89,9 @@ export default function ShareHabitModal({ isOpen, onClose, habit }: ShareHabitMo
                             </div>
 
                             <div className="relative z-10 space-y-4 mt-8">
-                                <div className="luxury-glass/40 backdrop-blur-md border border-white/50 rounded-2xl p-4 flex items-center justify-between shadow-sm">
+                                <div className="bg-surface-dark/50 dark:bg-night-bg/50 border border-dark-border dark:border-night-border rounded-2xl p-4 flex items-center justify-between">
                                     <div className="flex items-center gap-3">
-                                        <div className={`w-10 h-10 rounded-xl luxury-glass/50 flex items-center justify-center ${themeColors.text}`}>
+                                        <div className={`w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center ${themeColors.text}`}>
                                             <Zap size={20} />
                                         </div>
                                         <div className="text-left">
@@ -110,14 +106,14 @@ export default function ShareHabitModal({ isOpen, onClose, habit }: ShareHabitMo
                                                 {habit.type === 'numerical' ? `${habit.goalValue || 0} ${habit.unit || ''}` : 'Daily'}
                                             </p>
                                         </div>
-                                        <div className={`w-10 h-10 rounded-xl luxury-glass/50 flex items-center justify-center ${themeColors.text}`}>
+                                        <div className={`w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center ${themeColors.text}`}>
                                             <Target size={20} />
                                         </div>
                                     </div>
                                 </div>
 
                                 <div className="flex items-center justify-center gap-2">
-                                    <img src="https://api.dicebear.com/7.x/notionists/svg?seed=You&backgroundColor=E6DDF2" alt="Avatar" className="w-8 h-8 rounded-full border-2 border-white" />
+                                    <img src="https://api.dicebear.com/7.x/notionists/svg?seed=You&backgroundColor=E6DDF2" alt="Avatar" className="w-8 h-8 rounded-full border-2 border-white dark:border-night-border" />
                                     <span className={`text-xs font-bold opacity-90 ${themeColors.text}`}>
                                         {user?.email?.split('@')[0] || 'Focus Player'} • Lvl {stats.level}
                                     </span>
@@ -129,18 +125,18 @@ export default function ShareHabitModal({ isOpen, onClose, habit }: ShareHabitMo
                         <div className="mt-8 w-full flex gap-3">
                             <button
                                 onClick={handleCopy}
-                                className="flex-1 py-3.5 bg-dark text-white rounded-xl font-bold shadow-lg hover:bg-dark-light transition-colors flex items-center justify-center gap-2"
+                                className="flex-1 py-3.5 bg-dark dark:bg-night-text text-white dark:text-night-bg rounded-xl font-bold hover:bg-dark-light dark:hover:bg-night-text/80 transition-colors flex items-center justify-center gap-2"
                             >
                                 <Copy size={18} /> Copy Link
                             </button>
                             <button
                                 onClick={handleCopy}
-                                className="flex-1 py-3.5 luxury-glass text-dark border border-[#D4C8E8] rounded-xl font-bold shadow-sm hover:bg-surface-dark transition-colors flex items-center justify-center gap-2"
+                                className="flex-1 py-3.5 bg-surface dark:bg-night-surface text-dark dark:text-night-text border border-dark-border dark:border-night-border rounded-xl font-bold hover:bg-surface-dark dark:hover:bg-night-bg transition-colors flex items-center justify-center gap-2"
                             >
                                 <Download size={18} /> Save Image
                             </button>
                         </div>
-                        <p className="mt-4 text-[10px] font-medium text-dark-lighter uppercase tracking-wider text-center">
+                        <p className="mt-4 text-[10px] font-medium text-dark-lighter dark:text-night-text-muted uppercase tracking-wider text-center">
                             Image generation is mocked for this MVP
                         </p>
 

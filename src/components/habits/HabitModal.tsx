@@ -5,7 +5,8 @@ import {
     Habit, HabitType, HabitCategory, HABIT_CATEGORIES, HABIT_COLORS,
     HABIT_EMOJIS, HABIT_TEMPLATES, HabitTemplate, HabitSchedule, ScheduleType,
 } from '../../types';
-import { X, Check, Target, Infinity, Timer, Hash, Calendar, Sparkles } from 'lucide-react';
+import { getMinLevelForHabitType, isHabitTypeAvailable } from '../../utils/featureGateUtils';
+import { X, Check, Target, Infinity, Timer, Hash, Calendar, Sparkles, Lock } from 'lucide-react';
 
 interface HabitModalProps {
     isOpen: boolean;
@@ -31,7 +32,7 @@ const DAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const DAY_EMOJIS = ['🌞', '🔵', '🟢', '🟡', '🟠', '🔴', '🟣'];
 
 export default function HabitModal({ isOpen, onClose, editHabit }: HabitModalProps) {
-    const { addHabit, updateHabit, addGoal, updateGoal, goals } = useHabitStore();
+    const { addHabit, updateHabit, addGoal, updateGoal, goals, stats } = useHabitStore();
     const stableOnClose = useCallback(onClose, [onClose]);
     useModalClose(isOpen, stableOnClose);
 
@@ -137,6 +138,7 @@ export default function HabitModal({ isOpen, onClose, editHabit }: HabitModalPro
             }
         } else {
             const habitId = addHabit(habitData);
+            if (!habitId) return;
             // Link existing goal to new habit
             if (linkedGoalId) {
                 updateGoal(linkedGoalId, { habitId });
@@ -156,7 +158,8 @@ export default function HabitModal({ isOpen, onClose, editHabit }: HabitModalPro
 
     const applyTemplate = (t: HabitTemplate) => {
         setName(t.name);
-        setType(t.type);
+        const useType = isHabitTypeAvailable(stats, t.type) ? t.type : 'regular';
+        setType(useType);
         setCategory(t.category);
         setColor(t.color);
         setIcon(t.icon);
@@ -186,10 +189,10 @@ export default function HabitModal({ isOpen, onClose, editHabit }: HabitModalPro
 
     return (
         <div className="modal-overlay" onClick={onClose}>
-            <div className="modal-content luxury-glass rounded-3xl" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                 {/* Header */}
-                <div className="flex items-center justify-between p-6 border-b border-gray-100">
-                    <h2 className="text-lg font-bold text-dark">
+                <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-night-border">
+                    <h2 className="text-lg font-bold text-dark dark:text-night-text">
                         {editHabit ? '✏️ Edit Habit' : '✨ Create New Habit'}
                     </h2>
                     <button onClick={onClose} className="btn-icon">
@@ -215,7 +218,7 @@ export default function HabitModal({ isOpen, onClose, editHabit }: HabitModalPro
                 {showTemplates && (
                     <div className="p-6 space-y-4 max-h-[60vh] overflow-y-auto w-[calc(100%+0.5rem)] pr-4 custom-scrollbar">
                         <div className="flex items-center justify-between mb-3">
-                            <h3 className="font-black text-sm text-dark tracking-wide uppercase">📋 Pre-planned Habits</h3>
+                            <h3 className="font-black text-sm text-dark dark:text-night-text tracking-wide uppercase">📋 Pre-planned Habits</h3>
                             <button onClick={() => setShowTemplates(false)} className="text-xs text-primary font-bold hover:underline">
                                 ← Back to form
                             </button>
@@ -224,29 +227,33 @@ export default function HabitModal({ isOpen, onClose, editHabit }: HabitModalPro
                             const templates = HABIT_TEMPLATES[cat.value];
                             if (!templates || templates.length === 0) return null;
                             return (
-                                <div key={cat.value} className="bg-gray-50/50 p-4 rounded-2xl border border-gray-100">
-                                    <p className="text-[11px] font-bold uppercase tracking-widest text-dark-lighter mb-3 flex items-center gap-2">
+                                <div key={cat.value} className="bg-gray-50/50 dark:bg-night-surface/60 p-4 rounded-2xl border border-gray-100 dark:border-night-border">
+                                    <p className="text-[11px] font-bold uppercase tracking-widest text-dark-lighter dark:text-night-text-muted mb-3 flex items-center gap-2">
                                         <span>{cat.icon}</span> {cat.label}
                                     </p>
                                     <div className="grid grid-cols-1 gap-2">
-                                        {templates.map((t, i) => (
+                                        {templates.map((t, i) => {
+                                            const locked = !isHabitTypeAvailable(stats, t.type);
+                                            return (
                                             <button
                                                 key={i}
                                                 type="button"
+                                                disabled={locked}
                                                 onClick={() => applyTemplate(t)}
-                                                className="flex items-center gap-4 p-3.5 rounded-xl border border-gray-200 luxury-glass hover:border-primary hover:shadow-md hover:-translate-y-0.5 text-left transition-all duration-300 group"
+                                                className={`flex items-center gap-4 p-3.5 rounded-xl border border-gray-200 dark:border-night-border bg-surface dark:bg-night-surface text-left transition-colors duration-300 group ${locked ? 'opacity-50 cursor-not-allowed' : 'hover:border-primary'}`}
                                             >
                                                 <span className="text-xl">{t.icon}</span>
                                                 <div className="flex-1 min-w-0">
-                                                    <p className="text-sm font-semibold truncate">{t.name}</p>
-                                                    <p className="text-[11px] text-dark-lighter">
+                                                    <p className="text-sm font-semibold text-dark dark:text-night-text truncate">{t.name}</p>
+                                                    <p className="text-[11px] text-dark-lighter dark:text-night-text-muted">
                                                         {t.type} • {t.schedule.type === 'weekly' ? `${t.schedule.daysOfWeek?.map(d => DAY_LABELS[d]).join(', ')}` : t.schedule.type}
                                                         {t.goalValue ? ` • ${t.goalValue} ${t.unit}` : ''}
                                                     </p>
                                                 </div>
                                                 <div className="w-3 h-3 rounded-full" style={{ backgroundColor: t.color }} />
                                             </button>
-                                        ))}
+                                        );
+                                        })}
                                     </div>
                                 </div>
                             );
@@ -259,14 +266,14 @@ export default function HabitModal({ isOpen, onClose, editHabit }: HabitModalPro
                     <form onSubmit={handleSubmit} className="p-6 space-y-6 max-h-[70vh] overflow-y-auto custom-scrollbar">
                         {/* Name + Emoji */}
                         <div>
-                            <label className="block text-sm font-bold text-dark mb-2">
+                            <label className="block text-sm font-bold text-dark dark:text-night-text mb-2">
                                 Habit Name
                             </label>
                             <div className="flex gap-3">
                                 <button
                                     type="button"
                                     onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                                    className="w-12 h-12 rounded-xl border border-gray-200 bg-gray-50 flex items-center justify-center text-2xl hover:bg-gray-100 hover:border-gray-300 transition-all shadow-sm flex-shrink-0"
+                                    className="w-12 h-12 rounded-xl border border-gray-200 dark:border-night-border bg-gray-50 dark:bg-night-bg flex items-center justify-center text-2xl hover:bg-gray-100 dark:hover:bg-night-border hover:border-gray-300 dark:hover:border-night-border transition-colors flex-shrink-0"
                                 >
                                     {icon}
                                 </button>
@@ -283,14 +290,14 @@ export default function HabitModal({ isOpen, onClose, editHabit }: HabitModalPro
 
                             {/* Emoji Picker Grid */}
                             {showEmojiPicker && (
-                                <div className="mt-3 p-4 rounded-2xl border border-gray-100 luxury-glass shadow-lg animate-in slide-in-from-top-2 duration-200">
+                                <div className="mt-3 p-4 rounded-2xl border border-gray-100 dark:border-night-border bg-surface dark:bg-night-surface animate-in slide-in-from-top-2 duration-200">
                                     <div className="grid grid-cols-9 gap-1.5">
                                         {HABIT_EMOJIS.map((e) => (
                                             <button
                                                 key={e}
                                                 type="button"
                                                 onClick={() => { setIcon(e); setShowEmojiPicker(false); }}
-                                                className={`w-9 h-9 rounded-xl flex items-center justify-center text-xl hover:bg-gray-100 transition-all ${icon === e ? 'bg-primary/10 ring-2 ring-primary scale-110' : ''}`}
+                                                className={`w-9 h-9 rounded-xl flex items-center justify-center text-xl hover:bg-gray-100 dark:hover:bg-night-border transition-colors ${icon === e ? 'bg-primary/10 ring-2 ring-primary' : ''}`}
                                             >
                                                 {e}
                                             </button>
@@ -302,35 +309,45 @@ export default function HabitModal({ isOpen, onClose, editHabit }: HabitModalPro
 
                         {/* Habit Type */}
                         <div>
-                            <label className="block text-sm font-bold text-dark mb-2">
+                            <label className="block text-sm font-bold text-dark dark:text-night-text mb-2">
                                 Habit Type
                             </label>
                             <div className="grid grid-cols-2 gap-3">
-                                {HABIT_TYPE_OPTIONS.map((opt) => (
+                                {HABIT_TYPE_OPTIONS.map((opt) => {
+                                    const unlocked = isHabitTypeAvailable(stats, opt.value) || editHabit?.type === opt.value;
+                                    const minLv = getMinLevelForHabitType(opt.value);
+                                    return (
                                     <button
                                         key={opt.value}
                                         type="button"
-                                        onClick={() => setType(opt.value)}
-                                        className={`flex items-start gap-3 p-4 rounded-2xl border-2 text-left transition-all duration-300 ${type === opt.value
-                                            ? 'border-primary bg-primary/5 shadow-sm scale-[1.02]'
-                                            : 'border-transparent bg-gray-50 hover:bg-gray-100 hover:scale-[1.01]'
+                                        disabled={!unlocked}
+                                        onClick={() => unlocked && setType(opt.value)}
+                                        className={`flex items-start gap-3 p-4 rounded-2xl border-2 text-left transition-colors duration-300 ${type === opt.value
+                                            ? 'border-primary bg-primary/5'
+                                            : unlocked
+                                                ? 'border-transparent bg-gray-50 dark:bg-night-bg hover:bg-gray-100 dark:hover:bg-night-border'
+                                                : 'border-transparent bg-gray-50/60 dark:bg-night-bg/60 opacity-70 cursor-not-allowed'
                                             }`}
                                     >
-                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-base shrink-0 ${type === opt.value ? 'luxury-glass shadow-sm' : 'bg-gray-200'}`}>
-                                            {opt.emoji}
+                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-base shrink-0 ${type === opt.value ? 'bg-primary/10' : 'bg-gray-200 dark:bg-night-border'}`}>
+                                            {!unlocked ? <Lock size={14} className="text-dark-lighter dark:text-night-text-muted" /> : opt.emoji}
                                         </div>
-                                        <div className="mt-1.5">
-                                            <p className={`text-sm font-bold ${type === opt.value ? 'text-primary' : 'text-dark'}`}>{opt.label}</p>
-                                            <p className="text-[11px] text-dark-lighter font-medium leading-tight mt-0.5">{opt.desc}</p>
+                                        <div className="mt-1.5 min-w-0">
+                                            <p className={`text-sm font-bold ${type === opt.value ? 'text-primary' : 'text-dark dark:text-night-text'}`}>{opt.label}</p>
+                                            <p className="text-[11px] text-dark-lighter dark:text-night-text-muted font-medium leading-tight mt-0.5">{opt.desc}</p>
+                                            {!unlocked && (
+                                                <p className="text-[10px] text-primary dark:text-primary-light font-bold mt-1">Lv.{minLv}+</p>
+                                            )}
                                         </div>
                                     </button>
-                                ))}
+                                );
+                                })}
                             </div>
                         </div>
 
                         {/* Schedule */}
-                        <div className="bg-gray-50/50 p-5 rounded-3xl border border-gray-100">
-                            <label className="block text-sm font-bold text-dark mb-3">
+                        <div className="bg-gray-50/50 dark:bg-night-surface/60 p-5 rounded-3xl border border-gray-100 dark:border-night-border">
+                            <label className="block text-sm font-bold text-dark dark:text-night-text mb-3">
                                 📅 Schedule
                             </label>
                             <div className="grid grid-cols-2 gap-2 mb-4">
@@ -339,13 +356,13 @@ export default function HabitModal({ isOpen, onClose, editHabit }: HabitModalPro
                                         key={opt.value}
                                         type="button"
                                         onClick={() => setScheduleType(opt.value)}
-                                        className={`p-3 rounded-xl border text-left transition-all ${scheduleType === opt.value
-                                            ? 'border-primary luxury-glass shadow-sm ring-1 ring-primary/20'
-                                            : 'border-gray-200 luxury-glass hover:border-gray-300'
+                                        className={`p-3 rounded-xl border text-left transition-colors ${scheduleType === opt.value
+                                            ? 'border-primary bg-primary/5 ring-1 ring-primary/20'
+                                            : 'border-gray-200 dark:border-night-border bg-surface dark:bg-night-surface hover:border-gray-300 dark:hover:border-night-border'
                                             }`}
                                     >
-                                        <p className={`text-xs font-bold ${scheduleType === opt.value ? 'text-primary' : 'text-dark'}`}>{opt.label}</p>
-                                        <p className="text-[10px] text-dark-lighter mt-0.5">{opt.desc}</p>
+                                        <p className={`text-xs font-bold ${scheduleType === opt.value ? 'text-primary' : 'text-dark dark:text-night-text'}`}>{opt.label}</p>
+                                        <p className="text-[10px] text-dark-lighter dark:text-night-text-muted mt-0.5">{opt.desc}</p>
                                     </button>
                                 ))}
                             </div>
@@ -360,7 +377,7 @@ export default function HabitModal({ isOpen, onClose, editHabit }: HabitModalPro
                                             onClick={() => toggleDay(i)}
                                             className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all ${selectedDays.includes(i)
                                                 ? 'bg-primary text-white'
-                                                : 'bg-gray-100 text-dark-lighter hover:bg-gray-200'
+                                                : 'bg-gray-100 dark:bg-night-bg text-dark-lighter dark:text-night-text-muted hover:bg-gray-200 dark:hover:bg-night-border'
                                                 }`}
                                         >
                                             {day}
@@ -379,7 +396,7 @@ export default function HabitModal({ isOpen, onClose, editHabit }: HabitModalPro
                                             onClick={() => toggleMonthDay(d)}
                                             className={`w-8 h-8 rounded-md text-xs font-bold transition-all ${selectedMonthDays.includes(d)
                                                 ? 'bg-primary text-white'
-                                                : 'bg-gray-100 text-dark-lighter hover:bg-gray-200'
+                                                : 'bg-gray-100 dark:bg-night-bg text-dark-lighter dark:text-night-text-muted hover:bg-gray-200 dark:hover:bg-night-border'
                                                 }`}
                                         >
                                             {d}
@@ -390,16 +407,16 @@ export default function HabitModal({ isOpen, onClose, editHabit }: HabitModalPro
 
                             {/* Custom: Interval input */}
                             {scheduleType === 'custom' && (
-                                <div className="flex items-center gap-3 luxury-glass p-3 rounded-xl border border-gray-200 inline-flex">
-                                    <span className="text-sm font-bold text-dark-lighter">Every</span>
+                                <div className="flex items-center gap-3 bg-surface dark:bg-night-surface p-3 rounded-xl border border-gray-200 dark:border-night-border inline-flex">
+                                    <span className="text-sm font-bold text-dark-lighter dark:text-night-text-muted">Every</span>
                                     <input
                                         type="number"
                                         value={customInterval}
                                         onChange={(e) => setCustomInterval(Math.max(2, Number(e.target.value)))}
-                                        className="w-16 text-center text-lg font-black text-dark outline-none bg-gray-50 rounded-lg py-1 border border-gray-100"
+                                        className="w-16 text-center text-lg font-black text-dark dark:text-night-text outline-none bg-gray-50 dark:bg-night-bg rounded-lg py-1 border border-gray-100 dark:border-night-border"
                                         min={2}
                                     />
-                                    <span className="text-sm font-bold text-dark-lighter">days</span>
+                                    <span className="text-sm font-bold text-dark-lighter dark:text-night-text-muted">days</span>
                                 </div>
                             )}
                         </div>
@@ -408,7 +425,7 @@ export default function HabitModal({ isOpen, onClose, editHabit }: HabitModalPro
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                             {/* Category */}
                             <div>
-                                <label className="block text-sm font-bold text-dark mb-2">
+                                <label className="block text-sm font-bold text-dark dark:text-night-text mb-2">
                                     Category
                                 </label>
                                 <div className="relative">
@@ -419,7 +436,7 @@ export default function HabitModal({ isOpen, onClose, editHabit }: HabitModalPro
                                             const cat = HABIT_CATEGORIES.find((c) => c.value === e.target.value);
                                             if (cat && !editHabit) setIcon(cat.icon);
                                         }}
-                                        className="select-field w-full appearance-none pr-10 bg-gray-50 border-gray-200 focus:luxury-glass"
+                                        className="select-field w-full appearance-none pr-10"
                                     >
                                         {HABIT_CATEGORIES.map((cat) => (
                                             <option key={cat.value} value={cat.value}>
@@ -435,7 +452,7 @@ export default function HabitModal({ isOpen, onClose, editHabit }: HabitModalPro
 
                             {/* Color */}
                             <div>
-                                <label className="block text-sm font-bold text-dark mb-2">
+                                <label className="block text-sm font-bold text-dark dark:text-night-text mb-2">
                                     🎨 Color
                                 </label>
                                 <div className="flex gap-2.5 flex-wrap">
@@ -444,7 +461,7 @@ export default function HabitModal({ isOpen, onClose, editHabit }: HabitModalPro
                                             key={c}
                                             type="button"
                                             onClick={() => setColor(c)}
-                                            className={`w-9 h-9 rounded-full transition-all duration-300 shadow-sm ${color === c ? 'ring-4 ring-offset-2 ring-gray-100 scale-110' : 'hover:scale-110'
+                                            className={`w-9 h-9 rounded-full transition-colors duration-300 ${color === c ? 'ring-4 ring-offset-2 ring-gray-100 dark:ring-night-border dark:ring-offset-night-surface' : ''
                                                 }`}
                                             style={{ backgroundColor: c }}
                                         />
@@ -460,7 +477,7 @@ export default function HabitModal({ isOpen, onClose, editHabit }: HabitModalPro
                             if (availableGoals.length === 0) return null;
                             return (
                                 <div>
-                                    <label className="block text-sm font-semibold text-dark mb-1.5">
+                                    <label className="block text-sm font-semibold text-dark dark:text-night-text mb-1.5">
                                         🎯 Link to Goal
                                     </label>
                                     <select
@@ -475,25 +492,25 @@ export default function HabitModal({ isOpen, onClose, editHabit }: HabitModalPro
                                             </option>
                                         ))}
                                     </select>
-                                    <p className="text-[11px] text-dark-lighter mt-1">Link this habit to a S.M.A.R.T. goal you've already created</p>
+                                    <p className="text-[11px] text-dark-lighter dark:text-night-text-muted mt-1">Link this habit to a S.M.A.R.T. goal you've already created</p>
                                 </div>
                             );
                         })()}
 
                         {/* Daily Target */}
                         {(type === 'numerical') && (
-                            <div className="p-5 bg-primary/5 rounded-2xl border border-primary/20 space-y-4 shadow-sm">
-                                <label className="block text-sm font-bold text-dark mb-1">
+                            <div className="p-5 bg-primary/5 rounded-2xl border border-primary/20 space-y-4">
+                                <label className="block text-sm font-bold text-dark dark:text-night-text mb-1">
                                     🎯 Daily Target (Life Line)
                                 </label>
-                                <p className="text-xs text-dark-lighter font-medium leading-relaxed">
+                                <p className="text-xs text-dark-lighter dark:text-night-text-muted font-medium leading-relaxed">
                                     Minimum daily amount required. Appears as a <span className="text-success font-bold">green Life Line</span> on your charts.
                                 </p>
                                 <input
                                     type="number"
                                     value={dailyTarget || ''}
                                     onChange={(e) => setDailyTarget(Number(e.target.value))}
-                                    className="input-field max-w-[150px] luxury-glass text-lg font-bold"
+                                    className="input-field max-w-[150px] text-lg font-bold"
                                     placeholder="e.g., 5"
                                     min="0"
                                 />
@@ -502,33 +519,33 @@ export default function HabitModal({ isOpen, onClose, editHabit }: HabitModalPro
 
                         {/* Numerical Fields */}
                         {type === 'numerical' && (
-                            <div className="p-5 bg-success/5 rounded-2xl border border-success/20 space-y-4 shadow-sm">
+                            <div className="p-5 bg-success/5 rounded-2xl border border-success/20 space-y-4">
                                 <p className="text-sm font-bold text-success flex items-center gap-2">
                                     <Target size={18} /> Ultimate Goal
                                 </p>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label className="block text-xs font-bold text-dark-lighter uppercase tracking-widest mb-1.5">
+                                        <label className="block text-xs font-bold text-dark-lighter dark:text-night-text-muted uppercase tracking-widest mb-1.5">
                                             Target Value
                                         </label>
                                         <input
                                             type="number"
                                             value={goalValue || ''}
                                             onChange={(e) => setGoalValue(Number(e.target.value))}
-                                            className="input-field luxury-glass"
+                                            className="input-field"
                                             placeholder="1000"
                                             min="1"
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-xs font-bold text-dark-lighter uppercase tracking-widest mb-1.5">
+                                        <label className="block text-xs font-bold text-dark-lighter dark:text-night-text-muted uppercase tracking-widest mb-1.5">
                                             Unit
                                         </label>
                                         <input
                                             type="text"
                                             value={unit}
                                             onChange={(e) => setUnit(e.target.value)}
-                                            className="input-field luxury-glass"
+                                            className="input-field"
                                             placeholder="pages, km..."
                                         />
                                     </div>
@@ -538,31 +555,31 @@ export default function HabitModal({ isOpen, onClose, editHabit }: HabitModalPro
 
                         {/* Challenge Fields */}
                         {type === 'challenge' && (
-                            <div className="p-5 bg-purple/5 rounded-2xl border border-purple/20 space-y-4 shadow-sm">
+                            <div className="p-5 bg-purple/5 rounded-2xl border border-purple/20 space-y-4">
                                 <p className="text-sm font-bold text-purple flex items-center gap-2">
                                     <Timer size={18} /> ⏱️ Challenge Duration
                                 </p>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label className="block text-xs font-bold text-dark-lighter uppercase tracking-widest mb-1.5">
+                                        <label className="block text-xs font-bold text-dark-lighter dark:text-night-text-muted uppercase tracking-widest mb-1.5">
                                             Start Date
                                         </label>
                                         <input
                                             type="date"
                                             value={startDate}
                                             onChange={(e) => setStartDate(e.target.value)}
-                                            className="input-field luxury-glass"
+                                            className="input-field"
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-xs font-bold text-dark-lighter uppercase tracking-widest mb-1.5">
+                                        <label className="block text-xs font-bold text-dark-lighter dark:text-night-text-muted uppercase tracking-widest mb-1.5">
                                             End Date
                                         </label>
                                         <input
                                             type="date"
                                             value={endDate}
                                             onChange={(e) => setEndDate(e.target.value)}
-                                            className="input-field luxury-glass"
+                                            className="input-field"
                                         />
                                     </div>
                                 </div>
@@ -570,7 +587,7 @@ export default function HabitModal({ isOpen, onClose, editHabit }: HabitModalPro
                         )}
 
                         {/* Submit */}
-                        <div className="flex gap-3 pt-4 border-t border-gray-100 mt-6 sticky bottom-0 luxury-glass pb-2">
+                        <div className="flex gap-3 pt-4 border-t border-gray-100 dark:border-night-border mt-6 sticky bottom-0 bg-[#FAF7FE] dark:bg-night-surface pb-2">
                             <button type="button" onClick={onClose} className="btn-secondary flex-1 py-3.5">
                                 Cancel
                             </button>

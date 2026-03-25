@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { useHabitStore } from '../../store/habitStore';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Trophy, ArrowUpCircle } from 'lucide-react';
+import { Trophy, ArrowUpCircle } from 'lucide-react';
 import { useModalClose } from '../../hooks/useModalClose';
 
 export default function LevelUpModal() {
@@ -43,36 +43,16 @@ export default function LevelUpModal() {
                 initial={{ opacity: 0, scale: 0.8, y: 50 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.8, y: 50 }}
-                transition={{ type: 'spring', damping: 20, stiffness: 300 }}
-                className="relative w-full max-w-sm bg-white rounded-3xl p-8 border border-[#D4C8E8] shadow-2xl text-center overflow-hidden"
+                transition={{ type: 'tween', ease: 'easeOut', duration: 0.2 }}
+                className="relative w-full max-w-sm bg-white rounded-3xl p-8 border border-[#D4C8E8] text-center overflow-hidden"
             >
-                {/* Custom Confetti / Sparkles effect using framer-motion */}
-                <div className="absolute inset-0 pointer-events-none flex justify-center items-center">
-                    {[...Array(12)].map((_, i) => (
-                        <motion.div
-                            key={i}
-                            initial={{ opacity: 1, x: 0, y: 0, scale: 0 }}
-                            animate={{
-                                opacity: 0,
-                                x: (Math.random() - 0.5) * 300,
-                                y: (Math.random() - 0.5) * 300,
-                                scale: Math.random() * 1.5 + 0.5,
-                            }}
-                            transition={{ duration: 1.5 + Math.random(), ease: "easeOut" }}
-                            className="absolute text-yellow-400"
-                        >
-                            <Sparkles size={Math.random() > 0.5 ? 24 : 16} />
-                        </motion.div>
-                    ))}
-                </div>
-
                 <div className="relative z-10 flex flex-col items-center">
                     {/* Level Badge */}
                     <motion.div
                         initial={{ scale: 0, rotate: -180 }}
                         animate={{ scale: 1, rotate: 0 }}
-                        transition={{ type: 'spring', delay: 0.2, damping: 15 }}
-                        className="w-24 h-24 bg-gradient-to-tr from-primary to-primary-light rounded-full flex items-center justify-center text-white shadow-xl shadow-primary/30 mb-6 border-4 border-white"
+                        transition={{ type: 'tween', ease: 'easeOut', duration: 0.2, delay: 0.2 }}
+                        className="w-24 h-24 bg-primary rounded-full flex items-center justify-center text-white mb-6 border-4 border-white"
                     >
                         <Trophy size={40} />
                     </motion.div>
@@ -108,10 +88,8 @@ export default function LevelUpModal() {
                     )}
 
                     <motion.button
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
                         onClick={dismissLevelUpModal}
-                        className="w-full py-3.5 bg-dark text-white rounded-xl font-bold shadow-lg hover:bg-dark-light transition-colors"
+                        className="w-full py-3.5 bg-dark text-white rounded-xl font-bold hover:bg-dark-light transition-colors"
                     >
                         Keep Going
                     </motion.button>

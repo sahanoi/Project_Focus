@@ -30,6 +30,10 @@ export default function AchievementsPage() {
         return format(new Date(unlockInfo.unlockedAt + 'T00:00:00'), 'MMM d, yyyy');
     };
 
+    const progressPct = ACHIEVEMENTS.length > 0
+        ? Math.round((achievements.length / ACHIEVEMENTS.length) * 100)
+        : 0;
+
     return (
         <div className="container mx-auto px-4 lg:px-8 py-8 lg:py-12 max-w-5xl">
             {/* Header */}
@@ -42,13 +46,32 @@ export default function AchievementsPage() {
                         Track your milestones, streaks, and gamification rewards.
                     </p>
                 </div>
-                <div className="flex items-center gap-4 bg-white dark:bg-night-surface px-5 py-3 rounded-2xl shadow-sm border border-[#D4C8E8] dark:border-night-border transition-colors">
-                    <div className="w-12 h-12 bg-primary/10 dark:bg-primary/20 rounded-xl flex items-center justify-center">
-                        <Award className="text-primary dark:text-primary-light" size={24} />
+                <div className="flex flex-col gap-3 bg-surface dark:bg-night-surface border border-dark-border dark:border-night-border rounded-3xl px-5 py-4 min-w-[200px] transition-colors">
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-primary/10 dark:bg-primary/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <Award className="text-primary dark:text-primary-light" size={24} />
+                        </div>
+                        <div className="text-left">
+                            <div className="text-2xl font-black text-dark dark:text-night-text">
+                                {achievements.length}
+                                <span className="text-sm font-medium text-dark-lighter dark:text-night-text-muted/70"> / {ACHIEVEMENTS.length}</span>
+                            </div>
+                            <div className="text-xs font-bold uppercase tracking-wider text-dark-lighter dark:text-night-text-muted">Unlocked</div>
+                        </div>
                     </div>
-                    <div className="text-left">
-                        <div className="text-2xl font-black text-dark dark:text-night-text">{achievements.length} <span className="text-sm font-medium text-dark-lighter dark:text-night-text-muted/70">/ {ACHIEVEMENTS.length}</span></div>
-                        <div className="text-xs font-bold uppercase tracking-wider text-dark-lighter dark:text-night-text-muted">Unlocked</div>
+                    <div className="space-y-1">
+                        <div className="flex justify-between text-[10px] font-bold text-dark-lighter dark:text-night-text-muted uppercase tracking-wider">
+                            <span>Progress</span>
+                            <span className="text-primary dark:text-primary-light">{progressPct}%</span>
+                        </div>
+                        <div className="h-2 bg-dark-border dark:bg-night-border rounded-full overflow-hidden">
+                            <motion.div
+                                initial={{ width: 0 }}
+                                animate={{ width: `${progressPct}%` }}
+                                transition={{ duration: 1, ease: 'easeOut', delay: 0.3 }}
+                                className="h-full rounded-full bg-primary"
+                            />
+                        </div>
                     </div>
                 </div>
             </header>
@@ -58,9 +81,9 @@ export default function AchievementsPage() {
                 {categories.map((category, catIdx) => (
                     <section key={category}>
                         <h2 className="text-lg font-black text-dark dark:text-night-text uppercase tracking-wider mb-6 flex items-center gap-3">
-                            <span className="w-8 h-px bg-[#D4C8E8] dark:bg-night-border inline-block" />
+                            <span className="w-8 h-px bg-dark-border dark:bg-night-border inline-block" />
                             {category}
-                            <span className="flex-1 h-px bg-[#D4C8E8] dark:bg-night-border inline-block" />
+                            <span className="flex-1 h-px bg-dark-border dark:bg-night-border inline-block" />
                         </h2>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -76,10 +99,10 @@ export default function AchievementsPage() {
                                         initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ delay: idx * 0.05 + catIdx * 0.1 }}
-                                        className={`relative p-5 rounded-2xl border ${tierStyles.bg} ${tierStyles.border} transition-all duration-300 ${isUnlocked ? tierStyles.glow : 'grayscale hover:grayscale-0'}`}
+                                        className={`relative p-5 rounded-2xl border ${tierStyles.bg} ${tierStyles.border} transition-colors duration-300 ${isUnlocked ? '' : 'grayscale hover:grayscale-0'}`}
                                     >
                                         <div className="flex gap-4">
-                                            <div className={`w-14 h-14 rounded-xl flex items-center justify-center text-3xl shadow-inner ${isUnlocked ? 'bg-white dark:bg-white/10' : 'bg-gray-100 dark:bg-night-bg/50'}`}>
+                                            <div className={`w-14 h-14 rounded-xl flex items-center justify-center text-3xl ${isUnlocked ? 'bg-surface-dark/50 dark:bg-night-border/70' : 'bg-gray-100 dark:bg-night-surface/60'}`}>
                                                 {isUnlocked ? achievement.icon : <Lock size={20} className="text-gray-400 dark:text-night-text-muted/50" />}
                                             </div>
                                             <div className="flex-1 min-w-0">

@@ -86,13 +86,13 @@ export default function DailyMissionCard() {
             <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="relative rounded-3xl bg-gradient-to-br from-primary-light/20 to-primary/10 dark:from-primary/20 dark:to-primary-dark/10 border-2 border-primary-light/30 dark:border-primary/30 shadow-sm"
+                className="relative rounded-3xl bg-primary/10 dark:bg-primary/10 border-2 border-primary-light/30 dark:border-primary/30"
             >
 
                 <div className="p-6 relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
 
                     <div className="flex items-start gap-4">
-                        <div className="w-12 h-12 rounded-2xl bg-surface-dark/50 dark:bg-night-bg/50 shadow-inner flex items-center justify-center flex-shrink-0">
+                        <div className="w-12 h-12 rounded-2xl bg-surface-dark/50 dark:bg-night-bg/50 flex items-center justify-center flex-shrink-0">
                             <Sparkles className="text-warning" size={24} />
                         </div>
 
@@ -110,10 +110,8 @@ export default function DailyMissionCard() {
                     <div className="flex flex-col items-center md:items-end flex-shrink-0 gap-2">
                         {isCompleted ? (
                             <motion.button
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
                                 onClick={handleClaim}
-                                className="bg-warning text-white font-bold px-6 py-3 rounded-xl shadow-lg shadow-warning/20 flex items-center gap-2 hover:bg-warning-dark transition-colors"
+                                className="bg-warning text-white font-bold px-6 py-3 rounded-xl flex items-center gap-2 hover:bg-warning-dark transition-colors"
                             >
                                 <Gift size={20} />
                                 Claim {mission.rewardXP} XP

@@ -1,3 +1,10 @@
+# Agent-only / legacy notes — do not publish (Cursor rules, handoffs, superseded agent docs)
+.agents/
+docs/archive/
+
+# Production build output (generate locally or in CI)
+build/
+
 # Logs
 logs
 *.log
@@ -86,6 +93,7 @@ out
 # Nuxt.js build / generate output
 .nuxt
 dist
+ladle-dist
 
 # Gatsby files
 .cache/

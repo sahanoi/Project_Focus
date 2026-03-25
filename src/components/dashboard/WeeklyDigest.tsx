@@ -97,16 +97,23 @@ export default function WeeklyDigest() {
 
     if (!digest) {
         return (
-            <div className="text-center py-6 opacity-40">
-                <Calendar size={20} className="mx-auto mb-2" />
-                <p className="text-xs">Complete some habits to see your weekly digest</p>
+            <div className="flex flex-col items-center py-6 gap-2 text-center">
+                <div className="w-10 h-10 rounded-xl bg-primary/5 dark:bg-primary/10 flex items-center justify-center">
+                    <Calendar size={18} className="text-primary/40 dark:text-primary-light/40" />
+                </div>
+                <p className="text-xs font-semibold text-dark-lighter dark:text-night-text-muted transition-colors">
+                    No habits tracked yet
+                </p>
+                <p className="text-[10px] text-dark-lighter/60 dark:text-night-text-muted/60 max-w-[160px] leading-relaxed transition-colors">
+                    Complete habits daily to unlock your weekly performance digest
+                </p>
             </div>
         );
     }
 
     const TrendIcon = digest.trend > 0 ? TrendingUp : digest.trend < 0 ? TrendingDown : Minus;
     const trendColor = digest.trend > 0 ? 'text-emerald-600 dark:text-emerald-400' : digest.trend < 0 ? 'text-red-500 dark:text-red-400' : 'text-dark-lighter dark:text-night-text-muted';
-    const trendBg = digest.trend > 0 ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-800/50' : digest.trend < 0 ? 'bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800/50' : 'bg-surface-dark dark:bg-night-surface border-[#D4C8E8] dark:border-night-border';
+    const trendBg = digest.trend > 0 ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-800/50' : digest.trend < 0 ? 'bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800/50' : 'bg-surface-dark dark:bg-night-surface border-dark-border dark:border-night-border';
 
     return (
         <div className="space-y-3">
@@ -124,16 +131,16 @@ export default function WeeklyDigest() {
                     <span className="text-xs text-dark-lighter dark:text-night-text-muted transition-colors">completion</span>
                 </div>
                 {/* Mini bar */}
-                <div className="h-1.5 bg-[#D4C8E8] dark:bg-night-bg rounded-full mt-3 overflow-hidden transition-colors">
+                <div className="h-1.5 bg-dark-border dark:bg-night-border rounded-full mt-3 overflow-hidden transition-colors">
                     <div
                         className="h-full rounded-full transition-all duration-1000"
                         style={{
                             width: `${digest.thisWeekAvg}%`,
-                            background: digest.thisWeekAvg >= 70
-                                ? 'linear-gradient(90deg, #10B981, #34D399)'
+                            backgroundColor: digest.thisWeekAvg >= 70
+                                ? '#10B981'
                                 : digest.thisWeekAvg >= 40
-                                    ? 'linear-gradient(90deg, #F59E0B, #FBBF24)'
-                                    : 'linear-gradient(90deg, #EF4444, #F87171)',
+                                    ? '#F59E0B'
+                                    : '#EF4444',
                         }}
                     />
                 </div>
@@ -141,7 +148,7 @@ export default function WeeklyDigest() {
 
             {/* Quick Stats Grid */}
             <div className="grid grid-cols-2 gap-2">
-                <div className="bg-white dark:bg-night-bg rounded-lg p-3 border border-[#D4C8E8] dark:border-night-border shadow-sm transition-colors">
+                <div className="bg-surface-dark/50 dark:bg-night-surface/60 rounded-lg p-3 border border-dark-border dark:border-night-border transition-colors">
                     <div className="flex items-center gap-1.5 mb-1">
                         <Zap size={12} className="text-warning" />
                         <span className="text-[10px] text-dark-lighter dark:text-night-text-muted uppercase transition-colors">Completions</span>
@@ -149,7 +156,7 @@ export default function WeeklyDigest() {
                     <span className="text-lg font-bold text-dark dark:text-night-text transition-colors">{digest.totalCompletions}</span>
                 </div>
                 {digest.totalVolume > 0 && (
-                    <div className="bg-white dark:bg-night-bg rounded-lg p-3 border border-[#D4C8E8] dark:border-night-border shadow-sm transition-colors">
+                    <div className="bg-surface-dark/50 dark:bg-night-surface/60 rounded-lg p-3 border border-dark-border dark:border-night-border transition-colors">
                         <div className="flex items-center gap-1.5 mb-1">
                             <BarChart3 size={12} className="text-purple dark:text-primary-light transition-colors" />
                             <span className="text-[10px] text-dark-lighter dark:text-night-text-muted uppercase transition-colors">Volume</span>
@@ -157,7 +164,7 @@ export default function WeeklyDigest() {
                         <span className="text-lg font-bold text-dark dark:text-night-text transition-colors">{Math.round(digest.totalVolume * 10) / 10}</span>
                     </div>
                 )}
-                <div className="bg-white dark:bg-night-bg rounded-lg p-3 border border-[#D4C8E8] dark:border-night-border shadow-sm transition-colors">
+                <div className="bg-surface-dark/50 dark:bg-night-surface/60 rounded-lg p-3 border border-dark-border dark:border-night-border transition-colors">
                     <div className="flex items-center gap-1.5 mb-1">
                         <Calendar size={12} className="text-primary dark:text-primary-light transition-colors" />
                         <span className="text-[10px] text-dark-lighter dark:text-night-text-muted uppercase transition-colors">Best Day</span>

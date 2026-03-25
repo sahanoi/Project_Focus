@@ -6,6 +6,7 @@ import {
     isHabitTypeAvailable,
     isAnalyticsEnabled,
     getUserTierName,
+    getMinLevelForHabitType,
 } from '../featureGateUtils';
 
 // Helper to build stats at a given level
@@ -41,15 +42,23 @@ describe('getFeatureGate', () => {
         expect(gate.goalsEnabled).toBe(true);
     });
 
-    it('returns competent gate for level 4', () => {
+    it('returns strategist gate for level 4 (infinite habits, no challenge yet)', () => {
         const gate = getFeatureGate(statsAtLevel(4));
+        expect(gate.maxHabits).toBe(18);
+        expect(gate.routinesEnabled).toBe(false);
+        expect(gate.availableHabitTypes).toContain('infinite');
+        expect(gate.availableHabitTypes).not.toContain('challenge');
+    });
+
+    it('returns competent gate for level 5', () => {
+        const gate = getFeatureGate(statsAtLevel(5));
         expect(gate.maxHabits).toBe(25);
         expect(gate.routinesEnabled).toBe(true);
         expect(gate.availableHabitTypes).toContain('challenge');
     });
 
-    it('returns expert gate for level 5+', () => {
-        const gate = getFeatureGate(statsAtLevel(5));
+    it('returns expert gate for level 6+', () => {
+        const gate = getFeatureGate(statsAtLevel(6));
         expect(gate.maxHabits).toBe(Infinity);
     });
 
@@ -73,7 +82,7 @@ describe('canAddHabit', () => {
     });
 
     it('expert tier allows unlimited', () => {
-        expect(canAddHabit(statsAtLevel(5), 999)).toBe(true);
+        expect(canAddHabit(statsAtLevel(6), 999)).toBe(true);
     });
 });
 
@@ -89,13 +98,28 @@ describe('isHabitTypeAvailable', () => {
         expect(isHabitTypeAvailable(statsAtLevel(2), 'infinite')).toBe(false);
     });
 
-    it('practitioner has regular + numerical + infinite', () => {
-        expect(isHabitTypeAvailable(statsAtLevel(3), 'infinite')).toBe(true);
+    it('practitioner has regular + numerical only (no infinite/challenge)', () => {
+        expect(isHabitTypeAvailable(statsAtLevel(3), 'numerical')).toBe(true);
+        expect(isHabitTypeAvailable(statsAtLevel(3), 'infinite')).toBe(false);
         expect(isHabitTypeAvailable(statsAtLevel(3), 'challenge')).toBe(false);
     });
 
-    it('competent has all types', () => {
-        expect(isHabitTypeAvailable(statsAtLevel(4), 'challenge')).toBe(true);
+    it('strategist (level 4) adds infinite, not challenge', () => {
+        expect(isHabitTypeAvailable(statsAtLevel(4), 'infinite')).toBe(true);
+        expect(isHabitTypeAvailable(statsAtLevel(4), 'challenge')).toBe(false);
+    });
+
+    it('competent (level 5) has all types', () => {
+        expect(isHabitTypeAvailable(statsAtLevel(5), 'challenge')).toBe(true);
+    });
+});
+
+describe('getMinLevelForHabitType', () => {
+    it('returns expected minimum levels', () => {
+        expect(getMinLevelForHabitType('regular')).toBe(1);
+        expect(getMinLevelForHabitType('numerical')).toBe(2);
+        expect(getMinLevelForHabitType('infinite')).toBe(4);
+        expect(getMinLevelForHabitType('challenge')).toBe(5);
     });
 });
 
@@ -118,7 +142,8 @@ describe('getUserTierName', () => {
         expect(getUserTierName(statsAtLevel(1))).toBe('Novice');
         expect(getUserTierName(statsAtLevel(2))).toBe('Apprentice');
         expect(getUserTierName(statsAtLevel(3))).toBe('Practitioner');
-        expect(getUserTierName(statsAtLevel(4))).toBe('Competent');
-        expect(getUserTierName(statsAtLevel(5))).toBe('Expert');
+        expect(getUserTierName(statsAtLevel(4))).toBe('Strategist');
+        expect(getUserTierName(statsAtLevel(5))).toBe('Competent');
+        expect(getUserTierName(statsAtLevel(6))).toBe('Expert');
     });
 });

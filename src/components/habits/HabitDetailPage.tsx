@@ -53,7 +53,7 @@ export default function HabitDetailPage({ habitId, onBack, onEdit }: HabitDetail
     if (!habit) {
         return (
             <div className="max-w-4xl mx-auto px-4 py-8 text-center text-dark dark:text-night-text transition-colors">
-                <p className="text-dark-lighter dark:text-night-text-muted luxury-glass p-8 transition-colors">Habit not found.</p>
+                <p className="text-dark-lighter dark:text-night-text-muted bg-surface dark:bg-night-surface border border-dark-border dark:border-night-border rounded-3xl p-8 transition-colors">Habit not found.</p>
                 <button onClick={onBack} className="btn-primary mt-4">← Go Back</button>
             </div>
         );
@@ -215,18 +215,18 @@ export default function HabitDetailPage({ habitId, onBack, onEdit }: HabitDetail
     return (
         <div className="max-w-5xl mx-auto px-4 py-8 animate-fade-in-up">
             {/* Header */}
-            <div className="flex items-center gap-4 mb-8 luxury-glass p-6 transition-colors">
+            <div className="flex items-center gap-4 mb-8 bg-surface dark:bg-night-surface border border-dark-border dark:border-night-border rounded-3xl p-6 transition-colors">
                 <button onClick={onBack} className="btn-icon bg-gray-50 dark:bg-night-bg hover:bg-gray-100 dark:hover:bg-primary/20 text-dark-lighter dark:text-night-text transition-colors">
                     <ArrowLeft size={20} />
                 </button>
                 <div className="flex-1">
                     <div className="flex items-center gap-3">
-                        <span className="text-3xl bg-gray-50 dark:bg-night-bg p-3 rounded-2xl shadow-sm border border-gray-100 dark:border-night-border transition-colors">{habit.icon}</span>
+                        <span className="text-3xl bg-gray-50 dark:bg-night-bg p-3 rounded-2xl border border-gray-100 dark:border-night-border transition-colors">{habit.icon}</span>
                         <div>
                             <div className="flex items-center gap-3 mb-1">
                                 <h1 className="text-2xl font-bold text-dark dark:text-night-text transition-colors">{habit.name}</h1>
                                 <span
-                                    className="px-2.5 py-1 rounded-full text-[11px] font-bold shadow-sm"
+                                    className="px-2.5 py-1 rounded-full text-[11px] font-bold"
                                     style={{ backgroundColor: `${habit.color}15`, color: habit.color }}
                                 >
                                     {habit.type.toUpperCase()}
@@ -254,28 +254,28 @@ export default function HabitDetailPage({ habitId, onBack, onEdit }: HabitDetail
 
             {/* Summary Cards */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-5 mb-8">
-                <div className="card text-center hover:-translate-y-1 transition-transform dark:bg-night-surface dark:border-night-border">
+                <div className="card text-center transition-colors dark:bg-night-surface dark:border-night-border">
                     <div className="w-12 h-12 rounded-2xl bg-warning/10 flex items-center justify-center mx-auto mb-3">
                         <Flame size={24} className="text-warning" />
                     </div>
                     <p className="text-3xl font-black text-dark dark:text-night-text mb-1 transition-colors">{currentStreak}</p>
                     <p className="text-[11px] font-bold text-dark-lighter dark:text-night-text-muted uppercase tracking-wide transition-colors">Current Streak</p>
                 </div>
-                <div className="card text-center hover:-translate-y-1 transition-transform dark:bg-night-surface dark:border-night-border">
+                <div className="card text-center transition-colors dark:bg-night-surface dark:border-night-border">
                     <div className="w-12 h-12 rounded-2xl bg-purple/10 flex items-center justify-center mx-auto mb-3">
                         <Trophy size={24} className="text-purple" />
                     </div>
                     <p className="text-3xl font-black text-dark dark:text-night-text mb-1 transition-colors">{longestStreak}</p>
                     <p className="text-[11px] font-bold text-dark-lighter dark:text-night-text-muted uppercase tracking-wide transition-colors">Longest Streak</p>
                 </div>
-                <div className="card text-center hover:-translate-y-1 transition-transform dark:bg-night-surface dark:border-night-border">
+                <div className="card text-center transition-colors dark:bg-night-surface dark:border-night-border">
                     <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-3">
                         <Target size={24} className="text-primary dark:text-primary-light transition-colors" />
                     </div>
                     <p className="text-3xl font-black text-dark dark:text-night-text mb-1 transition-colors">{completionRate}%</p>
                     <p className="text-[11px] font-bold text-dark-lighter dark:text-night-text-muted uppercase tracking-wide transition-colors">This Month</p>
                 </div>
-                <div className="card text-center hover:-translate-y-1 transition-transform dark:bg-night-surface dark:border-night-border">
+                <div className="card text-center transition-colors dark:bg-night-surface dark:border-night-border">
                     <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center mx-auto mb-3">
                         <CheckCircle2 size={24} className="text-blue-500 dark:text-blue-400 transition-colors" />
                     </div>
@@ -321,7 +321,7 @@ export default function HabitDetailPage({ habitId, onBack, onEdit }: HabitDetail
                                     border: `1px solid ${gridColor}`,
                                     backgroundColor: tooltipBg,
                                     color: tooltipText,
-                                    boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
+                                    boxShadow: 'none',
                                     fontWeight: 'bold'
                                 }}
                                 formatter={(val: number, name: string) => [val, name === 'value' ? (habit.unit || 'Value') : name]}
@@ -330,18 +330,13 @@ export default function HabitDetailPage({ habitId, onBack, onEdit }: HabitDetail
                                 type="monotone"
                                 dataKey="value"
                                 stroke={habit.color}
-                                fill={`url(#colorGradient-${habit.id})`}
+                                fill={habit.color}
+                                fillOpacity={0.1}
                                 strokeWidth={3}
                                 dot={{ r: 4, fill: '#fff', stroke: habit.color, strokeWidth: 2 }}
                                 activeDot={{ r: 6, fill: habit.color, stroke: '#fff', strokeWidth: 3 }}
                                 name={habit.unit || 'Value'}
                             />
-                            <defs>
-                                <linearGradient id={`colorGradient-${habit.id}`} x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor={habit.color} stopOpacity={0.2} />
-                                    <stop offset="95%" stopColor={habit.color} stopOpacity={0} />
-                                </linearGradient>
-                            </defs>
                             {/* Target Lines */}
                             {habit.dailyTarget && (
                                 <ReferenceLine y={habit.dailyTarget} stroke="#84CC16" strokeDasharray="4 4" strokeWidth={2} />
@@ -385,8 +380,8 @@ export default function HabitDetailPage({ habitId, onBack, onEdit }: HabitDetail
                             return (
                                 <div
                                     key={i}
-                                    className={`aspect-square rounded-xl flex items-center justify-center text-sm font-bold transition-all duration-300 hover:scale-105 cursor-default ${cell.completed
-                                        ? 'text-white shadow-sm'
+                                    className={`aspect-square rounded-xl flex items-center justify-center text-sm font-bold transition-colors duration-300 cursor-default ${cell.completed
+                                        ? 'text-white'
                                         : isToday
                                             ? 'ring-2 ring-primary dark:ring-primary-light ring-offset-2 dark:ring-offset-night-surface text-dark dark:text-night-text font-black'
                                             : 'bg-gray-50 dark:bg-night-bg text-dark-lighter dark:text-night-text hover:bg-gray-100 dark:hover:bg-night-border'
@@ -420,7 +415,7 @@ export default function HabitDetailPage({ habitId, onBack, onEdit }: HabitDetail
                                         border: `none`,
                                         backgroundColor: tooltipBg,
                                         color: tooltipText,
-                                        boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+                                        boxShadow: 'none',
                                         fontWeight: 'bold'
                                     }}
                                     formatter={(val: number) => [`${val}%`, 'Success Rate']}
@@ -474,7 +469,7 @@ export default function HabitDetailPage({ habitId, onBack, onEdit }: HabitDetail
                                     border: `none`,
                                     backgroundColor: tooltipBg,
                                     color: tooltipText,
-                                    boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+                                    boxShadow: 'none',
                                     fontWeight: 'bold'
                                 }}
                             />

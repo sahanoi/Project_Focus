@@ -169,12 +169,12 @@ function EditProfileModal({ currentUsername, currentBio, currentAvatarSeed, onCl
                 initial={{ opacity: 0, scale: 0.95, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                className="relative bg-white dark:bg-night-surface border border-[#D4C8E8] dark:border-night-border rounded-3xl shadow-2xl w-full max-w-md p-6 z-10 transition-colors"
+                className="relative bg-white dark:bg-night-surface border border-dark-border dark:border-night-border rounded-3xl w-full max-w-md p-6 z-10 transition-colors"
             >
                 {/* Header */}
                 <div className="flex items-center justify-between mb-6">
                     <h2 className="text-xl font-black text-dark dark:text-night-text transition-colors">Edit Profile</h2>
-                    <button onClick={onClose} className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-night-bg text-dark-lighter dark:text-night-text-muted transition-colors">
+                    <button onClick={onClose} className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-night-surface text-dark-lighter dark:text-night-text-muted transition-colors">
                         <X size={20} />
                     </button>
                 </div>
@@ -190,8 +190,8 @@ function EditProfileModal({ currentUsername, currentBio, currentAvatarSeed, onCl
                             <button
                                 key={seed}
                                 onClick={() => setAvatarSeed(seed)}
-                                className={`w-12 h-12 rounded-2xl overflow-hidden border-2 transition-all hover:scale-110 ${avatarSeed === seed
-                                    ? 'border-primary dark:border-primary-light shadow-lg shadow-primary/30 scale-110'
+                                className={`w-12 h-12 rounded-2xl overflow-hidden border-2 transition-colors ${avatarSeed === seed
+                                    ? 'border-primary dark:border-primary-light scale-110'
                                     : 'border-transparent hover:border-primary/40'
                                     }`}
                                 title={seed}
@@ -245,7 +245,7 @@ function EditProfileModal({ currentUsername, currentBio, currentAvatarSeed, onCl
                 <div className="flex gap-3">
                     <button
                         onClick={onClose}
-                        className="flex-1 py-3 rounded-xl border border-gray-200 dark:border-night-border text-dark-lighter dark:text-night-text-muted font-bold hover:bg-gray-50 dark:hover:bg-night-bg transition-colors"
+                        className="flex-1 py-3 rounded-xl border border-gray-200 dark:border-night-border text-dark-lighter dark:text-night-text-muted font-bold hover:bg-gray-50 dark:hover:bg-night-surface transition-colors"
                     >
                         Cancel
                     </button>
@@ -339,15 +339,15 @@ export default function ProfilePage() {
             {/* ── Header / ID Card ── */}
             <div className="card mb-6 relative overflow-hidden dark:bg-night-surface dark:border-night-border transition-colors">
                 {/* Cover gradient */}
-                <div className="absolute top-0 left-0 w-full h-36 bg-gradient-to-r from-primary/40 via-purple/30 to-teal/20 dark:from-primary/20 dark:via-purple/15 dark:to-teal/10" />
+                <div className="absolute top-0 left-0 w-full h-36 bg-primary/30 dark:bg-primary/20" />
 
                 <div className="relative pt-16 px-6 pb-6 flex flex-col md:flex-row items-center md:items-end gap-5">
                     {/* Avatar */}
                     <div className="relative flex-shrink-0">
-                        <div className="w-28 h-28 rounded-3xl bg-white dark:bg-night-bg border-4 border-white dark:border-night-surface shadow-xl overflow-hidden z-10 transition-colors">
+                        <div className="w-28 h-28 rounded-3xl bg-white dark:bg-night-bg border-4 border-white dark:border-night-surface overflow-hidden z-10 transition-colors">
                             <img src={avatarUrl} alt="avatar" className="w-full h-full" />
                         </div>
-                        <div className="absolute -bottom-2 -right-2 w-7 h-7 rounded-full bg-primary dark:bg-primary-light flex items-center justify-center text-white text-xs font-black shadow-md">
+                        <div className="absolute -bottom-2 -right-2 w-7 h-7 rounded-full bg-primary dark:bg-primary-light flex items-center justify-center text-white text-xs font-black">
                             {stats.level}
                         </div>
                     </div>
@@ -415,7 +415,7 @@ export default function ProfilePage() {
                             initial={{ width: 0 }}
                             animate={{ width: `${progressPercent}%` }}
                             transition={{ duration: 1.2, ease: 'easeOut', delay: 0.2 }}
-                            className="h-full bg-gradient-to-r from-primary to-primary-light rounded-full"
+                            className="h-full bg-primary rounded-full"
                         />
                     </div>
 
@@ -425,7 +425,7 @@ export default function ProfilePage() {
                             <div key={attr.shortLabel}>
                                 <div className="flex justify-between text-xs font-bold mb-1">
                                     <span className="text-dark-lighter dark:text-night-text-muted transition-colors flex items-center gap-1">
-                                        <span>{attr.icon}</span> {attr.shortLabel}
+                                        <span>{attr.icon}</span> {attr.label.split(' ')[0]}
                                     </span>
                                     <span className="text-dark dark:text-night-text transition-colors">{attr.value}</span>
                                 </div>
@@ -434,7 +434,7 @@ export default function ProfilePage() {
                                         initial={{ width: 0 }}
                                         animate={{ width: `${Math.min(100, attr.value * 2)}%` }}
                                         transition={{ duration: 1, ease: 'easeOut', delay: 0.3 }}
-                                        className="h-full rounded-full bg-gradient-to-r from-warning to-primary"
+                                        className="h-full rounded-full bg-warning-dark"
                                     />
                                 </div>
                             </div>
@@ -451,7 +451,7 @@ export default function ProfilePage() {
                         </div>
                         <button
                             onClick={() => setShowGPIInfo(!showGPIInfo)}
-                            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-night-bg text-dark-lighter dark:text-night-text-muted transition-colors"
+                            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-night-surface text-dark-lighter dark:text-night-text-muted transition-colors"
                         >
                             <Info size={16} />
                         </button>
@@ -479,11 +479,11 @@ export default function ProfilePage() {
 
                     {/* Dark radar background container — gated behind 3 completions */}
                     {totalCompletions >= 3 ? (
-                        <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-[#1a103d] to-[#0f0a26] dark:from-[#0d0820] dark:to-[#080612] rounded-2xl p-4 min-h-[260px]">
+                        <div className="flex-1 flex items-center justify-center bg-[#1a103d] dark:bg-[#0d0820] rounded-2xl p-4 min-h-[260px]">
                             <GPIRadarChart data={gpiData} />
                         </div>
                     ) : (
-                        <div className="flex-1 flex flex-col items-center justify-center bg-gradient-to-br from-gray-100 to-gray-50 dark:from-night-bg dark:to-[#0d0820] rounded-2xl p-6 min-h-[260px] text-center border-2 border-dashed border-gray-200 dark:border-night-border">
+                        <div className="flex-1 flex flex-col items-center justify-center bg-gray-100 dark:bg-night-bg rounded-2xl p-6 min-h-[260px] text-center border-2 border-dashed border-gray-200 dark:border-night-border">
                             <Lock size={28} className="text-gray-300 dark:text-night-text-muted mb-3" />
                             <p className="text-sm font-bold text-dark dark:text-night-text mb-1 transition-colors">Chart Locked</p>
                             <p className="text-xs text-dark-lighter dark:text-night-text-muted mb-3 transition-colors">
@@ -523,12 +523,6 @@ export default function ProfilePage() {
                         epic: 'border-purple-500 dark:border-purple-400',
                         legendary: 'border-yellow-400 dark:border-yellow-500',
                     };
-                    const rarityGlow: Record<string, string> = {
-                        common: '',
-                        rare: 'shadow-blue-400/20',
-                        epic: 'shadow-purple-500/30',
-                        legendary: 'shadow-yellow-400/40 shadow-lg',
-                    };
                     const rarityBg: Record<string, string> = {
                         common: 'bg-gray-50 dark:bg-night-bg',
                         rare: 'bg-blue-50 dark:bg-blue-900/20',
@@ -548,9 +542,9 @@ export default function ProfilePage() {
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: i * 0.04 }}
-                            className={`relative rounded-2xl border-2 p-3 text-center transition-all ${isUnlocked
-                                ? `${rarityColors[c.rarity]} ${rarityGlow[c.rarity]} ${rarityBg[c.rarity]} hover:scale-105 cursor-default`
-                                : 'border-dashed border-gray-200 dark:border-night-border bg-gray-50/50 dark:bg-night-bg/50 opacity-50 grayscale'
+                            className={`relative rounded-2xl border-2 p-3 text-center transition-colors ${isUnlocked
+                                ? `${rarityColors[c.rarity]} ${rarityBg[c.rarity]} cursor-default`
+                                : 'border-dashed border-gray-200 dark:border-night-border bg-gray-50/50 dark:bg-night-surface/60 opacity-50 grayscale'
                                 }`}
                             title={isUnlocked ? c.description : c.unlockHint}
                         >
