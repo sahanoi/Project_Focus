@@ -1,7 +1,16 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { useHabitStore } from '../habitStore';
 
-// Reset store before each test
+const highTierStats = {
+    level: 10,
+    xp: 9000,
+    nextLevelXp: 1000,
+    accountCreatedDate: '2024-01-01T00:00:00.000Z',
+    unlockedCollectibles: [] as string[],
+    attributes: { ovr: 70, dsc: 70, foc: 70, stk: 70, bal: 70, grt: 70, vit: 70 },
+};
+
+// Reset store before each test (high level so all habit types pass feature gates)
 beforeEach(() => {
     useHabitStore.setState({
         habits: [],
@@ -9,6 +18,7 @@ beforeEach(() => {
         selectedDate: '2026-02-13',
         activeTab: 'dashboard',
         statsFilter: { dateRange: 'month', habitType: 'all', habitId: 'all' },
+        stats: highTierStats,
     });
 });
 
@@ -78,6 +88,30 @@ describe('Habit Store', () => {
             const habit = useHabitStore.getState().habits.find((h) => h.id === id);
             expect(habit!.startDate).toBe('2026-02-01');
             expect(habit!.endDate).toBe('2026-03-02');
+        });
+
+        it('should not add habit types locked for the user tier', () => {
+            useHabitStore.setState({
+                stats: {
+                    level: 1,
+                    xp: 0,
+                    nextLevelXp: 1000,
+                    accountCreatedDate: '2024-01-01T00:00:00.000Z',
+                    unlockedCollectibles: [],
+                    attributes: { ovr: 50, dsc: 50, foc: 50, stk: 50, bal: 50, grt: 50, vit: 50 },
+                },
+            });
+            const id = useHabitStore.getState().addHabit({
+                name: 'Steps',
+                type: 'numerical',
+                category: 'fitness',
+                color: '#10B981',
+                icon: '🚶',
+                goalValue: 10000,
+                unit: 'steps',
+            });
+            expect(id).toBe('');
+            expect(useHabitStore.getState().habits).toHaveLength(0);
         });
     });
 

@@ -75,27 +75,27 @@ export default function QuickLogModal() {
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-dark/20 backdrop-blur-sm animate-in fade-in duration-200">
             <div
-                className="w-full max-w-3xl luxury-glass rounded-3xl border border-[#D4C8E8] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col md:flex-row"
+                className="w-full max-w-3xl bg-surface dark:bg-night-surface rounded-3xl border border-dark-border dark:border-night-border overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col md:flex-row"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* LEFT SIDE: Log Controls */}
-                <div className="flex-1 flex flex-col border-b md:border-b-0 md:border-r border-gray-100 luxury-glass">
+                <div className="flex-1 flex flex-col border-b md:border-b-0 md:border-r border-gray-100 dark:border-night-border">
                     {/* Header */}
                     <div className="relative p-6 pb-0 flex flex-col items-center">
                         <button
                             onClick={handleClose}
-                            className="absolute top-4 left-4 md:hidden p-2 text-dark-lighter hover:text-dark bg-gray-50 rounded-full"
+                            className="absolute top-4 left-4 md:hidden p-2 text-dark-lighter dark:text-night-text-muted hover:text-dark dark:hover:text-night-text bg-gray-50 dark:bg-night-bg rounded-full transition-colors"
                         >
                             <X size={20} />
                         </button>
 
-                        <span className="text-5xl mb-3 drop-shadow-sm">{habit.icon}</span>
-                        <h2 className="text-xl font-bold text-dark text-center px-4">
+                        <span className="text-5xl mb-3">{habit.icon}</span>
+                        <h2 className="text-xl font-bold text-dark dark:text-night-text text-center px-4">
                             {habit.name}
                         </h2>
                         <div className="flex items-center gap-2 mt-2">
                             <span
-                                className="text-[10px] font-bold px-2 py-0.5 rounded-full border shadow-sm"
+                                className="text-[10px] font-bold px-2 py-0.5 rounded-full border"
                                 style={{
                                     color: levelColor,
                                     borderColor: levelColor + '40',
@@ -104,14 +104,14 @@ export default function QuickLogModal() {
                             >
                                 Lv.{levelInfo.level} {levelInfo.title}
                             </span>
-                            <span className="text-[10px] text-dark-lighter font-bold uppercase tracking-wider">
+                            <span className="text-[10px] text-dark-lighter dark:text-night-text-muted font-bold uppercase tracking-wider">
                                 {habit.type}
                             </span>
                         </div>
                         {/* Selected Date Display */}
-                        <div className="mt-4 flex items-center gap-2 text-dark-lighter bg-gray-50 px-4 py-2 rounded-xl border border-gray-100 shadow-sm">
+                        <div className="mt-4 flex items-center gap-2 text-dark-lighter dark:text-night-text-muted bg-gray-50 dark:bg-night-bg px-4 py-2 rounded-xl border border-gray-100 dark:border-night-border">
                             <Calendar size={16} className="text-primary" />
-                            <span className="text-sm font-bold">{format(new Date(modalDate), 'EEEE, MMM d')}</span>
+                            <span className="text-sm font-bold text-dark dark:text-night-text">{format(new Date(modalDate), 'EEEE, MMM d')}</span>
                         </div>
                     </div>
 
@@ -122,7 +122,7 @@ export default function QuickLogModal() {
                                 <div className="flex items-center gap-6 mb-4">
                                     <button
                                         onClick={() => handleAdjustValue(-0.5)}
-                                        className="w-12 h-12 rounded-2xl bg-gray-50 border border-gray-200 flex items-center justify-center hover:border-primary hover:bg-primary/5 hover:text-primary text-dark-lighter transition-all active:scale-95 shadow-sm"
+                                        className="w-12 h-12 rounded-2xl bg-gray-50 dark:bg-night-bg border border-gray-200 dark:border-night-border flex items-center justify-center hover:border-primary hover:bg-primary/5 hover:text-primary text-dark-lighter dark:text-night-text-muted transition-colors"
                                     >
                                         <Minus />
                                     </button>
@@ -133,7 +133,7 @@ export default function QuickLogModal() {
                                             min="0"
                                             value={completion?.value ?? 0}
                                             onChange={(e) => setNumericalValue(habit.id, modalDate, Math.max(0, parseFloat(e.target.value) || 0))}
-                                            className="text-5xl font-black text-dark bg-transparent text-center w-full outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                            className="text-5xl font-black text-dark dark:text-night-text bg-transparent text-center w-full outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                                         />
                                         <p className="text-xs text-primary font-bold uppercase tracking-widest mt-1">
                                             {habit.unit || 'Units'}
@@ -141,21 +141,21 @@ export default function QuickLogModal() {
                                     </div>
                                     <button
                                         onClick={() => handleAdjustValue(0.5)}
-                                        className="w-12 h-12 rounded-2xl bg-gray-50 border border-gray-200 flex items-center justify-center hover:border-primary hover:bg-primary/5 hover:text-primary text-dark-lighter transition-all active:scale-95 shadow-sm"
+                                        className="w-12 h-12 rounded-2xl bg-gray-50 dark:bg-night-bg border border-gray-200 dark:border-night-border flex items-center justify-center hover:border-primary hover:bg-primary/5 hover:text-primary text-dark-lighter dark:text-night-text-muted transition-colors"
                                     >
                                         <Plus />
                                     </button>
                                 </div>
 
                                 {habit.dailyTarget && (
-                                    <div className="w-full luxury-glass rounded-2xl p-4 border border-gray-100 shadow-sm mb-6 max-w-[220px]">
-                                        <div className="flex justify-between text-[10px] font-bold text-dark-lighter uppercase tracking-wider mb-2">
+                                    <div className="w-full bg-gray-50 dark:bg-night-bg rounded-2xl p-4 border border-gray-100 dark:border-night-border mb-6 max-w-[220px]">
+                                        <div className="flex justify-between text-[10px] font-bold text-dark-lighter dark:text-night-text-muted uppercase tracking-wider mb-2">
                                             <span>Target: {habit.dailyTarget}</span>
                                             <span className={isCompleted ? 'text-success' : 'text-primary'}>
                                                 {Math.round(((completion?.value ?? 0) / habit.dailyTarget) * 100)}%
                                             </span>
                                         </div>
-                                        <div className="h-2.5 bg-gray-100 rounded-full overflow-hidden">
+                                        <div className="h-2.5 bg-gray-100 dark:bg-night-bg rounded-full overflow-hidden">
                                             <div
                                                 className="h-full transition-all duration-500 rounded-full"
                                                 style={{
@@ -171,15 +171,15 @@ export default function QuickLogModal() {
                             <div className="flex flex-col items-center pb-6">
                                 <button
                                     onClick={handleToggle}
-                                    className={`w-32 h-32 rounded-[2rem] border-4 flex items-center justify-center transition-all duration-300 shadow-lg ${isCompleted
-                                        ? 'border-[#84CC16] bg-[#84CC16]/10 text-[#84CC16] shadow-success/20 rotate-0'
-                                        : 'border-gray-200 bg-gray-50 text-dark-light hover:border-primary/40 hover:bg-primary/5 hover:text-primary rotate-[10deg] hover:rotate-0'
+                                    className={`w-32 h-32 rounded-[2rem] border-4 flex items-center justify-center transition-colors duration-300 ${isCompleted
+                                        ? 'border-[#84CC16] bg-[#84CC16]/10 text-[#84CC16]'
+                                        : 'border-gray-200 dark:border-night-border bg-gray-50 dark:bg-night-bg text-dark-light dark:text-night-text-muted hover:border-primary/40 hover:bg-primary/5 hover:text-primary'
                                         }`}
                                 >
                                     <Check size={56} strokeWidth={4} className={`transition-transform duration-500 ${isCompleted ? 'scale-100' : 'scale-50 opacity-0'}`} />
                                     {!isCompleted && <div className="absolute w-6 h-6 rounded-full border-[3px] border-current opacity-30" />}
                                 </button>
-                                <p className={`mt-5 font-bold text-sm tracking-wide ${isCompleted ? 'text-success' : 'text-dark-lighter'}`}>
+                                <p className={`mt-5 font-bold text-sm tracking-wide ${isCompleted ? 'text-success' : 'text-dark-lighter dark:text-night-text-muted'}`}>
                                     {isCompleted ? 'Awesome job! 🎉' : 'Tap to complete'}
                                 </p>
                             </div>
@@ -187,7 +187,7 @@ export default function QuickLogModal() {
 
                         <button
                             onClick={handleViewDetails}
-                            className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-gray-50 text-dark-lighter text-sm font-bold border border-gray-200 hover:border-primary hover:bg-primary/5 hover:text-primary transition-all group mt-auto shadow-sm"
+                            className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-gray-50 dark:bg-night-bg text-dark-lighter dark:text-night-text-muted text-sm font-bold border border-gray-200 dark:border-night-border hover:border-primary hover:bg-primary/5 hover:text-primary transition-colors group mt-auto"
                         >
                             <TrendingUp size={18} />
                             View Full Analysis
@@ -199,7 +199,7 @@ export default function QuickLogModal() {
                             onClick={() => setShowNote(!showNote)}
                             className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium transition-all mt-2 ${showNote || completion?.note
                                 ? 'bg-primary/5 text-primary border border-primary/20'
-                                : 'text-dark-lighter hover:text-primary hover:bg-primary/5'
+                                : 'text-dark-lighter dark:text-night-text-muted hover:text-primary hover:bg-primary/5'
                                 }`}
                         >
                             <MessageSquare size={14} />
@@ -215,7 +215,7 @@ export default function QuickLogModal() {
                                     }
                                 }}
                                 placeholder="How did it go? Any reflections..."
-                                className="w-full px-4 py-3 rounded-xl bg-surface border border-[#D4C8E8] text-dark text-sm placeholder-dark-lighter/40 focus:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/10 resize-none transition-all"
+                                className="w-full px-4 py-3 rounded-xl bg-surface dark:bg-night-bg border border-dark-border dark:border-night-border text-dark dark:text-night-text text-sm placeholder-dark-lighter/40 dark:placeholder-night-text-muted/40 focus:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/10 resize-none transition-all"
                                 rows={3}
                                 autoFocus
                             />
@@ -223,13 +223,13 @@ export default function QuickLogModal() {
                     </div>
 
                     {/* Level Footer */}
-                    <div className="bg-[#F9F9FB] px-6 py-4 flex items-center justify-between border-t border-gray-100 mt-auto rounded-bl-3xl md:rounded-bl-3xl md:rounded-br-none rounded-br-3xl">
+                    <div className="bg-[#F9F9FB] dark:bg-night-surface px-6 py-4 flex items-center justify-between border-t border-gray-100 dark:border-night-border mt-auto rounded-bl-3xl md:rounded-bl-3xl md:rounded-br-none rounded-br-3xl">
                         <div className="flex items-center gap-2">
                             <Award size={16} className="text-warning" />
-                            <span className="text-[10px] font-bold text-dark-lighter uppercase tracking-widest">{levelInfo.title}</span>
+                            <span className="text-[10px] font-bold text-dark-lighter dark:text-night-text-muted uppercase tracking-widest">{levelInfo.title}</span>
                         </div>
                         <div className="flex items-center gap-2">
-                            <div className="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
+                            <div className="w-24 h-2 bg-gray-200 dark:bg-night-bg rounded-full overflow-hidden">
                                 <div
                                     className="h-full transition-all duration-700 rounded-full"
                                     style={{
@@ -238,7 +238,7 @@ export default function QuickLogModal() {
                                     }}
                                 />
                             </div>
-                            <span className="text-xs font-black text-dark-lighter font-mono">
+                            <span className="text-xs font-black text-dark-lighter dark:text-night-text-muted font-mono">
                                 {levelInfo.progressToNext}%
                             </span>
                         </div>
@@ -246,12 +246,12 @@ export default function QuickLogModal() {
                 </div>
 
                 {/* RIGHT SIDE: Calendar */}
-                <div className="w-full md:w-80 bg-[#F9F9FB] flex flex-col border-l border-gray-100">
-                    <div className="p-5 flex items-center justify-between border-b border-gray-200 luxury-glass">
-                        <h3 className="font-bold text-darklex items-center gap-2"><Calendar size={18} className="text-primary" /> History</h3>
+                <div className="w-full md:w-80 bg-[#F9F9FB] dark:bg-night-surface flex flex-col border-l border-gray-100 dark:border-night-border">
+                    <div className="p-5 flex items-center justify-between border-b border-gray-200 dark:border-night-border bg-surface dark:bg-night-surface">
+                        <h3 className="font-bold text-dark dark:text-night-text flex items-center gap-2"><Calendar size={18} className="text-primary" /> History</h3>
                         <button
                             onClick={handleClose}
-                            className="p-2 text-dark-lighter hover:text-dark hover:bg-gray-100 rounded-full transition-colors hidden md:block"
+                            className="p-2 text-dark-lighter dark:text-night-text-muted hover:text-dark dark:hover:text-night-text hover:bg-gray-100 dark:hover:bg-night-bg rounded-full transition-colors hidden md:block"
                         >
                             <X size={20} />
                         </button>
@@ -259,19 +259,19 @@ export default function QuickLogModal() {
 
                     <div className="p-5 flex-1">
                         {/* Month Nav */}
-                        <div className="flex items-center justify-between mb-5 luxury-glass p-2 rounded-2xl shadow-sm border border-gray-100">
+                        <div className="flex items-center justify-between mb-5 bg-surface dark:bg-night-surface p-2 rounded-2xl border border-gray-100 dark:border-night-border">
                             <button
                                 onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
-                                className="p-1.5 hover:bg-gray-100 rounded-xl text-dark-lighter hover:text-dark transition-colors"
+                                className="p-1.5 hover:bg-gray-100 dark:hover:bg-night-bg rounded-xl text-dark-lighter dark:text-night-text-muted hover:text-dark dark:hover:text-night-text transition-colors"
                             >
                                 <ChevronLeft size={20} />
                             </button>
-                            <span className="font-bold text-sm text-dark tracking-wide uppercase">
+                            <span className="font-bold text-sm text-dark dark:text-night-text tracking-wide uppercase">
                                 {format(currentMonth, 'MMMM yyyy')}
                             </span>
                             <button
                                 onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
-                                className="p-1.5 hover:bg-gray-100 rounded-xl text-dark-lighter hover:text-dark transition-colors"
+                                className="p-1.5 hover:bg-gray-100 dark:hover:bg-night-bg rounded-xl text-dark-lighter dark:text-night-text-muted hover:text-dark dark:hover:text-night-text transition-colors"
                             >
                                 <ChevronRight size={20} />
                             </button>
@@ -280,7 +280,7 @@ export default function QuickLogModal() {
                         {/* Weekday Headers */}
                         <div className="grid grid-cols-7 mb-3 text-center">
                             {weekDays.map(d => (
-                                <div key={d} className="text-[10px] font-bold text-dark-lighter uppercase tracking-wider">
+                                <div key={d} className="text-[10px] font-bold text-dark-lighter dark:text-night-text-muted uppercase tracking-wider">
                                     {d}
                                 </div>
                             ))}
@@ -303,9 +303,9 @@ export default function QuickLogModal() {
                                         onClick={() => setModalDate(dateStr)}
                                         className={`
                                             aspect-square rounded-xl flex items-center justify-center text-xs font-bold relative transition-all duration-300
-                                            ${!isCurrentMonth ? 'text-dark-light' : 'text-dark-lighter hover:bg-gray-200'}
-                                            ${isTargetDate ? 'ring-2 ring-primary ring-offset-2 bg-primary/10 text-dark shadow-sm scale-110 z-10' : ''}
-                                            ${dayCompleted ? 'luxury-glass shadow-sm border border-gray-100' : ''}
+                                            ${!isCurrentMonth ? 'text-dark-light dark:text-night-text-muted/50' : 'text-dark-lighter dark:text-night-text-muted hover:bg-gray-200 dark:hover:bg-night-border'}
+                                            ${isTargetDate ? 'ring-2 ring-primary ring-offset-2 dark:ring-offset-night-surface bg-primary/10 text-dark dark:text-night-text z-10' : ''}
+                                            ${dayCompleted ? 'bg-primary/10 dark:bg-primary/15 border border-gray-100 dark:border-night-border' : ''}
                                         `}
                                     >
                                         <span>{format(date, 'd')}</span>

@@ -22,7 +22,7 @@ export default function StatsRadar({ stats, className = '' }: StatsRadarProps) {
     return (
         <div className={`w-full aspect-square relative ${className}`}>
             {/* Background Container */}
-            <div className="absolute inset-0 bg-white dark:bg-night-surface rounded-2xl border border-[#D4C8E8] dark:border-night-border shadow-lg overflow-hidden transition-colors">
+            <div className="absolute inset-0 bg-surface-dark/50 dark:bg-night-surface rounded-2xl border border-[#D4C8E8] dark:border-night-border overflow-hidden transition-colors">
 
                 {/* Header */}
                 <div className="absolute top-0 left-0 w-full p-4 flex justify-between items-center z-10">
@@ -83,7 +83,7 @@ export default function StatsRadar({ stats, className = '' }: StatsRadarProps) {
 
                 {/* OVR Overlay */}
                 <div className="absolute bottom-4 right-4 text-right">
-                    <div className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-b from-primary to-primary-dark dark:from-primary-light dark:to-primary font-mono transition-colors">
+                    <div className="text-4xl font-black text-primary-dark dark:text-primary-light font-mono transition-colors">
                         {attributes.ovr}
                     </div>
                     <div className="text-xs text-primary dark:text-primary-light font-bold tracking-widest uppercase transition-colors">OVR</div>

@@ -18,9 +18,11 @@ Project F/
 ├── .env                  # Local secrets (gitignored)
 ├── .env.example          # Safe-to-commit template
 ├── docs/                 # Project documentation
-│   ├── ARCHITECTURE.md   # This file
-│   ├── CHANGELOG.md      # Version history
-│   └── DEPLOYMENT.md     # Deployment guide
+│   ├── ARCHITECTURE.md        # This file
+│   ├── PRODUCT.md             # Merged product: vision, entry flow, MVP screens, RPG/code map, dashboard UX goals
+│   ├── CHANGELOG.md           # Version history
+│   ├── DEPLOYMENT.md          # Deployment guide
+│   └── archive/               # Historical notes (e.g. legacy agent notes, old SaaS memo)
 ├── public/               # Static assets (if any)
 ├── src/
 │   ├── App.tsx            # Root component + auth gate
@@ -31,7 +33,7 @@ Project F/
 │   │   ├── dashboard/     # Main dashboard & gamification
 │   │   ├── goals/         # S.M.A.R.T. goal wizard
 │   │   ├── habits/        # Habit CRUD & detail views
-│   │   ├── layout/        # Header, AppLayout, Nav
+│   │   ├── layout/        # AppLayout, Sidebar
 │   │   ├── onboarding/    # 7-day new user journey
 │   │   ├── settings/      # Settings page
 │   │   └── stats/         # Analytics & charts

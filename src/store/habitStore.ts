@@ -5,6 +5,7 @@ import { today } from '../utils/dateUtils';
 import { generateDummyHabits, generateDummyGoals, generateDummyRoutines } from '../data/dummyData';
 import { calculateCharacterStats } from '../utils/gamificationUtils';
 import { evaluateAchievements, UnlockedAchievement, Achievement } from '../utils/achievementUtils';
+import { isHabitTypeAvailable, canAddHabit } from '../utils/featureGateUtils';
 import { supabase } from '../lib/supabase';
 
 // ==========================================
@@ -368,6 +369,9 @@ export const useHabitStore = create<HabitStore>()(
         // ==========================================
 
         addHabit: (habitData) => {
+            if (!isHabitTypeAvailable(get().stats, habitData.type)) {
+                return '';
+            }
             const id = uuidv4();
             const newHabit: Habit = {
                 ...habitData,
@@ -416,6 +420,9 @@ export const useHabitStore = create<HabitStore>()(
         },
 
         updateHabit: (id, updates) => {
+            if (updates.type !== undefined && !isHabitTypeAvailable(get().stats, updates.type)) {
+                return;
+            }
             // Optimistic update
             set((state) => {
                 const newHabits = state.habits.map((h) =>
@@ -488,6 +495,9 @@ export const useHabitStore = create<HabitStore>()(
         duplicateHabit: (id) => {
             const habit = get().habits.find((h) => h.id === id);
             if (!habit) return null;
+            const st = get().stats;
+            if (!isHabitTypeAvailable(st, habit.type)) return null;
+            if (!canAddHabit(st, get().habits.length)) return null;
 
             const newId = uuidv4();
             const duplicate: Habit = {

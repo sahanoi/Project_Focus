@@ -41,7 +41,7 @@ export default function CommunityPage() {
                 <div className="max-w-6xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-4">
                     <div>
                         <div className="flex items-center gap-3 mb-2">
-                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-primary dark:from-indigo-600 dark:to-primary-dark flex items-center justify-center text-white shadow-lg shadow-indigo-500/20 transition-colors">
+                            <div className="w-10 h-10 rounded-xl bg-primary-dark flex items-center justify-center text-white transition-colors">
                                 <Globe size={20} />
                             </div>
                             <h1 className="text-3xl font-black text-dark dark:text-night-text tracking-tight transition-colors">Community</h1>
@@ -49,7 +49,7 @@ export default function CommunityPage() {
                         <p className="text-dark-lighter dark:text-night-text-muted transition-colors">Compete, share, and stay accountable with friends.</p>
                     </div>
 
-                    <div className="flex items-center gap-4 bg-surface-dark dark:bg-night-bg px-4 py-3 rounded-2xl border border-[#D4C8E8] dark:border-night-border shadow-inner transition-colors">
+                    <div className="flex items-center gap-4 bg-surface-dark dark:bg-night-bg px-4 py-3 rounded-2xl border border-[#D4C8E8] dark:border-night-border transition-colors">
                         <div className="text-right">
                             <p className="text-[10px] font-bold text-dark-lighter dark:text-night-text-muted uppercase tracking-wider mb-0.5 transition-colors">Season 1 Ends</p>
                             <p className="text-dark dark:text-night-text font-black tracking-tight transition-colors">4 Days, 12 Hrs</p>
@@ -89,9 +89,9 @@ export default function CommunityPage() {
                                         initial={{ opacity: 0, x: -20 }}
                                         animate={{ opacity: 1, x: 0 }}
                                         transition={{ delay: idx * 0.1 }}
-                                        className="bg-white dark:bg-night-surface p-5 rounded-3xl border border-[#D4C8E8] dark:border-night-border shadow-sm hover:shadow-md transition-all flex items-start gap-4 group"
+                                        className="bg-white dark:bg-night-surface p-5 rounded-3xl border border-[#D4C8E8] dark:border-night-border transition-colors flex items-start gap-4 group"
                                     >
-                                        <div className="w-12 h-12 rounded-2xl bg-surface dark:bg-night-bg flex items-center justify-center text-2xl shadow-inner flex-shrink-0 group-hover:scale-110 transition-all">
+                                        <div className="w-12 h-12 rounded-2xl bg-surface dark:bg-night-bg flex items-center justify-center text-2xl flex-shrink-0 transition-colors">
                                             {item.icon}
                                         </div>
                                         <div className="flex-1 min-w-0">
@@ -127,7 +127,7 @@ export default function CommunityPage() {
                                 </h2>
                             </div>
 
-                            <div className="bg-white dark:bg-night-surface rounded-3xl border border-[#D4C8E8] dark:border-night-border shadow-sm overflow-hidden transition-colors">
+                            <div className="bg-white dark:bg-night-surface rounded-3xl border border-[#D4C8E8] dark:border-night-border overflow-hidden transition-colors">
                                 {allUsers.map((u, idx) => {
                                     const isSelf = u.id === 'self';
                                     return (

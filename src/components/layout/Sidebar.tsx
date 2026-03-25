@@ -44,9 +44,13 @@ export default function Sidebar({ activeTab, setActiveTab, onAddHabit, isCollaps
         <>
             {/* Brand / Logo */}
             <div
-                className={`flex items-center justify-between cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 transition-colors group ${isCollapsed ? 'px-3 py-4' : 'p-4 px-5'}`}
-                onClick={() => setIsCollapsed?.(!isCollapsed)}
-                title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+                className={`flex items-center justify-between transition-colors group ${isCollapsed ? 'px-3 py-4' : 'p-4 px-5'} lg:cursor-pointer lg:hover:bg-black/5 dark:lg:hover:bg-white/5`}
+                onClick={() => {
+                    if (window.innerWidth >= 1024) {
+                        setIsCollapsed?.(!isCollapsed);
+                    }
+                }}
+                title={window.innerWidth >= 1024 ? (isCollapsed ? 'Expand sidebar' : 'Collapse sidebar') : undefined}
             >
                 <div className="flex items-center gap-3">
                     <AppLogo size={32} />
@@ -56,7 +60,7 @@ export default function Sidebar({ activeTab, setActiveTab, onAddHabit, isCollaps
                 {!isCollapsed && (
                     <button
                         onClick={(e) => { e.stopPropagation(); setMobileOpen(false); }}
-                        className="lg:hidden p-2 rounded-lg hover:bg-surface-dark/50 dark:hover:bg-white/10 text-dark-lighter dark:text-night-text-muted transition-colors"
+                        className="lg:hidden p-2 rounded-lg hover:bg-surface-dark/50 dark:hover:bg-night-border/70 text-dark-lighter dark:text-night-text-muted transition-colors"
                     >
                         <X size={20} />
                     </button>
@@ -83,8 +87,8 @@ export default function Sidebar({ activeTab, setActiveTab, onAddHabit, isCollaps
                                 handleTabChange(item.id);
                             }}
                             title={isCollapsed ? item.label : undefined}
-                            className={`w-full flex items-center ${isCollapsed ? 'justify-center' : 'gap-3'} px-3 py-2.5 rounded-lg transition-all duration-200 group ${isActive
-                                ? 'luxury-glass text-primary-dark dark:text-primary-light shadow-sm border border-primary/20'
+                            className={`w-full flex items-center ${isCollapsed ? 'justify-center' : 'gap-3'} px-3 py-2.5 rounded-lg transition-colors duration-200 group ${isActive
+                                ? 'bg-primary/10 dark:bg-primary/15 text-primary-dark dark:text-primary-light border border-primary/20'
                                 : isLocked
                                     ? 'text-dark-lighter/50 dark:text-night-text-muted/50 cursor-not-allowed'
                                     : 'text-dark-lighter dark:text-night-text-muted hover:bg-surface-dark/50 dark:hover:bg-white/5 hover:text-dark-light dark:hover:text-night-text'
@@ -103,9 +107,9 @@ export default function Sidebar({ activeTab, setActiveTab, onAddHabit, isCollaps
 
                 <button
                     onClick={() => { if (!habitLimitReached) { onAddHabit(); setMobileOpen(false); } }}
-                    className={`w-full mt-6 p-3 rounded-xl flex items-center justify-center ${isCollapsed ? '' : 'gap-2'} font-bold transition-all shadow-lg ${habitLimitReached
-                        ? 'bg-gray-300 dark:bg-night-border text-gray-500 dark:text-night-text-muted cursor-not-allowed shadow-none'
-                        : 'bg-primary hover:bg-primary-dark text-white shadow-primary/20 hover:shadow-primary/30'
+                    className={`w-full mt-6 p-3 rounded-xl flex items-center justify-center ${isCollapsed ? '' : 'gap-2'} font-bold transition-colors ${habitLimitReached
+                        ? 'bg-gray-300 dark:bg-night-border text-gray-500 dark:text-night-text-muted cursor-not-allowed'
+                        : 'bg-primary hover:bg-primary-dark text-white'
                         }`}
                     title={habitLimitReached ? `Level up to add more habits (${habitCount}/${canAddHabit(stats, 0) ? 'max' : 'max reached'})` : 'Add a new habit'}
                 >
@@ -115,14 +119,14 @@ export default function Sidebar({ activeTab, setActiveTab, onAddHabit, isCollaps
             </nav>
 
             {/* User Profile / Bottom */}
-            <div className={`px-4 pb-4 pt-2 border-t border-[#D4C8E8] dark:border-night-border bg-surface/50 dark:bg-night-surface/50 space-y-2 transition-colors flex ${isCollapsed ? 'flex-col items-center' : 'flex-col'}`}>
+            <div className={`px-4 pb-4 pt-2 border-t border-dark-border dark:border-night-border bg-surface/50 dark:bg-night-surface/50 space-y-2 transition-colors flex ${isCollapsed ? 'flex-col items-center' : 'flex-col'}`}>
                 <button
                     onClick={() => handleTabChange('profile')}
                     className={`w-full flex items-center ${isCollapsed ? 'justify-center p-2' : 'justify-between p-2'} rounded-lg gap-2 hover:bg-black/5 dark:hover:bg-white/5 transition-colors group`}
                     title={isCollapsed ? "Profile" : undefined}
                 >
                     <div className="flex items-center gap-3 min-w-0">
-                        <div className="w-8 h-8 bg-surface-dark/50 dark:bg-night-bg border border-[#D4C8E8] group-hover:border-primary/50 dark:border-night-border rounded-full flex items-center justify-center text-primary dark:text-primary-light transition-colors flex-shrink-0 shadow-sm">
+                        <div className="w-8 h-8 bg-surface-dark/50 dark:bg-night-surface/60 border border-dark-border group-hover:border-primary/50 dark:border-night-border rounded-full flex items-center justify-center text-primary dark:text-primary-light transition-colors flex-shrink-0">
                             <User size={16} />
                         </div>
                         {!isCollapsed && (
@@ -136,7 +140,7 @@ export default function Sidebar({ activeTab, setActiveTab, onAddHabit, isCollaps
                 <div className={`flex ${isCollapsed ? 'flex-col w-full' : 'gap-2 w-full'} transition-all`}>
                     <button
                         onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                        className={`flex items-center justify-center ${isCollapsed ? 'w-full p-2 mb-2' : 'flex-1 p-2'} rounded-lg bg-surface-dark/50 dark:bg-night-bg border border-[#D4C8E8] dark:border-night-border hover:bg-gray-50 dark:hover:border-primary-light/50 text-dark-lighter dark:text-night-text-muted transition-colors flex-shrink-0`}
+                        className={`flex items-center justify-center ${isCollapsed ? 'w-full p-2 mb-2' : 'flex-1 p-2'} rounded-lg bg-surface-dark/50 dark:bg-night-surface/60 border border-dark-border dark:border-night-border hover:bg-gray-50 dark:hover:border-primary-light/50 text-dark-lighter dark:text-night-text-muted transition-colors flex-shrink-0`}
                         title="Toggle Dark Mode"
                     >
                         {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
@@ -158,15 +162,18 @@ export default function Sidebar({ activeTab, setActiveTab, onAddHabit, isCollaps
         <>
             {/* Mobile hamburger button */}
             <button
-                onClick={() => setMobileOpen(true)}
-                className="lg:hidden fixed top-4 left-4 z-[60] p-2.5 luxury-glass border border-[#D4C8E8] dark:border-night-border rounded-xl shadow-md text-dark dark:text-night-text hover:bg-primary/5 transition-colors"
+                onClick={() => {
+                    setIsCollapsed?.(false);
+                    setMobileOpen(true);
+                }}
+                className="lg:hidden fixed top-4 left-4 z-[60] p-2.5 bg-surface dark:bg-night-surface border border-dark-border dark:border-night-border rounded-xl text-dark dark:text-night-text hover:bg-primary/5 transition-colors"
                 aria-label="Open menu"
             >
                 <Menu size={20} />
             </button>
 
             {/* Desktop sidebar */}
-            <aside className={`hidden lg:flex ${isCollapsed ? 'w-20' : 'w-64'} h-screen bg-[#E4DEF0] dark:bg-night-surface border-r border-[#D4C8E8] dark:border-night-border flex-col fixed left-0 top-0 z-50 transition-all duration-300`}>
+            <aside className={`hidden lg:flex ${isCollapsed ? 'w-20' : 'w-64'} h-screen bg-[#E4DEF0] dark:bg-night-surface border-r border-dark-border dark:border-night-border flex-col fixed left-0 top-0 z-50 transition-all duration-300`}>
                 {sidebarContent}
             </aside>
 
@@ -180,15 +187,15 @@ export default function Sidebar({ activeTab, setActiveTab, onAddHabit, isCollaps
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             onClick={() => setMobileOpen(false)}
-                            className="lg:hidden fixed inset-0 bg-dark/20 dark:bg-black/40 backdrop-blur-sm z-[60]"
+                            className="lg:hidden fixed inset-0 bg-dark/20 dark:bg-night-bg/70 backdrop-blur-sm z-[60]"
                         />
                         {/* Slide-in panel */}
                         <motion.aside
                             initial={{ x: '-100%' }}
                             animate={{ x: 0 }}
                             exit={{ x: '-100%' }}
-                            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-                            className="lg:hidden fixed left-0 top-0 w-72 h-screen bg-[#E4DEF0] dark:bg-night-surface border-r border-[#D4C8E8] dark:border-night-border flex flex-col z-[70] shadow-2xl transition-colors"
+                            transition={{ type: 'tween', ease: 'easeOut', duration: 0.25 }}
+                            className="lg:hidden fixed left-0 top-0 w-72 h-screen bg-[#E4DEF0] dark:bg-night-surface border-r border-dark-border dark:border-night-border flex flex-col z-[70] transition-colors"
                         >
                             {sidebarContent}
                         </motion.aside>

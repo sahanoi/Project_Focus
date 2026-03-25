@@ -128,26 +128,32 @@ export default function HabitList({ onEditHabit, onAddHabit }: HabitListProps) {
     return (
         <div>
             {/* Daily Progress Summary */}
-            <div className="luxury-glass p-5 mb-6 transition-colors">
+            <div className="bg-surface dark:bg-night-surface border border-dark-border dark:border-night-border rounded-3xl p-5 mb-6 transition-colors">
                 <div className="flex items-center justify-between mb-3">
-                    <h2 className="section-title dark:text-night-text transition-colors">📊 Today's Progress</h2>
-                    <span className="stat-number text-xl" style={{ color: completionPercent === 100 ? '#10B981' : '#2563EB' }}>
+                    <h2 className="text-sm font-bold text-dark dark:text-night-text tracking-wide uppercase transition-colors">
+                        Today's Progress
+                    </h2>
+                    <span
+                        className={`text-xl font-black font-mono tabular-nums ${completionPercent === 100 ? 'text-success' : 'text-primary dark:text-primary-light'}`}
+                    >
                         {completionPercent === 100 ? '🎉 ' : ''}{completionPercent}%
                     </span>
                 </div>
-                <div className="progress-bar h-3">
+                <div className="h-2.5 bg-[#D4C8E8] dark:bg-night-bg rounded-full overflow-hidden transition-colors">
                     <div
-                        className="progress-fill"
+                        className="h-full rounded-full transition-all duration-700 ease-out"
                         style={{
                             width: `${completionPercent}%`,
-                            backgroundColor: completionPercent === 100 ? '#10B981' : '#2563EB',
+                            backgroundColor: completionPercent === 100
+                                ? '#10B981'
+                                : '#9B8BB4',
                         }}
                     />
                 </div>
-                <p className="text-sm text-dark-lighter dark:text-night-text-muted mt-2 transition-colors">
-                    ✅ {completedCount} of {todaysHabits.length} habits completed
+                <p className="text-xs text-dark-lighter dark:text-night-text-muted mt-2 font-medium transition-colors">
+                    {completedCount} of {todaysHabits.length} habits completed
                     {todaysHabits.length < totalHabitsCount && (
-                        <span className="text-xs text-dark-lighter dark:text-night-text-muted ml-2 transition-colors">
+                        <span className="opacity-60 ml-2">
                             ({totalHabitsCount - todaysHabits.length} not scheduled today)
                         </span>
                     )}

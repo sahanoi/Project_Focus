@@ -3,6 +3,8 @@
 ## [Unreleased] — Phase 2: Web Deployment
 
 ### Added
+- `docs/PRODUCT.md` — merged product spec (vision, first-session flow, MVP screens, RPG/code map, dashboard UX goals)
+- `docs/archive/` — historical SaaS memo + legacy agent notes (with banners / relocation notes)
 - Supabase authentication (email/password)
 - Premium glassmorphism Auth UI ("Dusk Purple" theme)
 - Full data persistence to Supabase PostgreSQL
@@ -21,6 +23,7 @@
 - Test setup now mocks Supabase client
 
 ### Removed
+- Split product docs merged into `PRODUCT.md`: `PRODUCT_VISION_CONCEPT.md`, `ENTRY_FLOW_FIRST_SESSION.md`, `MVP_WEB_SCREENS.md`, `RPG_COLLECTIBLE_PIXEL_APP.md`, `FIRST_SESSION_FLOW_10_15_MIN.md`, `DOCUMENTATION.md`
 - Orphan SQL files from project root
 - Temporary debug output files
 - Stale `.env.local` placeholder

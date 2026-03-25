@@ -8,15 +8,15 @@ export default {
     theme: {
         extend: {
             colors: {
-                primary: '#9B8BB4',      // Soft lilac-dark
-                'primary-dark': '#83739B',
-                'primary-light': '#D8B4E2', // Bright lilac
-                success: '#84CC16',      // Soft lime/mint green
-                'success-dark': '#65A30D',
-                warning: '#FBBF24',      // Soft yellow/amber
-                'warning-dark': '#D97706',
-                danger: '#F87171',       // Soft red/peach
-                'danger-dark': '#DC2626',
+                primary: 'rgb(var(--tone-primary) / <alpha-value>)',
+                'primary-dark': 'rgb(var(--tone-primary-dark) / <alpha-value>)',
+                'primary-light': 'rgb(var(--tone-primary-light) / <alpha-value>)',
+                success: 'rgb(var(--tone-success) / <alpha-value>)',
+                'success-dark': 'rgb(var(--tone-success-dark) / <alpha-value>)',
+                warning: 'rgb(var(--tone-warning) / <alpha-value>)',
+                'warning-dark': 'rgb(var(--tone-warning-dark) / <alpha-value>)',
+                danger: 'rgb(var(--tone-danger) / <alpha-value>)',
+                'danger-dark': 'rgb(var(--tone-danger-dark) / <alpha-value>)',
                 purple: '#D8B4E2',
                 'purple-dark': '#9B8BB4',
                 teal: '#2DD4BF',
@@ -30,12 +30,12 @@ export default {
                 'dark-lighter': '#6B5F82',
                 'dark-border': '#D4C8E8', // Deeper lilac border
 
-                // --- Cozy Dark Mode Specifics ---
-                'night-bg': '#16131D',       // Main dark background (very deep purple/grey)
-                'night-surface': '#201C29',  // Slightly elevated surface
-                'night-border': '#332D42',   // Soft borders in dark mode
-                'night-text': '#F5F2F8',     // Main text in dark mode
-                'night-text-muted': '#A49EB3',// Muted text in dark mode
+                // Theme tone tokens (from CSS vars)
+                'night-bg': 'rgb(var(--tone-night-bg) / <alpha-value>)',
+                'night-surface': 'rgb(var(--tone-night-surface) / <alpha-value>)',
+                'night-border': 'rgb(var(--tone-night-border) / <alpha-value>)',
+                'night-text': 'rgb(var(--tone-night-text) / <alpha-value>)',
+                'night-text-muted': 'rgb(var(--tone-night-text-muted) / <alpha-value>)',
             },
             fontFamily: {
                 sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
@@ -46,7 +46,6 @@ export default {
                 'slide-up': 'slideUp 0.3s ease-out',
                 'slide-down': 'slideDown 0.3s ease-out',
                 'scale-in': 'scaleIn 0.2s ease-out',
-                'bounce-subtle': 'bounceSlight 0.4s ease-out',
             },
             keyframes: {
                 fadeIn: {
@@ -64,11 +63,6 @@ export default {
                 scaleIn: {
                     '0%': { opacity: '0', transform: 'scale(0.95)' },
                     '100%': { opacity: '1', transform: 'scale(1)' },
-                },
-                bounceSlight: {
-                    '0%': { transform: 'scale(1)' },
-                    '50%': { transform: 'scale(1.05)' },
-                    '100%': { transform: 'scale(1)' },
                 },
             },
         },

@@ -22,7 +22,7 @@ export default function BottomNav({ activeTab, setActiveTab }: BottomNavProps) {
     ];
 
     return (
-        <nav className="lg:hidden fixed bottom-0 left-0 right-0 luxury-glass border-t border-[#D4C8E8] dark:border-night-border z-40 transition-colors pb-[env(safe-area-inset-bottom)]">
+        <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-surface dark:bg-night-surface border-t border-dark-border dark:border-night-border z-40 transition-colors pb-[env(safe-area-inset-bottom)]">
             <div className="flex justify-around items-center px-1 py-1 h-[72px] mb-2">
                 {navItems.map((item) => {
                     const Icon = item.icon;
@@ -35,8 +35,8 @@ export default function BottomNav({ activeTab, setActiveTab }: BottomNavProps) {
                             onClick={() => {
                                 if (!isLocked) setActiveTab(item.id);
                             }}
-                            className={`flex flex-col items-center justify-center w-full h-full relative transition-all duration-300 ${isActive
-                                ? 'text-primary dark:text-primary-light scale-105'
+                            className={`flex flex-col items-center justify-center w-full h-full relative transition-colors duration-300 ${isActive
+                                ? 'text-primary dark:text-primary-light'
                                 : isLocked
                                     ? 'text-dark-lighter/40 dark:text-night-text-muted/40 cursor-not-allowed'
                                     : 'text-dark-lighter dark:text-night-text-muted hover:text-dark-light dark:hover:text-night-text'
@@ -52,7 +52,7 @@ export default function BottomNav({ activeTab, setActiveTab }: BottomNavProps) {
                             </div>
                             <span className={`text-[10px] sm:text-xs font-bold tracking-wide transition-all duration-300 ${isActive ? 'opacity-100' : 'opacity-70 mt-1'}`}>{item.label}</span>
                             {isActive && (
-                                <div className="absolute top-0 w-8 h-1 bg-primary dark:bg-primary-light rounded-b-full shadow-[0_2px_8px_rgba(99,102,241,0.5)] dark:shadow-[0_2px_8px_rgba(165,180,252,0.5)]" />
+                                <div className="absolute top-0 w-8 h-1 bg-primary dark:bg-primary-light rounded-b-full" />
                             )}
                         </button>
                     );

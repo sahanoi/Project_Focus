@@ -212,14 +212,14 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                 <div className="flex rounded-lg border border-[#D4C8E8] dark:border-night-border overflow-hidden transition-colors">
                     <button
                         onClick={() => { setActiveView('habits'); setSelectedRoutineId(null); }}
-                        className={`px-4 py-2 text-sm font-semibold transition-colors ${activeView === 'habits' ? 'bg-primary dark:bg-primary-dark text-white' : 'luxury-glass text-dark-lighter dark:text-night-text-muted hover:bg-[#D4C8E8] dark:hover:bg-white/5'
+                        className={`px-4 py-2 text-sm font-semibold transition-colors ${activeView === 'habits' ? 'bg-primary dark:bg-primary-dark text-white' : 'bg-surface dark:bg-night-surface text-dark-lighter dark:text-night-text-muted hover:bg-[#D4C8E8] dark:hover:bg-white/5'
                             }`}
                     >
                         Habits
                     </button>
                     <button
                         onClick={() => setActiveView('routines')}
-                        className={`px-4 py-2 text-sm font-semibold transition-colors ${activeView === 'routines' ? 'bg-primary dark:bg-primary-dark text-white' : 'luxury-glass text-dark-lighter dark:text-night-text-muted hover:bg-[#D4C8E8] dark:hover:bg-white/5'
+                        className={`px-4 py-2 text-sm font-semibold transition-colors ${activeView === 'routines' ? 'bg-primary dark:bg-primary-dark text-white' : 'bg-surface dark:bg-night-surface text-dark-lighter dark:text-night-text-muted hover:bg-[#D4C8E8] dark:hover:bg-white/5'
                             }`}
                     >
                         Routines
@@ -234,7 +234,7 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                             onClick={() => setSelectedRange(opt.value)}
                             className={`px-4 py-2 text-sm font-semibold transition-colors ${selectedRange === opt.value
                                 ? 'bg-primary dark:bg-primary-dark text-white'
-                                : 'luxury-glass text-dark-lighter dark:text-night-text-muted hover:bg-[#D4C8E8] dark:hover:bg-white/5'
+                                : 'bg-surface dark:bg-night-surface text-dark-lighter dark:text-night-text-muted hover:bg-[#D4C8E8] dark:hover:bg-white/5'
                                 }`}
                         >
                             {opt.label}
@@ -246,7 +246,7 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                     <select
                         value={statsFilter.habitType}
                         onChange={(e) => setStatsFilter({ habitType: e.target.value as HabitType | 'all' })}
-                        className="luxury-glass text-dark-light dark:text-night-text border border-[#D4C8E8] dark:border-night-border rounded-lg px-3 py-2 text-sm outline-none focus:border-primary transition-colors"
+                        className="bg-surface dark:bg-night-surface text-dark-light dark:text-night-text border border-[#D4C8E8] dark:border-night-border rounded-lg px-3 py-2 text-sm outline-none focus:border-primary transition-colors"
                     >
                         <option value="all">All Types</option>
                         <option value="regular">Regular</option>
@@ -265,7 +265,7 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                         onClick={() => setSelectedHabitIds([])}
                         className={`px-3 py-1 rounded-full text-xs font-semibold transition-colors border ${selectedHabitIds.length === 0
                             ? 'bg-primary dark:bg-primary-dark text-white border-indigo-500 dark:border-indigo-700'
-                            : 'luxury-glass text-dark-lighter dark:text-night-text-muted border-[#D4C8E8] dark:border-night-border hover:border-primary/30 dark:hover:border-primary/50'
+                            : 'bg-surface dark:bg-night-surface text-dark-lighter dark:text-night-text-muted border-[#D4C8E8] dark:border-night-border hover:border-primary/30 dark:hover:border-primary/50'
                             }`}
                     >
                         All Habits
@@ -276,7 +276,7 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                             onClick={() => toggleHabitSelection(h.id)}
                             className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-colors border ${selectedHabitIds.includes(h.id)
                                 ? 'text-white border-transparent'
-                                : 'luxury-glass text-dark-lighter dark:text-night-text-muted border-[#D4C8E8] dark:border-night-border hover:border-primary/30 dark:hover:border-primary/50'
+                                : 'bg-surface dark:bg-night-surface text-dark-lighter dark:text-night-text-muted border-[#D4C8E8] dark:border-night-border hover:border-primary/30 dark:hover:border-primary/50'
                                 }`}
                             style={selectedHabitIds.includes(h.id) ? { backgroundColor: h.color, borderColor: h.color } : undefined}
                         >
@@ -298,7 +298,7 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                             onClick={() => setSelectedRoutineId(r.id === selectedRoutineId ? null : r.id)}
                             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-colors border ${selectedRoutineId === r.id
                                 ? 'bg-primary dark:bg-primary-dark text-white border-indigo-500 dark:border-indigo-700'
-                                : 'luxury-glass text-dark-lighter dark:text-night-text-muted border-[#D4C8E8] dark:border-night-border hover:border-primary/30 dark:hover:border-primary/50'
+                                : 'bg-surface dark:bg-night-surface text-dark-lighter dark:text-night-text-muted border-[#D4C8E8] dark:border-night-border hover:border-primary/30 dark:hover:border-primary/50'
                                 }`}
                         >
                             <span>{r.icon}</span>
@@ -330,22 +330,22 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
 
                 {/* Summary Cards */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div className="luxury-glass rounded-xl p-4 text-center border border-[#D4C8E8] dark:border-night-border transition-colors">
+                    <div className="bg-surface dark:bg-night-surface rounded-xl p-4 text-center border border-[#D4C8E8] dark:border-night-border transition-colors">
                         <TrendingUp size={24} className="mx-auto text-primary dark:text-primary-light mb-2 transition-colors" />
                         <p className="text-2xl font-black text-primary dark:text-primary-light transition-colors">{overallRate}%</p>
                         <p className="text-xs font-semibold text-dark-lighter dark:text-night-text-muted uppercase tracking-wider mt-1 transition-colors">Completion Rate</p>
                     </div>
-                    <div className="luxury-glass rounded-xl p-4 text-center border border-[#D4C8E8] dark:border-night-border transition-colors">
+                    <div className="bg-surface dark:bg-night-surface rounded-xl p-4 text-center border border-[#D4C8E8] dark:border-night-border transition-colors">
                         <Flame size={24} className="mx-auto text-amber-400 dark:text-amber-500 mb-2 transition-colors" />
                         <p className="text-2xl font-black text-amber-400 dark:text-amber-500 transition-colors">{bestStreakHabit.streak}</p>
                         <p className="text-xs font-semibold text-dark-lighter dark:text-night-text-muted uppercase tracking-wider mt-1 transition-colors">Best Streak</p>
                     </div>
-                    <div className="luxury-glass rounded-xl p-4 text-center border border-[#D4C8E8] dark:border-night-border transition-colors">
+                    <div className="bg-surface dark:bg-night-surface rounded-xl p-4 text-center border border-[#D4C8E8] dark:border-night-border transition-colors">
                         <Target size={24} className="mx-auto text-emerald-400 dark:text-emerald-500 mb-2 transition-colors" />
                         <p className="text-2xl font-black text-emerald-400 dark:text-emerald-500 transition-colors">{totalActiveHabits}</p>
                         <p className="text-xs font-semibold text-dark-lighter dark:text-night-text-muted uppercase tracking-wider mt-1 transition-colors">Active Habits</p>
                     </div>
-                    <div className="luxury-glass rounded-xl p-4 text-center border border-[#D4C8E8] dark:border-night-border transition-colors">
+                    <div className="bg-surface dark:bg-night-surface rounded-xl p-4 text-center border border-[#D4C8E8] dark:border-night-border transition-colors">
                         <Award size={24} className="mx-auto text-purple-400 dark:text-purple-500 mb-2 transition-colors" />
                         <p className="text-2xl font-black text-purple-400 dark:text-purple-500 transition-colors">{avgConsistency}%</p>
                         <p className="text-xs font-semibold text-dark-lighter dark:text-night-text-muted uppercase tracking-wider mt-1 transition-colors">Consistency</p>
@@ -356,7 +356,7 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                 <StreakLifeLine />
 
                 {/* Completion Rate Over Time - Area Chart */}
-                <div className="luxury-glass rounded-xl p-5 border border-[#D4C8E8] dark:border-night-border transition-colors">
+                <div className="bg-surface dark:bg-night-surface rounded-xl p-5 border border-[#D4C8E8] dark:border-night-border transition-colors">
                     <h3 className="text-sm font-bold text-dark-light dark:text-night-text mb-4 flex items-center gap-2 uppercase tracking-wider transition-colors">
                         <TrendingUp size={18} className="text-primary dark:text-primary-light transition-colors" />
                         Completion Rate Over Time
@@ -388,7 +388,7 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                     {/* Per-Habit Completion Bar Chart */}
-                    <div className="luxury-glass rounded-xl p-5 border border-[#D4C8E8] dark:border-night-border transition-colors">
+                    <div className="bg-surface dark:bg-night-surface rounded-xl p-5 border border-[#D4C8E8] dark:border-night-border transition-colors">
                         <h3 className="text-sm font-bold text-dark-light dark:text-night-text mb-4 flex items-center gap-2 uppercase tracking-wider transition-colors">
                             <BarChart3 size={18} className="text-emerald-400 dark:text-emerald-500 transition-colors" />
                             Per-Habit Completion
@@ -416,7 +416,7 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                     </div>
 
                     {/* Habit Distribution Pie Chart */}
-                    <div className="luxury-glass rounded-xl p-5 border border-[#D4C8E8] dark:border-night-border transition-colors">
+                    <div className="bg-surface dark:bg-night-surface rounded-xl p-5 border border-[#D4C8E8] dark:border-night-border transition-colors">
                         <h3 className="text-sm font-bold text-dark-light dark:text-night-text mb-4 flex items-center gap-2 uppercase tracking-wider transition-colors">
                             <Activity size={18} className="text-pink-400 dark:text-pink-500 transition-colors" />
                             Habit Type Distribution
@@ -455,7 +455,7 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                 </div>
 
                 {/* RPG Stats Radar Chart */}
-                <div className="luxury-glass rounded-xl p-5 border border-[#D4C8E8] dark:border-night-border transition-colors">
+                <div className="bg-surface dark:bg-night-surface rounded-xl p-5 border border-[#D4C8E8] dark:border-night-border transition-colors">
                     <h3 className="text-sm font-bold text-dark-light dark:text-night-text mb-4 flex items-center gap-2 uppercase tracking-wider transition-colors">
                         <Activity size={18} className="text-purple-400 dark:text-purple-500 transition-colors" />
                         Character Attributes Radar
@@ -466,7 +466,7 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                 </div>
 
                 {/* Streak Dashboard with Levels */}
-                <div className="luxury-glass rounded-xl p-5 border border-[#D4C8E8] dark:border-night-border transition-colors">
+                <div className="bg-surface dark:bg-night-surface rounded-xl p-5 border border-[#D4C8E8] dark:border-night-border transition-colors">
                     <h3 className="text-sm font-bold text-dark-light dark:text-night-text mb-4 flex items-center gap-2 uppercase tracking-wider transition-colors">
                         <Flame size={18} className="text-amber-400 dark:text-amber-500 transition-colors" />
                         Streak Dashboard
@@ -511,7 +511,7 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                 </div>
 
                 {/* Best Days of Week */}
-                <div className="luxury-glass rounded-xl p-5 border border-[#D4C8E8] dark:border-night-border transition-colors">
+                <div className="bg-surface dark:bg-night-surface rounded-xl p-5 border border-[#D4C8E8] dark:border-night-border transition-colors">
                     <h3 className="text-sm font-bold text-dark-light dark:text-night-text mb-4 flex items-center gap-2 uppercase tracking-wider transition-colors">
                         <CalendarIcon size={18} className="text-teal-400 dark:text-teal-500 transition-colors" />
                         Best Performing Days
@@ -538,7 +538,7 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                 </div>
 
                 {/* Heat Map Calendar */}
-                <div className="luxury-glass rounded-xl p-5 border border-[#D4C8E8] dark:border-night-border transition-colors">
+                <div className="bg-surface dark:bg-night-surface rounded-xl p-5 border border-[#D4C8E8] dark:border-night-border transition-colors">
                     <h3 className="text-sm font-bold text-dark-light dark:text-night-text mb-4 flex items-center gap-2 uppercase tracking-wider transition-colors">
                         <CalendarIcon size={18} className="text-emerald-400 dark:text-emerald-500 transition-colors" />
                         Activity Heat Map
@@ -571,7 +571,7 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
 
                 {/* Numerical Progress Line Chart WITH Goal Reference Lines */}
                 {numericalProgressData.length > 0 && (
-                    <div className="luxury-glass rounded-xl p-5 border border-[#D4C8E8] dark:border-night-border transition-colors">
+                    <div className="bg-surface dark:bg-night-surface rounded-xl p-5 border border-[#D4C8E8] dark:border-night-border transition-colors">
                         <h3 className="text-sm font-bold text-dark-light dark:text-night-text mb-4 flex items-center gap-2 uppercase tracking-wider transition-colors">
                             <Target size={18} className="text-emerald-400 dark:text-emerald-500 transition-colors" />
                             Numerical Habit Progress
@@ -632,7 +632,7 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
 
                 {/* Goal Progress */}
                 {goalProgressData.length > 0 && (
-                    <div className="luxury-glass rounded-xl p-5 border border-[#D4C8E8] dark:border-night-border transition-colors">
+                    <div className="bg-surface dark:bg-night-surface rounded-xl p-5 border border-[#D4C8E8] dark:border-night-border transition-colors">
                         <h3 className="text-sm font-bold text-dark-light dark:text-night-text mb-4 flex items-center gap-2 uppercase tracking-wider transition-colors">
                             <Award size={18} className="text-purple-400 dark:text-purple-500 transition-colors" />
                             Goal Progress

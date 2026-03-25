@@ -116,6 +116,15 @@ export const COLLECTIBLES: Collectible[] = [
         condition: (s) => s.level >= 3,
     },
     {
+        id: 'strategist_rank',
+        name: 'Strategist',
+        description: 'Reach Level 4 — Infinite Loop habits unlock.',
+        icon: '♾️',
+        rarity: 'rare',
+        unlockHint: 'Reach Level 4',
+        condition: (s) => s.level >= 4,
+    },
+    {
         id: 'centurion',
         name: 'Centurion',
         description: 'Earn 100 total completions.',
@@ -147,11 +156,11 @@ export const COLLECTIBLES: Collectible[] = [
     {
         id: 'competent_rank',
         name: 'Competent',
-        description: 'Reach Level 4.',
+        description: 'Reach Level 5 — Challenge habits & routines.',
         icon: '🌟',
         rarity: 'epic',
-        unlockHint: 'Reach Level 4',
-        condition: (s) => s.level >= 4,
+        unlockHint: 'Reach Level 5',
+        condition: (s) => s.level >= 5,
     },
     {
         id: 'five_hundred_club',
@@ -188,11 +197,11 @@ export const COLLECTIBLES: Collectible[] = [
     {
         id: 'expert_rank',
         name: 'Expert',
-        description: 'Reach Level 5 — the pinnacle.',
+        description: 'Reach Level 6 — Expert tier, unlimited habits.',
         icon: '🔱',
         rarity: 'legendary',
-        unlockHint: 'Reach Level 5',
-        condition: (s) => s.level >= 5,
+        unlockHint: 'Reach Level 6',
+        condition: (s) => s.level >= 6,
     },
     {
         id: 'thousand_strong',
