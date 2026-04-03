@@ -1,21 +1,23 @@
 import React, { useState } from 'react';
-import { supabase } from '../../lib/supabase';
-import { Loader2, Mail, Lock, Sparkles, ArrowRight, KeyRound, CheckCircle2 } from 'lucide-react';
+import { localSignIn, localSignUp } from '../../lib/localAuth';
+import { Loader2, Mail, Lock, Sparkles, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import AppLogo from '../ui/AppLogo';
-import { useAuth } from '../../contexts/AuthContext';
 
-export default function Auth() {
-    const { isRecovery, signOut } = useAuth();
+export type AuthVariant = 'standalone' | 'atmosphere';
+
+type AuthProps = {
+    variant?: AuthVariant;
+};
+
+export default function Auth({ variant = 'standalone' }: AuthProps) {
     const [loading, setLoading] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [newPassword, setNewPassword] = useState('');
     const [isSignUp, setIsSignUp] = useState(false);
     const [isForgotPassword, setIsForgotPassword] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [message, setMessage] = useState<string | null>(null);
-    const [resetSent, setResetSent] = useState(false);
 
     const handleAuth = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -25,79 +27,63 @@ export default function Auth() {
 
         try {
             if (isSignUp) {
-                const { error } = await supabase.auth.signUp({
-                    email,
-                    password,
-                    options: {
-                        data: {
-                            username: email.split('@')[0],
-                        }
-                    }
-                });
-                if (error) throw error;
-                setMessage('Check your email for the confirmation link!');
+                const { error: err } = localSignUp(email, password);
+                if (err) throw err;
+                setMessage('Account created — you are signed in locally.');
             } else {
-                const { error } = await supabase.auth.signInWithPassword({
-                    email,
-                    password,
-                });
-                if (error) throw error;
+                const { error: err } = localSignIn(email, password);
+                if (err) throw err;
             }
-        } catch (err: any) {
-            setError(err.message);
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : 'Something went wrong');
         } finally {
             setLoading(false);
         }
     };
 
-    const handleResetPassword = async (e: React.FormEvent) => {
+    const handleForgotInfo = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
         setError(null);
         setMessage(null);
-        try {
-            const { error } = await supabase.auth.resetPasswordForEmail(email, {
-                redirectTo: window.location.origin,
-            });
-            if (error) throw error;
-            setResetSent(true);
-        } catch (err: any) {
-            setError(err.message);
-        } finally {
-            setLoading(false);
-        }
+        setError(
+            'Accounts and passwords are stored only on this device. There is no email reset. If you forgot your password, clear site data for this app and create the account again (your habit data in this browser profile is separate).'
+        );
+        setLoading(false);
     };
 
-    const handleUpdatePassword = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setLoading(true);
-        setError(null);
-        setMessage(null);
-        try {
-            const { error } = await supabase.auth.updateUser({ password: newPassword });
-            if (error) throw error;
+    const rootClass =
+        variant === 'standalone'
+            ? 'bg-warm-page dark:bg-warm-night-page'
+            : 'bg-transparent';
 
-            // Clean up the URL
-            const url = new URL(window.location.href);
-            url.hash = '';
-            url.searchParams.delete('type');
-            window.history.replaceState(null, '', url.pathname + url.search);
+    const rootLayout =
+        variant === 'atmosphere'
+            ? 'min-h-[100dvh] justify-center py-10 pb-12 sm:py-14 px-4'
+            : 'min-h-screen justify-center p-4';
 
-            // Sign the user out to force them back to the sign-in screen
-            await signOut();
-            setMessage('Password updated successfully! Please sign in with your new password.');
-            setNewPassword('');
-            setIsForgotPassword(false);
-            setResetSent(false);
-        } catch (err: any) {
-            setError(err.message);
-        } finally {
-            setLoading(false);
-        }
-    };
+    const isAtmosphere = variant === 'atmosphere';
+    /** Labels / links: full opacity. Inputs use solid fill — transparency stays on the glass card only. */
+    const formLabelClass = isAtmosphere
+        ? 'block text-[11px] font-bold text-black uppercase tracking-[0.2em] drop-shadow-[0_1px_1px_rgba(255,255,255,0.5)]'
+        : 'block text-[11px] font-bold text-black uppercase tracking-[0.2em]';
+    const formLabelClassMb = `${formLabelClass} mb-3 ml-1`;
+    const forgotLinkClass = isAtmosphere
+        ? 'text-[11px] font-bold text-black uppercase tracking-wider underline transition-colors hover:brightness-110'
+        : 'text-[11px] font-bold text-black hover:underline transition-colors uppercase tracking-wider';
+    const inputIconClass = isAtmosphere
+        ? 'absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-black group-focus-within:text-black transition-colors'
+        : 'absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-black group-focus-within:text-black transition-colors';
+    const inputFieldClass =
+        'auth-form-input w-full bg-white border-2 border-black rounded-2xl py-4 pl-12 pr-4 text-black placeholder:text-black focus:outline-none focus:border-black focus:ring-4 focus:ring-black/10 transition-all text-sm font-bold shadow-none';
+    const formFooterClass = isAtmosphere
+        ? 'text-sm font-bold text-black'
+        : 'text-sm font-bold text-black';
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-[#F8F6FB] dark:bg-night-bg p-4 relative overflow-hidden font-inter">
+        <div
+            className={`flex flex-col items-center ${rootLayout} relative overflow-hidden font-inter z-10 ${rootClass}`}
+        >
 
             {/* Global Floating Toasts for Auth */}
             <div className="fixed top-6 left-0 right-0 z-50 flex flex-col items-center gap-3 px-4 pointer-events-none">
@@ -107,11 +93,11 @@ export default function Auth() {
                             initial={{ opacity: 0, y: -20, scale: 0.95 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: -20, scale: 0.95 }}
-                            className="w-full max-w-sm p-4 bg-white dark:bg-neutral-900 border border-danger/30 text-danger-dark dark:text-danger-light rounded-2xl text-sm font-semibold flex items-center gap-3 pointer-events-auto"
+                            className="w-full max-w-sm p-4 bg-warm-card dark:bg-warm-night-card border border-danger/35 dark:border-danger/40 text-danger-dark dark:text-red-200 rounded-2xl text-sm font-semibold flex items-center gap-3 pointer-events-auto shadow-sm shadow-stone-900/5 dark:shadow-none"
                         >
                             <span className="bg-danger/10 dark:bg-danger/20 shrink-0 w-8 h-8 flex items-center justify-center rounded-full text-sm">!</span>
                             <span className="flex-1">{error}</span>
-                            <button onClick={() => setError(null)} className="text-danger/50 hover:text-danger transition-colors p-1">✕</button>
+                            <button type="button" onClick={() => setError(null)} className="text-danger/50 hover:text-danger transition-colors p-1">✕</button>
                         </motion.div>
                     )}
                 </AnimatePresence>
@@ -122,11 +108,11 @@ export default function Auth() {
                             initial={{ opacity: 0, y: -20, scale: 0.95 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: -20, scale: 0.95 }}
-                            className="w-full max-w-sm p-4 bg-white dark:bg-neutral-900 border border-success/30 text-success-dark dark:text-success-light rounded-2xl text-sm font-semibold flex items-center gap-3 pointer-events-auto"
+                            className="w-full max-w-sm p-4 bg-warm-card dark:bg-warm-night-card border border-success/40 dark:border-emerald-400/35 text-success-dark dark:text-emerald-200 rounded-2xl text-sm font-semibold flex items-center gap-3 pointer-events-auto shadow-sm shadow-stone-900/5 dark:shadow-none"
                         >
                             <span className="bg-success/10 dark:bg-success/20 shrink-0 w-8 h-8 flex items-center justify-center rounded-full text-sm">✨</span>
                             <span className="flex-1">{message}</span>
-                            <button onClick={() => setMessage(null)} className="text-success/50 hover:text-success transition-colors p-1">✕</button>
+                            <button type="button" onClick={() => setMessage(null)} className="text-success/50 hover:text-success transition-colors p-1">✕</button>
                         </motion.div>
                     )}
                 </AnimatePresence>
@@ -139,7 +125,13 @@ export default function Auth() {
                 className="w-full max-w-md relative z-10"
             >
                 {/* Logo area */}
-                <div className="text-center mb-10">
+                <div
+                    className={
+                        variant === 'atmosphere'
+                            ? 'text-center mb-10 [&_h1]:text-white [&_p]:text-white [&_h1]:drop-shadow-md [&_p]:drop-shadow-[0_1px_3px_rgba(0,0,0,0.75)]'
+                            : 'text-center mb-10'
+                    }
+                >
                     <motion.div
                         initial={{ y: 20, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
@@ -148,194 +140,138 @@ export default function Auth() {
                     >
                         <AppLogo size={64} />
                     </motion.div>
-                    <h1 className="text-4xl font-black text-neutral-900 dark:text-white tracking-tight leading-none mb-2">
+                    <h1 className="text-4xl font-black text-warm-text dark:text-warm-night-text tracking-tight leading-none mb-2">
                         Focus FTP
                     </h1>
-                    <p className="text-neutral-500 dark:text-neutral-400 font-medium max-w-[280px] mx-auto leading-relaxed">
-                        {isRecovery ? 'Set your new secure password' : isForgotPassword ? 'Don\'t worry, let\'s get you back in' : isSignUp ? 'Begin your 7-day journey to mastery' : 'Your ultimate habit tracker awaits'}
+                    <p className="text-warm-muted dark:text-warm-night-muted font-medium max-w-[280px] mx-auto leading-relaxed">
+                        {isForgotPassword ? 'Local account help' : isSignUp ? 'Begin your 7-day journey to mastery' : 'Your ultimate habit tracker awaits'}
                     </p>
                 </div>
 
-                {/* Main Glass Card */}
-                <div className="bg-white dark:bg-neutral-900 border border-dark-border dark:border-neutral-800/50 rounded-[32px] p-8 md:p-10">
+                {/* Warm cream card; purple stays on CTAs + focus */}
+                <div className="rounded-[32px] border border-warm-border/70 dark:border-warm-night-border/80 bg-warm-card/25 dark:bg-warm-night-card/25 backdrop-blur-md p-8 md:p-10 shadow-sm shadow-amber-950/5 dark:shadow-none">
 
-
-                    {resetSent ? (
-                        /* Check Your Inbox Screen */
-                        <div className="text-center space-y-6 py-4">
-                            <div className="inline-flex items-center justify-center w-20 h-20 bg-success/10 rounded-3xl mb-2">
-                                <CheckCircle2 size={40} className="text-success" />
+                    <form onSubmit={isForgotPassword ? handleForgotInfo : handleAuth} className="space-y-6">
+                        <div>
+                            <label className={formLabelClassMb}>Email Address</label>
+                            <div className="relative group">
+                                <Mail className={inputIconClass} />
+                                <input
+                                    type="email"
+                                    required={!isForgotPassword}
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    className={inputFieldClass}
+                                    placeholder="name@energy.com"
+                                />
                             </div>
-                            <div>
-                                <h2 className="text-2xl font-black text-neutral-900 dark:text-white mb-2 tracking-tight">Check Your Inbox</h2>
-                                <p className="text-neutral-500 dark:text-neutral-400 text-sm leading-relaxed">
-                                    A magic link has been sent to <span className="font-bold text-neutral-900 dark:text-white uppercase tracking-wider text-[11px] bg-neutral-100 dark:bg-neutral-800 px-2 py-0.5 rounded-md">{email}</span>
-                                </p>
-                            </div>
-                            <div className="bg-neutral-50 dark:bg-neutral-800/50 rounded-2xl p-4 border border-neutral-100 dark:border-neutral-700/50 text-left">
-                                <p className="text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed">
-                                    <span className="font-bold text-primary">Pro Tip:</span> If you don't see it, check your spam folder or wait a few minutes.
-                                </p>
-                            </div>
-                            <button
-                                onClick={() => {
-                                    setResetSent(false);
-                                    setIsForgotPassword(false);
-                                    setError(null);
-                                    setMessage(null);
-                                }}
-                                className="w-full text-neutral-500 dark:text-neutral-400 hover:text-primary dark:hover:text-primary-light font-bold transition-all text-sm py-2 hover:bg-primary/5 rounded-xl underline-offset-4 hover:underline"
-                            >
-                                ← Back to Sign In
-                            </button>
                         </div>
-                    ) : isRecovery ? (
-                        <form onSubmit={handleUpdatePassword} className="space-y-6">
+
+                        {!isForgotPassword && (
                             <div>
-                                <label className="block text-[11px] font-bold text-neutral-400 dark:text-neutral-500 uppercase tracking-[0.2em] mb-3 ml-1">
-                                    New Password
-                                </label>
+                                <div className="flex justify-between items-center mb-3 ml-1">
+                                    <label className={formLabelClass}>Password</label>
+                                    {!isSignUp && (
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setIsForgotPassword(true);
+                                                setError(null);
+                                                setMessage(null);
+                                            }}
+                                            className={forgotLinkClass}
+                                        >
+                                            Forgot?
+                                        </button>
+                                    )}
+                                </div>
                                 <div className="relative group">
-                                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400 group-focus-within:text-primary transition-colors" />
+                                    <Lock className={inputIconClass} />
                                     <input
                                         type="password"
                                         required
-                                        value={newPassword}
-                                        onChange={(e) => setNewPassword(e.target.value)}
-                                        className="w-full bg-white/50 dark:bg-black/20 border border-neutral-200 dark:border-neutral-800 rounded-2xl py-4 pl-12 pr-4 text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all text-sm font-medium"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        className={inputFieldClass}
                                         placeholder="••••••••"
                                         minLength={6}
                                     />
                                 </div>
                             </div>
-                            <button
-                                type="submit"
-                                disabled={loading}
-                                className="w-full bg-primary hover:bg-primary-dark text-white font-black py-4 rounded-2xl transition-colors flex items-center justify-center gap-3 disabled:opacity-60 disabled:cursor-not-allowed"
-                            >
-                                {loading ? (
-                                    <Loader2 className="w-5 h-5 animate-spin" />
-                                ) : (
-                                    <>
-                                        <KeyRound size={18} />
-                                        <span>Update Password</span>
-                                    </>
-                                )}
-                            </button>
-                        </form>
-                    ) : (
-                        <form onSubmit={isForgotPassword ? handleResetPassword : handleAuth} className="space-y-6">
-                            <div>
-                                <label className="block text-[11px] font-bold text-neutral-400 dark:text-neutral-500 uppercase tracking-[0.2em] mb-3 ml-1">
-                                    Email Address
-                                </label>
-                                <div className="relative group">
-                                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400 group-focus-within:text-primary transition-colors" />
-                                    <input
-                                        type="email"
-                                        required
-                                        value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
-                                        className="w-full bg-white/50 dark:bg-black/20 border border-neutral-200 dark:border-neutral-800 rounded-2xl py-4 pl-12 pr-4 text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all text-sm font-medium"
-                                        placeholder="name@energy.com"
-                                    />
-                                </div>
-                            </div>
+                        )}
 
-                            {!isForgotPassword && (
-                                <div>
-                                    <div className="flex justify-between items-center mb-3 ml-1">
-                                        <label className="block text-[11px] font-bold text-neutral-400 dark:text-neutral-500 uppercase tracking-[0.2em]">
-                                            Password
-                                        </label>
-                                        {!isSignUp && (
-                                            <button
-                                                type="button"
-                                                onClick={() => {
-                                                    setIsForgotPassword(true);
-                                                    setError(null);
-                                                    setMessage(null);
-                                                }}
-                                                className="text-[11px] font-bold text-primary hover:text-primary-light transition-colors uppercase tracking-wider"
-                                            >
-                                                Forgot?
-                                            </button>
-                                        )}
-                                    </div>
-                                    <div className="relative group">
-                                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400 group-focus-within:text-primary transition-colors" />
-                                        <input
-                                            type="password"
-                                            required
-                                            value={password}
-                                            onChange={(e) => setPassword(e.target.value)}
-                                            className="w-full bg-white/50 dark:bg-black/20 border border-neutral-200 dark:border-neutral-800 rounded-2xl py-4 pl-12 pr-4 text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all text-sm font-medium"
-                                            placeholder="••••••••"
-                                            minLength={6}
-                                        />
-                                    </div>
-                                </div>
-                            )}
-
-                            <button
-                                type="submit"
-                                disabled={loading}
-                                className="w-full bg-primary hover:bg-primary-dark text-white font-black py-4 rounded-2xl transition-colors flex items-center justify-center gap-3 disabled:opacity-60 disabled:cursor-not-allowed"
-                            >
-                                {loading ? (
-                                    <Loader2 className="w-5 h-5 animate-spin" />
-                                ) : (
-                                    <>
-                                        {isForgotPassword ? (
-                                            <>
-                                                <Mail size={18} />
-                                                <span>Send Recovery Link</span>
-                                            </>
-                                        ) : (
-                                            <>
-                                                <Sparkles size={18} />
-                                                <span>{isSignUp ? 'Initialize Journey' : 'Enter Dashboard'}</span>
-                                                <ArrowRight size={18} />
-                                            </>
-                                        )}
-                                    </>
-                                )}
-                            </button>
-
-                            <div className="mt-8 text-center">
-                                <p className="text-neutral-500 dark:text-neutral-400 text-sm font-medium">
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="w-full bg-primary hover:bg-primary-dark text-white font-black py-4 rounded-2xl transition-colors flex items-center justify-center gap-3 disabled:opacity-60 disabled:cursor-not-allowed"
+                        >
+                            {loading ? (
+                                <Loader2 className="w-5 h-5 animate-spin" />
+                            ) : (
+                                <>
                                     {isForgotPassword ? (
-                                        <button
-                                            type="button"
-                                            onClick={() => setIsForgotPassword(false)}
-                                            className="text-primary hover:text-primary-light font-bold transition-all underline-offset-4 hover:underline"
-                                        >
-                                            ← Back to Sign In
-                                        </button>
+                                        <>
+                                            <Mail size={18} />
+                                            <span>Show help</span>
+                                        </>
                                     ) : (
                                         <>
-                                            {isSignUp ? 'Already a player?' : 'New to Focus FTP?'}{' '}
-                                            <button
-                                                type="button"
-                                                onClick={() => {
-                                                    setIsSignUp(!isSignUp);
-                                                    setError(null);
-                                                    setMessage(null);
-                                                }}
-                                                className="text-primary hover:text-primary-light font-bold transition-all underline-offset-4 hover:underline"
-                                            >
-                                                {isSignUp ? 'Sign In' : 'Create Account'}
-                                            </button>
+                                            <Sparkles size={18} />
+                                            <span>{isSignUp ? 'Initialize Journey' : 'Enter Dashboard'}</span>
+                                            <ArrowRight size={18} />
                                         </>
                                     )}
-                                </p>
-                            </div>
-                        </form>
-                    )}
+                                </>
+                            )}
+                        </button>
+
+                        <div className="mt-8 text-center">
+                            <p className={formFooterClass}>
+                                {isForgotPassword ? (
+                                    <button
+                                        type="button"
+                                        onClick={() => setIsForgotPassword(false)}
+                                        className={`font-bold transition-all underline-offset-4 hover:underline ${
+                                            isAtmosphere
+                                                ? 'text-primary-light drop-shadow-[0_1px_2px_rgba(0,0,0,0.85)] hover:brightness-110'
+                                                : 'text-primary hover:text-primary-light'
+                                        }`}
+                                    >
+                                        ← Back to Sign In
+                                    </button>
+                                ) : (
+                                    <>
+                                        {isSignUp ? 'Already a player?' : 'New to Focus FTP?'}{' '}
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setIsSignUp(!isSignUp);
+                                                setError(null);
+                                                setMessage(null);
+                                            }}
+                                            className={`font-bold transition-all underline-offset-4 hover:underline ${
+                                                isAtmosphere
+                                                    ? 'text-primary-light drop-shadow-[0_1px_2px_rgba(0,0,0,0.85)] hover:brightness-110'
+                                                    : 'text-primary hover:text-primary-light'
+                                            }`}
+                                        >
+                                            {isSignUp ? 'Sign In' : 'Create Account'}
+                                        </button>
+                                    </>
+                                )}
+                            </p>
+                        </div>
+                    </form>
                 </div>
 
                 {/* Footer note */}
-                <p className="text-center text-neutral-500/50 dark:text-neutral-500/30 text-[11px] font-bold uppercase tracking-[0.2em] mt-8">
+                <p
+                    className={
+                        variant === 'atmosphere'
+                            ? 'text-center text-white text-[11px] font-bold uppercase tracking-[0.2em] mt-8 drop-shadow-[0_1px_2px_rgba(0,0,0,0.75)]'
+                            : 'text-center text-warm-muted/50 dark:text-warm-night-muted/45 text-[11px] font-bold uppercase tracking-[0.2em] mt-8'
+                    }
+                >
                     Level up your habits, one day at a time ✨
                 </p>
             </motion.div>

@@ -2,8 +2,9 @@
 
 ## Prerequisites
 - Node.js 18+
-- A Supabase project with tables set up (see `supabase/migrations/`)
 - A Vercel account (free tier works)
+
+This app is a **static SPA**: auth and data live in the browser (**localStorage**). No cloud database or backend env vars are required for deploy.
 
 ## Local Development
 
@@ -11,30 +12,19 @@
 # 1. Clone & install
 npm install
 
-# 2. Set up environment
+# 2. Optional environment (see .env.example)
 cp .env.example .env
-# Edit .env with your Supabase URL and Anon Key
+# Optionally set VITE_LOCAL_AUTH_EMAIL / VITE_LOCAL_AUTH_PASSWORD for dev pre-seed only
 
 # 3. Run dev server
 npm run dev
 ```
 
-## Supabase Setup
-
-1. Create a project at [supabase.com](https://supabase.com)
-2. Go to **SQL Editor** and run the migration file:
-   - `supabase/migrations/01_initial_schema.sql`
-3. Go to **Settings → API** and copy:
-   - **Project URL** → `VITE_SUPABASE_URL`
-   - **anon public key** → `VITE_SUPABASE_ANON_KEY`
-
 ## Vercel Deployment
 
 1. Push your code to GitHub
 2. Import the repo in [vercel.com](https://vercel.com)
-3. Add environment variables:
-   - `VITE_SUPABASE_URL`
-   - `VITE_SUPABASE_ANON_KEY`
+3. No database-related environment variables are required unless you add new features that need them
 4. Deploy — Vercel will auto-detect Vite and build correctly
 5. The `vercel.json` handles SPA routing automatically
 

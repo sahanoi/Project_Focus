@@ -36,6 +36,22 @@ export default {
                 'night-border': 'rgb(var(--tone-night-border) / <alpha-value>)',
                 'night-text': 'rgb(var(--tone-night-text) / <alpha-value>)',
                 'night-text-muted': 'rgb(var(--tone-night-text-muted) / <alpha-value>)',
+
+                /* Warm auth / entry — SOLID BLACK (Maximum Contrast) */
+                'warm-page': '#FAF0E8',
+                'warm-card': '#FFF9F5',
+                'warm-field': '#FFF9F3',
+                'warm-border': '#000000',
+                'warm-text': '#000000',
+                'warm-muted': '#000000',
+                'warm-accent': '#000000',
+                'warm-night-page': '#1a141b',
+                'warm-night-card': '#261f26',
+                'warm-night-field': '#FFFFFF', /* White field in dark mode for black text contrast */
+                'warm-night-border': '#000000',
+                'warm-night-text': '#000000',
+                'warm-night-muted': '#000000',
+                'warm-night-accent': '#000000',
             },
             fontFamily: {
                 sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],

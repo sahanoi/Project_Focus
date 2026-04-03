@@ -2,6 +2,33 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+
+  /* Pixel-art assets: avoid blurry browser smoothing when scaled */
+  .pixel-art-image {
+    image-rendering: pixelated;
+    -ms-interpolation-mode: nearest-neighbor;
+  }
+
+  /*
+   * Letterbox / pillarbox fill behind object-contain story art (Web bg01 vibe):
+   * deep neutral center, warm browns and amber toward the edges.
+   */
+  .auth-story-backdrop-fill {
+    background-color: #0c0a09;
+    background-image:
+      radial-gradient(ellipse 130% 90% at 50% 42%, rgba(88, 62, 48, 0.22) 0%, transparent 52%),
+      radial-gradient(ellipse 70% 55% at 50% 100%, rgba(120, 72, 42, 0.18) 0%, transparent 45%),
+      linear-gradient(90deg,
+        #3d2a20 0%,
+        #1a1411 14%,
+        #0a0808 50%,
+        #1a1411 86%,
+        #3d2a20 100%),
+      linear-gradient(180deg, #100e0c 0%, #161210 38%, #120f0d 100%);
+  }
+}
+
 /* ==========================================
    CSS Variables for Tooltip / Recharts
    ========================================== */
@@ -68,9 +95,7 @@
 
 body {
   font-family: 'Nunito', 'Inter', system-ui, -apple-system, sans-serif;
-  background-color: #F0ECF5;
-  /* Lavender mist */
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+  background-color: #0c0a09;
   color: #2D2640;
   /* Deep plum text */
   -webkit-font-smoothing: antialiased;
@@ -79,7 +104,7 @@ body {
 
 .dark body,
 body.dark {
-  background-color: rgb(var(--tone-night-bg));
+  background-color: #0c0a09;
   background-image: none;
   color: rgb(var(--tone-night-text));
 }
@@ -88,6 +113,47 @@ body.dark {
 
 #root {
   min-height: 100vh;
+}
+
+/* Auth inputs: SOLID BLACK for maximum visibility. */
+.auth-form-input {
+  color: #000000 !important;
+  caret-color: #000000 !important;
+}
+
+.auth-form-input::placeholder {
+  color: #000000 !important;
+  opacity: 0.9;
+}
+
+.dark .auth-form-input {
+  color: #000000 !important;
+  caret-color: #000000 !important;
+}
+
+.dark .auth-form-input::placeholder {
+  color: #000000 !important;
+  opacity: 0.9;
+}
+
+.auth-form-input:-webkit-autofill,
+.auth-form-input:-webkit-autofill:hover,
+.auth-form-input:-webkit-autofill:focus,
+.auth-form-input:-webkit-autofill:active {
+  -webkit-text-fill-color: #000000 !important;
+  -webkit-box-shadow: 0 0 0 1000px #FFF9F3 inset !important; /* Match warm-field */
+  caret-color: #000000 !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+.dark .auth-form-input:-webkit-autofill,
+.dark .auth-form-input:-webkit-autofill:hover,
+.dark .auth-form-input:-webkit-autofill:focus,
+.dark .auth-form-input:-webkit-autofill:active {
+  -webkit-text-fill-color: #000000 !important;
+  -webkit-box-shadow: 0 0 0 1000px #FFFFFF inset !important; /* White field contrast */
+  caret-color: #000000 !important;
+  transition: background-color 5000s ease-in-out 0s;
 }
 
 /* ==========================================
@@ -281,9 +347,9 @@ input[type='number'] {
   @apply relative inline-flex h-6 w-11 items-center rounded-full cursor-pointer transition-colors;
 }
 
-  .toggle-switch-knob {
-    @apply inline-block h-5 w-5 rounded-full bg-white transition-transform;
-  }
+.toggle-switch-knob {
+  @apply inline-block h-5 w-5 rounded-full bg-white transition-transform;
+}
 
 /* ==========================================
    Streak & Gamification Animations
@@ -332,6 +398,7 @@ input[type='number'] {
     opacity: 0;
     transform: translateY(-6px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -347,29 +414,30 @@ input[type='number'] {
    ========================================== */
 
 @keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
 }
 
 .skeleton {
-  background: linear-gradient(
-    90deg,
-    rgba(212, 200, 232, 0.3) 25%,
-    rgba(212, 200, 232, 0.6) 50%,
-    rgba(212, 200, 232, 0.3) 75%
-  );
+  background: linear-gradient(90deg,
+      rgba(212, 200, 232, 0.3) 25%,
+      rgba(212, 200, 232, 0.6) 50%,
+      rgba(212, 200, 232, 0.3) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.6s ease-in-out infinite;
   border-radius: 0.75rem;
 }
 
 .dark .skeleton {
-  background: linear-gradient(
-    90deg,
-    rgba(58, 52, 72, 0.35) 25%,
-    rgba(121, 111, 148, 0.45) 50%,
-    rgba(58, 52, 72, 0.35) 75%
-  );
+  background: linear-gradient(90deg,
+      rgba(58, 52, 72, 0.35) 25%,
+      rgba(121, 111, 148, 0.45) 50%,
+      rgba(58, 52, 72, 0.35) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.6s ease-in-out infinite;
 }

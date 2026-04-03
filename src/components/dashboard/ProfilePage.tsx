@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useModalClose } from '../../hooks/useModalClose';
 import { useHabitStore } from '../../store/habitStore';
 import { useAuth } from '../../contexts/AuthContext';
-import { supabase } from '../../lib/supabase';
+import { updateLocalUserMetadata } from '../../lib/localAuth';
 import { Award, Star, Edit3, Check, X, Camera, Info, Lock } from 'lucide-react';
 import { getUserTierName } from '../../utils/featureGateUtils';
 import { COLLECTIBLES } from '../../data/collectibles';
@@ -298,14 +298,13 @@ export default function ProfilePage() {
     }, [user]);
 
     const handleSaveProfile = async (newName: string, newBio: string, newSeed: string) => {
-        const { error } = await supabase.auth.updateUser({
-            data: {
+        if (user?.email) {
+            updateLocalUserMetadata(user.email, {
                 display_name: newName,
                 bio: newBio,
                 avatar_seed: newSeed,
-            }
-        });
-        if (error) throw error;
+            });
+        }
         setDisplayName(newName);
         setBio(newBio);
         setAvatarSeed(newSeed);

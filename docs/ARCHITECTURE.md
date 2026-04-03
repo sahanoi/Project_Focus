@@ -5,8 +5,8 @@
 |---|---|
 | **Frontend** | React 18 + TypeScript |
 | **Styling** | Tailwind CSS 3 |
-| **State** | Zustand (persisted to localStorage + Supabase) |
-| **Backend** | Supabase (Auth, PostgreSQL, RLS) |
+| **State** | Zustand (persisted to localStorage) |
+| **Backend** | None (local-first; browser persistence only) |
 | **Hosting** | Vercel |
 | **Build** | Vite 5 |
 | **Testing** | Vitest + Testing Library |
@@ -39,13 +39,11 @@ Project F/
 │   │   └── stats/         # Analytics & charts
 │   ├── contexts/          # React contexts (AuthContext)
 │   ├── data/              # Static data (missions, dummyData)
-│   ├── lib/               # External service clients (Supabase)
+│   ├── lib/               # Local auth helpers (`localAuth`, `authTypes`)
 │   ├── store/             # Zustand stores
 │   ├── test/              # Test setup & mocks
 │   ├── types/             # TypeScript type definitions
 │   └── utils/             # Pure utility functions
-├── supabase/
-│   └── migrations/        # SQL migration files (ordered)
 ├── vercel.json            # Vercel SPA routing config
 ├── package.json
 ├── tsconfig.json
@@ -55,9 +53,9 @@ Project F/
 
 ## Data Flow
 ```
-User Action → Zustand Store (optimistic) → Supabase (async persist)
-                    ↓                              ↓
-              localStorage (offline cache)    PostgreSQL (source of truth)
+User Action → Zustand Store (optimistic update)
+                    ↓
+              localStorage (source of truth via persist middleware)
 ```
 
 ## Authentication Flow

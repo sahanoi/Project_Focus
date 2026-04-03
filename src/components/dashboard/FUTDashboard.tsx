@@ -11,6 +11,7 @@ import WeeklyDigest from './WeeklyDigest';
 import MiniHeatmap from './MiniHeatmap';
 import HabitList from '../habits/HabitList';
 import DailyMissionCard from './DailyMissionCard';
+import StarterQuestCard from './StarterQuestCard';
 import { Target, Check, ChevronDown, ChevronRight, Sparkles, Moon } from 'lucide-react';
 import { Habit, Routine } from '../../types';
 
@@ -67,6 +68,11 @@ export default function FUTDashboard({ onAddHabit, onEditHabit, onAddGoal }: FUT
 
                 {/* Goals -> Routines -> Habits */}
                 <div className="flex-1 overflow-y-auto pr-0 scrollbar-thin scrollbar-thumb-gray-700/60 scrollbar-track-transparent min-w-0 flex flex-col gap-8">
+
+                    {/* Structured starter: Drink Water → L3 streak, then free play across selected habits */}
+                    <section aria-label="Foundation quest">
+                        <StarterQuestCard />
+                    </section>
 
                     {/* 7-DAY ONBOARDING MISSION */}
                     <section aria-label="Daily mission">

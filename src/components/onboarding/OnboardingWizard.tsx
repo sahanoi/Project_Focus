@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useHabitStore } from '../../store/habitStore';
 import { HABIT_CATEGORIES, HABIT_TEMPLATES, HabitCategory, HabitTemplate } from '../../types';
+import { habitPayloadFromTemplate } from '../../utils/habitPayloadFromTemplate';
+import { STARTER_QUEST_HABIT_NAME } from '../../utils/starterQuestUtils';
 import { getMinLevelForHabitType, isHabitTypeAvailable } from '../../utils/featureGateUtils';
 import { Sparkles, ChevronRight, Check, Zap, Target, Eye, ArrowLeft, Flame, Unlock } from 'lucide-react';
 import AppLogo from '../ui/AppLogo';
 import { motion, AnimatePresence } from 'framer-motion';
 
-/** Anchor habits — all **regular** so Level 1 (novice) can create them before numerical unlocks. */
+/** Drink Water first (foundation quest); others are optional starters. Novice tier may coerce types to regular. */
 const ANCHOR_HABITS: HabitTemplate[] = [
+    HABIT_TEMPLATES.health[0],        // Drink Water — required anchor
     HABIT_TEMPLATES.health[1],        // Take Vitamins
     HABIT_TEMPLATES.health[4],        // Brush Teeth
-    HABIT_TEMPLATES.productivity[0],  // Morning Routine
 ];
 
 interface OnboardingProps {
@@ -28,31 +30,8 @@ export default function OnboardingWizard({ onComplete }: OnboardingProps) {
     const loadDummyData = useHabitStore(s => s.loadDummyData);
     const clearAllData = useHabitStore(s => s.clearAllData);
 
-    const habitPayloadFromTemplate = (template: HabitTemplate) => {
-        const type = isHabitTypeAvailable(stats, template.type) ? template.type : 'regular';
-        const base = {
-            name: template.name,
-            type,
-            category: template.category,
-            color: template.color,
-            icon: template.icon,
-            schedule: template.schedule,
-        };
-        if (type === 'numerical') {
-            return {
-                ...base,
-                dailyTarget: template.dailyTarget,
-                goalValue: template.goalValue,
-                unit: template.unit,
-            };
-        }
-        if (type === 'infinite') {
-            return base;
-        }
-        return base;
-    };
-
     const toggleTemplate = (template: HabitTemplate) => {
+        if (template.name === STARTER_QUEST_HABIT_NAME) return;
         if (!isHabitTypeAvailable(stats, template.type)) return;
         setSelectedTemplates(prev => {
             const exists = prev.find(t => t.name === template.name);
@@ -67,7 +46,7 @@ export default function OnboardingWizard({ onComplete }: OnboardingProps) {
 
     const handleFinish = () => {
         selectedTemplates.forEach(template => {
-            addHabit(habitPayloadFromTemplate(template));
+            addHabit(habitPayloadFromTemplate(template, stats));
         });
         onComplete();
     };
@@ -165,18 +144,19 @@ export default function OnboardingWizard({ onComplete }: OnboardingProps) {
                             {name ? `${name}, let\u2019s` : `Let\u2019s`} start with habits you already do
                         </h2>
                         <p className="text-dark-lighter dark:text-night-text-muted text-sm">
-                            We've pre-selected 3 easy morning habits. Deselect any you don't want, or add more below.
+                            <strong className="text-dark dark:text-night-text">Drink Water</strong> stays on your list — build a 3-day streak there first, then explore your other habits in any order. Add or remove the other starters below.
                         </p>
                     </div>
 
                     {/* Anchor Habits — Pre-selected */}
                     <div className="rounded-xl bg-primary/5 border border-primary/10 p-4 space-y-2">
-                        <p className="text-xs font-bold text-primary uppercase tracking-wider mb-2">🌱 Recommended Starters</p>
+                        <p className="text-xs font-bold text-primary uppercase tracking-wider mb-2">🌱 Your foundation + starters</p>
                         {ANCHOR_HABITS.map(template => (
                             <button
                                 key={template.name}
                                 onClick={() => toggleTemplate(template)}
-                                className={`w-full px-3 py-2.5 rounded-lg flex items-center justify-between text-left transition-all duration-200 ${isSelected(template)
+                                disabled={template.name === STARTER_QUEST_HABIT_NAME}
+                                className={`w-full px-3 py-2.5 rounded-lg flex items-center justify-between text-left transition-all duration-200 ${template.name === STARTER_QUEST_HABIT_NAME ? 'opacity-95 cursor-default' : ''} ${isSelected(template)
                                     ? 'bg-white dark:bg-night-surface border border-primary/30 dark:border-primary/30'
                                     : 'bg-white/50 dark:bg-night-bg/50 border border-transparent hover:border-primary/20 dark:hover:border-primary/20'
                                     }`}
@@ -325,9 +305,9 @@ export default function OnboardingWizard({ onComplete }: OnboardingProps) {
     // Step 2: Why This Works (Motivation)
     if (step === 2) {
         const bullets = [
+            { icon: '💧', text: 'Your first quest is Drink Water: three consecutive check-ins unlock the full rhythm with your other picks.' },
             { icon: '🌱', text: 'Tiny habits build neural pathways. Consistency beats intensity.' },
-            { icon: '🔥', text: '3 days of a habit creates a streak. 7 days starts to feel automatic.' },
-            { icon: '⚡', text: 'New features unlock as you level up. Let\u2019s get you to Level 2 first.' },
+            { icon: '⚡', text: 'After the foundation, you choose the order — every habit you selected stays in play.' },
         ];
 
         return (

@@ -5,22 +5,15 @@
 ### Added
 - `docs/PRODUCT.md` — merged product spec (vision, first-session flow, MVP screens, RPG/code map, dashboard UX goals)
 - `docs/archive/` — historical SaaS memo + legacy agent notes (with banners / relocation notes)
-- Supabase authentication (email/password)
+- **Local-first** authentication (email/password) and session handling in the browser
 - Premium glassmorphism Auth UI ("Dusk Purple" theme)
-- Full data persistence to Supabase PostgreSQL
-- Profile stats synced as JSONB to `profiles.stats`
+- **Zustand** persistence to **localStorage** for habits, goals, routines, and related state
 - Vercel deployment configuration
 - Professional project directory structure
-- `.env.example` template for safe credential sharing
+- `.env.example` template for safe credential sharing (optional dev pre-seed vars only)
 
-### Changed
-- `habitStore.ts` aligned to live Supabase schema
-  - `completions` → `habit_completions`
-  - `date` → `completed_date`
-  - Profile stats read/written as JSONB
-  - Goals map `name` → `description`
-- SQL migration consolidated into `supabase/migrations/01_initial_schema.sql`
-- Test setup now mocks Supabase client
+### Historical (superseded — not current architecture)
+The repo previously described optional cloud PostgreSQL sync and related client wiring; **that path is not part of the current app**. If you see old notes mentioning them, treat them as archive-only.
 
 ### Removed
 - Split product docs merged into `PRODUCT.md`: `PRODUCT_VISION_CONCEPT.md`, `ENTRY_FLOW_FIRST_SESSION.md`, `MVP_WEB_SCREENS.md`, `RPG_COLLECTIBLE_PIXEL_APP.md`, `FIRST_SESSION_FLOW_10_15_MIN.md`, `DOCUMENTATION.md`

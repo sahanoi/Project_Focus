@@ -80,7 +80,7 @@ export default function SettingsPage() {
                     </div>
                     <div className="flex-1">
                         <p className="font-bold text-dark dark:text-night-text text-lg transition-colors">
-                            {user?.user_metadata?.username || user?.email?.split('@')[0] || 'Player'}
+                            {user?.user_metadata?.display_name || user?.email?.split('@')[0] || 'Player'}
                         </p>
                         <p className="text-sm text-dark-lighter dark:text-night-text-muted transition-colors">{user?.email}</p>
                     </div>
@@ -164,7 +164,7 @@ export default function SettingsPage() {
                 </h3>
 
                 <p className="text-sm text-dark-lighter dark:text-night-text-muted transition-colors">
-                    Your data syncs to the cloud via Supabase. Export regularly as an extra backup.
+                    Your habits and profile stay in this browser (localStorage). Export JSON regularly as a backup before clearing site data or switching devices.
                 </p>
 
                 <div className="grid grid-cols-2 gap-3">

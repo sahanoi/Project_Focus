@@ -153,7 +153,7 @@ Warm, slightly mythic, never ironic at your expense. Short sentences when you su
    - **Interaction:** user completes the **“drink water”** beat (tap / hold / confirm — implement one pattern consistently) → advance **only** after this.
 
 3. **Sign up + name**
-   - After the water beat: **account** (e.g. email + password via Supabase) and **display name** (“What should we call you?”).
+   - After the water beat: **account** (e.g. email + password via local auth) and **display name** (“What should we call you?”).
    - In this flow, **first auth** happens **after** the ritual, not before.
 
 4. **Main app**
@@ -408,7 +408,7 @@ The shipped UI is **web-first**: **Tailwind**, **glass / card** surfaces, **Luci
 ### Goals
 
 - **S.M.A.R.T. goal wizard** (`SmartGoalWizard.tsx`) ties targets to habits with deadlines and achievement state.
-- Stored as `Goal` entities synced with Supabase.
+- Stored as `Goal` entities in app state (persisted to localStorage).
 
 ### Routines
 
@@ -496,7 +496,7 @@ Track progress toward `goalValue` with `unit`; feeds **FOC** and dedicated chart
 
 ### 4.8 Social & community surface
 
-**Current state:** Leaderboard rows, rank movement affordances, and activity feed are **wired for demo content** to validate layout and motivation. **Production social** would require Supabase tables, privacy controls, and anti-cheat semantics for XP—out of scope for this document but anticipated by the UI.
+**Current state:** Leaderboard rows, rank movement affordances, and activity feed are **wired for demo content** to validate layout and motivation. **Production social** would require a backend / shared datastore, privacy controls, and anti-cheat semantics for XP—out of scope for this document but anticipated by the UI.
 
 ---
 
@@ -517,8 +517,7 @@ Layout: **`AppLayout`** + **`Sidebar`** + mobile **`BottomNav`**.
 
 ### Persistence
 
-- **localStorage** via Zustand `persist` (offline-first).
-- **Supabase** PostgreSQL for authenticated cloud sync: `habits`, `habit_completions`, `goals`, `routines` with **RLS**.
+- **localStorage** via Zustand `persist` (offline-first, source of truth in-browser).
 
 ### Auth
 
@@ -543,7 +542,7 @@ See **ARCHITECTURE.md** for the data-flow diagram.
 | Dashboard | `src/components/dashboard/FUTDashboard.tsx` |
 | Charts / analytics page | `src/components/stats/StatsPage.tsx` |
 | Auth & bootstrap | `src/App.tsx`, `src/contexts/AuthContext.tsx` |
-| Supabase client | `src/lib/supabase.ts` |
+| Local auth helpers | `src/lib/localAuth.ts`, `src/lib/authTypes.ts` |
 
 ### Component stories (UI dev)
 
