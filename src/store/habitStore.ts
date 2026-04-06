@@ -1,6 +1,6 @@
 import { create, type StateCreator } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
 import { v4 as uuidv4 } from 'uuid';
+import { fetchAppState, putAppState } from '../lib/api';
 import { Habit, Goal, TabView, StatsFilter, Routine, CharacterStats } from '../types';
 import { today } from '../utils/dateUtils';
 import { generateDummyHabits, generateDummyGoals, generateDummyRoutines } from '../data/dummyData';
@@ -67,7 +67,7 @@ interface HabitStore {
     clearAllData: () => void;
     loadDummyData: () => void;
 
-    /** No remote fetch; habits/goals/routines live in localStorage via persist. */
+    /** Load habits/goals/routines/stats from PostgreSQL API (cookie session). */
     fetchAllData: () => Promise<void>;
 
     // Internal
@@ -114,7 +114,26 @@ const habitStoreImpl: StateCreator<HabitStore, [], [], HabitStore> = (set, get) 
         levelUpData: null,
 
         fetchAllData: async () => {
-            set({ isLoading: false });
+            serverSyncSuppressed++;
+            set({ isLoading: true });
+            try {
+                const data = await fetchAppState();
+                set({
+                    habits: data.habits as Habit[],
+                    goals: data.goals as Goal[],
+                    routines: data.routines as Routine[],
+                    stats: data.stats as CharacterStats,
+                    achievements: data.achievements as UnlockedAchievement[],
+                });
+                get().recalculateStats();
+            } catch (e) {
+                console.error('fetchAllData failed', e);
+            } finally {
+                set({ isLoading: false });
+                queueMicrotask(() => {
+                    serverSyncSuppressed--;
+                });
+            }
         },
 
         // ==========================================
@@ -447,9 +466,12 @@ const habitStoreImpl: StateCreator<HabitStore, [], [], HabitStore> = (set, get) 
                 goals: [],
                 routines: [],
                 stats: { ...DEFAULT_STATS },
+                achievements: [],
                 selectedDate: today(),
                 activeTab: 'dashboard',
                 selectedHabitId: null,
+                detailViewHabitId: null,
+                showModal: false,
             });
         },
 
@@ -463,16 +485,44 @@ const habitStoreImpl: StateCreator<HabitStore, [], [], HabitStore> = (set, get) 
         },
 });
 
-export const useHabitStore = create<HabitStore>()(
-    persist(habitStoreImpl, {
-        name: 'focus-ftp-habits',
-        storage: createJSONStorage(() => localStorage),
-        partialize: (state) => ({
-            habits: state.habits,
-            goals: state.goals,
-            routines: state.routines,
-            stats: state.stats,
-            achievements: state.achievements,
-        }),
-    })
-);
+const STORE_SYNC_KEYS = ['habits', 'goals', 'routines', 'stats', 'achievements'] as const;
+
+let serverSyncSuppressed = 0;
+
+const DEBOUNCE_MS = 750;
+let syncTimer: ReturnType<typeof setTimeout> | null = null;
+
+function scheduleServerSync() {
+    if (import.meta.env.MODE === 'test') return;
+    if (syncTimer) clearTimeout(syncTimer);
+    syncTimer = setTimeout(async () => {
+        syncTimer = null;
+        if (serverSyncSuppressed > 0) return;
+        const { habits, goals, routines, stats, achievements } = useHabitStore.getState();
+        try {
+            await putAppState({ habits, goals, routines, stats, achievements });
+        } catch (e) {
+            console.error('Server sync failed', e);
+        }
+    }, DEBOUNCE_MS);
+}
+
+export const useHabitStore = create<HabitStore>()(habitStoreImpl);
+
+useHabitStore.subscribe((state, prev) => {
+    if (!prev) return;
+    const changed = STORE_SYNC_KEYS.some((k) => state[k] !== prev[k]);
+    if (changed) scheduleServerSync();
+});
+
+/** Use while clearing store after logout so debounced sync does not fire unauthenticated. */
+export function withServerSyncSuppressed(run: () => void): void {
+    serverSyncSuppressed++;
+    try {
+        run();
+    } finally {
+        queueMicrotask(() => {
+            serverSyncSuppressed--;
+        });
+    }
+}

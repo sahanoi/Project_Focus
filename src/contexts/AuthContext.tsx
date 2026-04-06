@@ -1,17 +1,37 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import type { Session, User } from '../lib/authTypes';
-import {
-    clearLocalSession,
-    ensureSeedLocalUser,
-    getLocalSession,
-    LOCAL_AUTH_CHANGED_EVENT,
-} from '../lib/localAuth';
+import { fetchMe, logoutApi, type AuthMeUser } from '../lib/api';
+import { useHabitStore, withServerSyncSuppressed } from '../store/habitStore';
+
+function meToUser(me: AuthMeUser): User {
+    return {
+        id: me.id,
+        email: me.email,
+        user_metadata: me.user_metadata,
+        created_at: me.created_at,
+        updated_at: me.updated_at,
+        aud: 'authenticated',
+        app_metadata: {},
+    };
+}
+
+function meToSession(me: AuthMeUser): Session {
+    const user = meToUser(me);
+    return {
+        access_token: 'cookie',
+        refresh_token: '',
+        token_type: 'bearer',
+        expires_at: Math.floor(Date.now() / 1000) + 86400,
+        user,
+    };
+}
 
 interface AuthContextType {
     session: Session | null;
     user: User | null;
     loading: boolean;
     signOut: () => Promise<void>;
+    refreshAuth: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -21,24 +41,44 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        ensureSeedLocalUser();
-
-        const applyLocal = () => {
-            const s = getLocalSession();
-            setSession(s);
-            setUser(s?.user ?? null);
-            setLoading(false);
-        };
-
-        applyLocal();
-        const onLocalAuth = () => applyLocal();
-        window.addEventListener(LOCAL_AUTH_CHANGED_EVENT, onLocalAuth);
-        return () => window.removeEventListener(LOCAL_AUTH_CHANGED_EVENT, onLocalAuth);
+    const applyMe = useCallback((me: AuthMeUser | null) => {
+        if (!me) {
+            setSession(null);
+            setUser(null);
+            return;
+        }
+        setUser(meToUser(me));
+        setSession(meToSession(me));
     }, []);
 
+    const refreshAuth = useCallback(async () => {
+        const { user: me } = await fetchMe();
+        applyMe(me);
+    }, [applyMe]);
+
+    useEffect(() => {
+        let cancelled = false;
+        (async () => {
+            try {
+                const { user: me } = await fetchMe();
+                if (!cancelled) applyMe(me);
+            } catch {
+                if (!cancelled) applyMe(null);
+            } finally {
+                if (!cancelled) setLoading(false);
+            }
+        })();
+        return () => {
+            cancelled = true;
+        };
+    }, [applyMe]);
+
     const signOut = async () => {
-        clearLocalSession();
+        await logoutApi();
+        withServerSyncSuppressed(() => {
+            useHabitStore.getState().clearAllData();
+        });
+        applyMe(null);
     };
 
     const value = {
@@ -46,6 +86,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         user,
         loading,
         signOut,
+        refreshAuth,
     };
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

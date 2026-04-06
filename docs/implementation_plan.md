@@ -1,5 +1,7 @@
 # Implementation Plan - Auth Color Upgrade (Golden Amber)
 
+> **Historical:** One-off styling pass. **Product narrative and onboarding** are governed by [UX_JOURNEY.md](./UX_JOURNEY.md). This file is kept for contrast/token audit context only.
+
 Refine the auth screen's "warm" layer to eliminate "pale/faded" tones. Update to a premium **Golden Amber** and **Warm Dark Coffee** palette as requested for better contrast and a more "premium RPG guild" aesthetic.
 
 ## 1. Style Refinement Strategy

@@ -1,5 +1,7 @@
 # Walkthrough - Auth Visibility & Aesthetic Fix
 
+> **Historical note:** Past bugfix walkthrough. **Product UX:** [UX_JOURNEY.md](./UX_JOURNEY.md).
+
 The user reported that typed credentials on the login screen were invisible. This was caused by a conflict between light-mode background styles and dark-mode text color overrides (white text on a white background). Additionally, the user requested a "mat, opak" (matte, opaque) color choice to match the app's cozy, warm aesthetic.
 
 ## Changes Made

@@ -1,4 +1,5 @@
 import { Hono } from 'hono';
+import { getCookie } from 'hono/cookie';
 import { eq } from 'drizzle-orm';
 import bcrypt from 'bcryptjs';
 import { z } from 'zod';
@@ -8,11 +9,11 @@ import {
     clearSessionCookie,
     createSessionForUser,
     deleteSessionById,
-    getCookie,
     resolveUserFromRequest,
     setSessionCookie,
     SESSION_COOKIE,
 } from '../auth/session.js';
+import { toPublicUser } from '../auth/userJson.js';
 
 const registerSchema = z.object({
     email: z.string().email(),
@@ -23,6 +24,12 @@ const registerSchema = z.object({
 const loginSchema = z.object({
     email: z.string().email(),
     password: z.string().min(1),
+});
+
+const profilePatchSchema = z.object({
+    display_name: z.string().max(120).optional(),
+    bio: z.string().max(2000).optional(),
+    avatar_seed: z.string().max(120).optional(),
 });
 
 export const authRoutes = new Hono();
@@ -56,6 +63,8 @@ authRoutes.post('/register', async (c) => {
             id: schema.users.id,
             email: schema.users.email,
             displayName: schema.users.displayName,
+            bio: schema.users.bio,
+            avatarSeed: schema.users.avatarSeed,
             createdAt: schema.users.createdAt,
             updatedAt: schema.users.updatedAt,
         });
@@ -63,15 +72,7 @@ authRoutes.post('/register', async (c) => {
     const sessionId = await createSessionForUser(user.id);
     setSessionCookie(c, sessionId);
 
-    return c.json({
-        user: {
-            id: user.id,
-            email: user.email,
-            user_metadata: { display_name: user.displayName ?? undefined },
-            created_at: user.createdAt.toISOString(),
-            updated_at: user.updatedAt.toISOString(),
-        },
-    });
+    return c.json({ user: toPublicUser(user) });
 });
 
 authRoutes.post('/login', async (c) => {
@@ -100,13 +101,15 @@ authRoutes.post('/login', async (c) => {
     setSessionCookie(c, sessionId);
 
     return c.json({
-        user: {
+        user: toPublicUser({
             id: user.id,
             email: user.email,
-            user_metadata: { display_name: user.displayName ?? undefined },
-            created_at: user.createdAt.toISOString(),
-            updated_at: user.updatedAt.toISOString(),
-        },
+            displayName: user.displayName,
+            bio: user.bio,
+            avatarSeed: user.avatarSeed,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt,
+        }),
     });
 });
 
@@ -125,12 +128,62 @@ authRoutes.get('/me', async (c) => {
         return c.json({ user: null }, 200);
     }
     return c.json({
-        user: {
+        user: toPublicUser({
             id: user.id,
             email: user.email,
-            user_metadata: { display_name: user.displayName ?? undefined },
-            created_at: user.createdAt.toISOString(),
-            updated_at: user.updatedAt.toISOString(),
-        },
+            displayName: user.displayName,
+            bio: user.bio,
+            avatarSeed: user.avatarSeed,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt,
+        }),
     });
+});
+
+authRoutes.patch('/profile', async (c) => {
+    const row = await resolveUserFromRequest(c);
+    if (!row) {
+        return c.json({ error: 'Unauthorized' }, 401);
+    }
+    let body: z.infer<typeof profilePatchSchema>;
+    try {
+        body = profilePatchSchema.parse(await c.req.json());
+    } catch {
+        return c.json({ error: 'Invalid body' }, 400);
+    }
+    if (
+        body.display_name === undefined &&
+        body.bio === undefined &&
+        body.avatar_seed === undefined
+    ) {
+        return c.json({ error: 'No fields to update' }, 400);
+    }
+
+    const updates: {
+        updatedAt: Date;
+        displayName?: string | null;
+        bio?: string | null;
+        avatarSeed?: string | null;
+    } = {
+        updatedAt: new Date(),
+    };
+    if (body.display_name !== undefined) updates.displayName = body.display_name.trim() || null;
+    if (body.bio !== undefined) updates.bio = body.bio.trim() || null;
+    if (body.avatar_seed !== undefined) updates.avatarSeed = body.avatar_seed.trim() || null;
+
+    const [updated] = await db
+        .update(schema.users)
+        .set(updates)
+        .where(eq(schema.users.id, row.id))
+        .returning({
+            id: schema.users.id,
+            email: schema.users.email,
+            displayName: schema.users.displayName,
+            bio: schema.users.bio,
+            avatarSeed: schema.users.avatarSeed,
+            createdAt: schema.users.createdAt,
+            updatedAt: schema.users.updatedAt,
+        });
+
+    return c.json({ user: toPublicUser(updated) });
 });

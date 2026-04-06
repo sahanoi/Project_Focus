@@ -1,10 +1,9 @@
+import './env.js';
 import { migrate } from 'drizzle-orm/node-postgres/migrator';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import pg from 'pg';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 async function main() {
     const url = process.env.DATABASE_URL;

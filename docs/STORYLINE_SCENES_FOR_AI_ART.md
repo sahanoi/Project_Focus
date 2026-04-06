@@ -2,7 +2,7 @@
 
 **Purpose:** Hand these blocks to tools such as **Nano Banana**, Midjourney, DALL·E, Ideogram, or FLUX. Adjust wording to each model’s style (some prefer short prompts, others love comma lists).
 
-**Companion:** [PRODUCT.md](./PRODUCT.md) (§1 concept, §2 first-session order, §3 MVP screens).
+**Companion:** [PRODUCT.md](./PRODUCT.md) (§1 concept, §2 journey flow, §3 MVP screens). **User journey & beats (isekai → Han → 3 / 21 days):** [UX_JOURNEY.md](./UX_JOURNEY.md).
 
 ---
 
@@ -23,12 +23,32 @@
 
 **World lock:**
 
-> Cozy RPG guild hall meets morning wellness: warm candlelight and dawn sky through tall windows, **purple and amber accents**, stone and wood, **not medieval grimdark**, hopeful and quiet.
+> Cozy **adventurer** inn / guild: warm candlelight, dawn through windows, stone and wood, **hopeful and quiet** — **not** grimdark. Accents may use warm gold, sage, or soft violet sparingly; align final palette with [COLOR_SCHEMA.md](./COLOR_SCHEMA.md) and product art direction.
 
 **Style lock (pick one pipeline and stick to it):**
 
 - *Illustrated:* `digital illustration, soft brush, Studio Ghibli calm, not anime exaggerated`  
 - *Pixel:* `pixel art, 64px character feel, dithered shadows, cozy RPG`  
+
+---
+
+## Scene 0 — Isekai cold open (rainy megapolis → truck-kun)
+
+**Story beat:** Real-world crossing on a **rainy day** in a **megapolis**; **truck-kun** impact — **isekai trope**, not gore (implied transition, tasteful cut).
+
+**Composition:** Wide street, rain, neon or wet asphalt reflections, lone figure mid-crossing; **motion or still** keyframe before the cut to Scene A/Han.
+
+**Mood:** Ordinary → sudden → **cut to safety** (Han room).
+
+**Prompt (illustrated):**
+
+```text
+Rainy evening megapolis crosswalk, cinematic wide shot, one traveler with backpack mid-street, wet reflections, soft bokeh city lights, dramatic but not violent, implied sudden vehicle silhouette motion blur, no blood, no text, cozy anime film still not horror
+```
+
+**Negatives:** gore, horror, explicit injury, text overlays.
+
+**Handoff:** Next shot is **Han bedroom** (Scene A or dedicated “wake in inn” beat) with **water glass on table**.
 
 ---
 
@@ -180,6 +200,7 @@ Generate **three images** with same pose, different cloaks:
 
 | ID | Scene | Primary use |
 |----|--------|-------------|
+| 0 | Isekai cold open | First-launch cinematic before Han |
 | A | Threshold | Loading / transition |
 | B | Welcome | Onboarding screen 1 |
 | C | Routine frame | Routine introduction |

@@ -173,31 +173,6 @@ export default function OnboardingWizard({ onComplete }: OnboardingProps) {
                         ))}
                     </div>
 
-                    <div className="relative flex items-center gap-3">
-                        <div className="flex-1 h-px bg-dark-border dark:bg-night-border" />
-                        <span className="text-xs text-dark-lighter dark:text-night-text-muted font-medium">or add more</span>
-                        <div className="flex-1 h-px bg-dark-border dark:bg-night-border" />
-                    </div>
-
-                    {/* Selection Counter */}
-                    <div className="flex items-center justify-between px-4 py-3 rounded-xl bg-white dark:bg-night-surface border border-dark-border dark:border-night-border">
-                        <span className="text-sm text-dark-lighter dark:text-night-text-muted font-medium">Selected</span>
-                        <div className="flex items-center gap-1">
-                            {[1, 2, 3, 4, 5].map(i => (
-                                <div
-                                    key={i}
-                                    className={`w-3 h-3 rounded-full transition-all duration-300 ${i <= selectedTemplates.length
-                                        ? 'bg-primary scale-110'
-                                        : 'bg-dark-border dark:bg-night-border'
-                                        }`}
-                                />
-                            ))}
-                            <span className="text-sm text-dark dark:text-night-text font-bold ml-2">
-                                {selectedTemplates.length}/5
-                            </span>
-                        </div>
-                    </div>
-
                     {/* Categories */}
                     <div className="space-y-3">
                         {HABIT_CATEGORIES.map(cat => {
@@ -350,7 +325,7 @@ export default function OnboardingWizard({ onComplete }: OnboardingProps) {
                         onClick={() => setStep(3)}
                         className="w-full py-4 rounded-xl bg-primary hover:bg-primary-dark text-white font-bold text-lg flex items-center justify-center gap-2 transition-colors"
                     >
-                        Got it, let\u2019s go
+                        Got it, lets go!
                         <ChevronRight size={20} />
                     </motion.button>
                 </motion.div>

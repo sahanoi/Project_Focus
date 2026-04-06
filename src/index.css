@@ -4,6 +4,23 @@
 
 @layer utilities {
 
+  /* Stitch / Hearth — parchment + sigil (warm paper, pressed button) */
+  .parchment-texture {
+    background-color: #fdf6e3;
+    background-image: radial-gradient(circle at 2px 2px, rgba(141, 75, 0, 0.05) 1px, transparent 0);
+    background-size: 24px 24px;
+  }
+
+  .sigil-shadow {
+    box-shadow:
+      inset 0 2px 4px rgba(255, 255, 255, 0.2),
+      0 4px 12px rgba(141, 75, 0, 0.2);
+  }
+
+  .hearth-fab-shadow {
+    box-shadow: 0 12px 32px rgba(37, 25, 13, 0.08);
+  }
+
   /* Pixel-art assets: avoid blurry browser smoothing when scaled */
   .pixel-art-image {
     image-rendering: pixelated;
@@ -34,12 +51,12 @@
    ========================================== */
 :root,
 .theme-pastel-violet {
-  /* Primary tone controls (edit these to retheme quickly) */
-  --tone-primary: 196 181 253;
-  --tone-primary-dark: 167 139 250;
-  --tone-primary-light: 221 214 254;
-  --tone-success: 110 231 183;
-  --tone-success-dark: 16 185 129;
+  /* Hearth / cartographer desk — ember primary, sage success */
+  --tone-primary: 141 75 0;
+  --tone-primary-dark: 113 58 0;
+  --tone-primary-light: 196 145 95;
+  --tone-success: 69 100 94;
+  --tone-success-dark: 52 78 72;
   --tone-warning: 252 211 77;
   --tone-warning-dark: 245 158 11;
   --tone-danger: 252 165 165;
@@ -94,17 +111,16 @@
 }
 
 body {
-  font-family: 'Nunito', 'Inter', system-ui, -apple-system, sans-serif;
-  background-color: #0c0a09;
-  color: #2D2640;
-  /* Deep plum text */
+  font-family: 'Manrope', 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: #fff8f4;
+  color: #25190d;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 .dark body,
 body.dark {
-  background-color: #0c0a09;
+  background-color: rgb(var(--tone-night-bg));
   background-image: none;
   color: rgb(var(--tone-night-text));
 }
@@ -115,24 +131,24 @@ body.dark {
   min-height: 100vh;
 }
 
-/* Auth inputs: SOLID BLACK for maximum visibility. */
+/* Auth inputs — warm on-surface text on fresh paper */
 .auth-form-input {
-  color: #000000 !important;
-  caret-color: #000000 !important;
+  color: #25190d !important;
+  caret-color: #25190d !important;
 }
 
 .auth-form-input::placeholder {
-  color: #000000 !important;
-  opacity: 0.9;
+  color: #887364 !important;
+  opacity: 0.85;
 }
 
 .dark .auth-form-input {
-  color: #000000 !important;
-  caret-color: #000000 !important;
+  color: #ffeedf !important;
+  caret-color: #ffeedf !important;
 }
 
 .dark .auth-form-input::placeholder {
-  color: #000000 !important;
+  color: #c4b5a8 !important;
   opacity: 0.9;
 }
 
@@ -140,9 +156,9 @@ body.dark {
 .auth-form-input:-webkit-autofill:hover,
 .auth-form-input:-webkit-autofill:focus,
 .auth-form-input:-webkit-autofill:active {
-  -webkit-text-fill-color: #000000 !important;
-  -webkit-box-shadow: 0 0 0 1000px #FFF9F3 inset !important; /* Match warm-field */
-  caret-color: #000000 !important;
+  -webkit-text-fill-color: #25190d !important;
+  -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+  caret-color: #25190d !important;
   transition: background-color 5000s ease-in-out 0s;
 }
 
@@ -150,9 +166,9 @@ body.dark {
 .dark .auth-form-input:-webkit-autofill:hover,
 .dark .auth-form-input:-webkit-autofill:focus,
 .dark .auth-form-input:-webkit-autofill:active {
-  -webkit-text-fill-color: #000000 !important;
-  -webkit-box-shadow: 0 0 0 1000px #FFFFFF inset !important; /* White field contrast */
-  caret-color: #000000 !important;
+  -webkit-text-fill-color: #ffeedf !important;
+  -webkit-box-shadow: 0 0 0 1000px #2a2218 inset !important;
+  caret-color: #ffeedf !important;
   transition: background-color 5000s ease-in-out 0s;
 }
 
@@ -162,28 +178,28 @@ body.dark {
 
 @layer components {
 
-  /* ---- Cards ---- */
+  /* ---- Cards — tonal layering, no harsh 1px “template” outlines ---- */
   .card {
-    @apply bg-[#FAF7FE] dark:bg-night-surface rounded-3xl border border-dark-border dark:border-night-border p-5;
+    @apply bg-hearth-surface-highest/80 dark:bg-night-surface rounded-2xl p-5;
     box-shadow: none;
   }
 
   .card-flat {
-    @apply bg-[#FAF7FE] dark:bg-night-surface rounded-2xl border border-dark-border dark:border-night-border p-4;
+    @apply bg-hearth-surface-low dark:bg-night-surface rounded-xl p-4;
   }
 
   .chart-card {
-    @apply bg-[#FAF7FE] dark:bg-night-surface rounded-3xl border border-dark-border dark:border-night-border p-6;
+    @apply bg-hearth-surface-highest/90 dark:bg-night-surface rounded-2xl p-6;
     box-shadow: none;
   }
 
-  /* ---- Buttons ---- */
+  /* ---- Buttons (sigils) ---- */
   .btn-primary {
-    @apply bg-primary text-white font-semibold px-5 py-3 rounded-2xl hover:bg-primary-dark transition-colors duration-200;
+    @apply bg-primary text-white font-semibold px-5 py-3 rounded-xl sigil-shadow hover:bg-primary-dark transition-colors duration-200 min-h-[48px];
   }
 
   .btn-secondary {
-    @apply bg-[#FAF7FE] dark:bg-night-bg text-dark dark:text-night-text font-medium px-5 py-3 rounded-2xl border border-dark-border dark:border-night-border hover:bg-surface-dark dark:hover:bg-primary/20 transition-colors duration-200;
+    @apply bg-hearth-secondary-container text-hearth-on-background/90 dark:bg-night-bg dark:text-night-text font-medium px-5 py-3 rounded-xl hover:bg-hearth-surface-high dark:hover:bg-primary/15 transition-colors duration-200 min-h-[48px];
   }
 
   .btn-danger {
@@ -198,13 +214,13 @@ body.dark {
     @apply p-2 rounded-2xl hover:bg-surface-dark dark:hover:bg-night-bg text-primary-dark dark:text-primary-light transition-colors duration-200;
   }
 
-  /* ---- Inputs ---- */
+  /* ---- Inputs — paper bed, focus ring not box border ---- */
   .input-field {
-    @apply w-full px-4 py-3 rounded-2xl border border-dark-border dark:border-night-border bg-[#FAF7FE] dark:bg-night-bg text-dark dark:text-night-text font-medium placeholder-dark-lighter/50 dark:placeholder-night-text-muted/50 focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none transition-all;
+    @apply w-full px-4 py-3 rounded-xl bg-white dark:bg-night-bg text-dark dark:text-night-text font-medium placeholder-dark-lighter/50 dark:placeholder-night-text-muted/50 border-0 focus:ring-2 focus:ring-primary/25 focus:outline-none transition-all shadow-[inset_0_0_0_1px_rgba(219,194,176,0.35)] dark:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)];
   }
 
   .select-field {
-    @apply w-full px-4 py-3 rounded-2xl border border-dark-border dark:border-night-border bg-[#FAF7FE] dark:bg-night-bg text-dark dark:text-night-text font-medium focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none transition-all appearance-none cursor-pointer;
+    @apply w-full px-4 py-3 rounded-xl bg-white dark:bg-night-bg text-dark dark:text-night-text font-medium focus:ring-2 focus:ring-primary/25 focus:outline-none transition-all appearance-none cursor-pointer shadow-[inset_0_0_0_1px_rgba(219,194,176,0.35)] dark:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)];
   }
 
   /* ---- Badges ---- */
@@ -240,12 +256,12 @@ body.dark {
 
   /* ---- Modal ---- */
   .modal-overlay {
-    @apply fixed inset-0 bg-dark/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 transition-opacity duration-300;
+    @apply fixed inset-0 bg-[#25190d]/35 backdrop-blur-md z-50 flex items-center justify-center p-4 transition-opacity duration-300;
   }
 
   .modal-content {
-    @apply bg-[#FAF7FE] dark:bg-night-surface rounded-[2rem] border border-dark-border dark:border-night-border w-full max-w-lg max-h-[90vh] overflow-y-auto;
-    box-shadow: none;
+    @apply bg-hearth-surface-bright dark:bg-night-surface rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto;
+    box-shadow: 0 20px 50px rgba(37, 25, 13, 0.12);
   }
 
   .dark .modal-content {
@@ -261,16 +277,16 @@ body.dark {
     @apply inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-primary/10 text-primary-dark font-bold text-sm border border-primary/20;
   }
 
-  /* ---- Premium Agency Senior Developer Patterns ---- */
+  /* ---- Editorial “map desk” glass ---- */
   .luxury-glass {
-    background: #FAF7FE;
-    border: 1px solid rgba(212, 200, 232, 0.6);
-    border-radius: 1.5rem;
+    background: rgba(255, 241, 230, 0.85);
+    border-radius: 1rem;
+    box-shadow: 0 12px 32px rgba(37, 25, 13, 0.06);
   }
 
   .dark .luxury-glass {
-    background: rgb(var(--tone-night-surface));
-    border: 1px solid rgb(var(--tone-night-text-muted) / 0.18);
+    background: rgb(var(--tone-night-surface) / 0.92);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
   }
 }
 

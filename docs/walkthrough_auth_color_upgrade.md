@@ -1,5 +1,7 @@
 # Walkthrough - Auth Color Schema Upgrade (Golden Amber)
 
+> **Historical note:** Documents a past auth palette tweak. **Canonical UX:** [UX_JOURNEY.md](./UX_JOURNEY.md).
+
 The user reported that the auth input colors were "too pale/faded" and suggested a golden/amber tone. We have upgraded the "warm" layer of the application to a premium **Golden Amber** and **Dark Coffee** palette, aligning with the project's "RPG Guild Hall" aesthetic and improving text visibility.
 
 ## Changes Made

@@ -1,13 +1,13 @@
 # Focus FTP — Product specification (merged)
 
-This file replaces **PRODUCT_VISION_CONCEPT.md**, **ENTRY_FLOW_FIRST_SESSION.md**, **MVP_WEB_SCREENS.md**, and **RPG_COLLECTIBLE_PIXEL_APP.md**. For stack layout see [ARCHITECTURE.md](./ARCHITECTURE.md). For deploy commands see [DEPLOYMENT.md](./DEPLOYMENT.md).
+This file replaces **PRODUCT_VISION_CONCEPT.md**, **ENTRY_FLOW_FIRST_SESSION.md**, **MVP_WEB_SCREENS.md**, and **RPG_COLLECTIBLE_PIXEL_APP.md**. For stack layout see [ARCHITECTURE.md](./ARCHITECTURE.md). For deploy commands see [DEPLOYMENT.md](./DEPLOYMENT.md). **Onboarding order, day-gating (3 / 21), and free-roam:** canonical spec is **[UX_JOURNEY.md](./UX_JOURNEY.md)**.
 
 ---
 
 ## Table of contents
 
 1. [Product concept (vibes)](#1-product-concept-vibes-only)
-2. [First-session entry flow (authoritative)](#2-first-session-entry-flow-authoritative)
+2. [First-session & journey flow (authoritative)](#2-first-session--journey-flow-authoritative)
 3. [MVP web screen inventory](#3-mvp-web-screen-inventory)
 4. [RPG systems, implementation map, and visual assets](#4-rpg-systems-implementation-map-and-visual-assets)
 5. [Dashboard UX goals](#5-dashboard-ux-goals)
@@ -107,7 +107,7 @@ The opening **Morning Routine → Drink Water** teaches that grammar without a l
 - **Spreadsheet energy** — No sense that logging is bookkeeping for a boss.  
 - **Feature tourism** — No obligation to visit six tabs to “finish setup.”
 
-The first screen after account creation should feel like **stepping into a quiet guild hall**, not **filing taxes**.
+The first screen **after sign-up** (when the story does not run pre-auth) should feel like **stepping into a quiet guild hall**, not **filing taxes**. If the team ships **isekai → Han → water** before account (see [UX_JOURNEY.md](./UX_JOURNEY.md)), treat that sequence as the emotional “guild hall” beat instead.
 
 ---
 
@@ -125,83 +125,64 @@ Warm, slightly mythic, never ironic at your expense. Short sentences when you su
 
 *This concept can drift from current build details on purpose; it is the direction we want players to remember when they close their eyes and think about why they opened the app.*
 
-**Also in this document:** [§2 First-session entry flow](#2-first-session-entry-flow-authoritative) (build order), [§3 MVP web screen inventory](#3-mvp-web-screen-inventory), [STORYLINE_SCENES_FOR_AI_ART.md](./STORYLINE_SCENES_FOR_AI_ART.md) (AI art prompts).
+**Also in this document:** [§2 Journey flow](#2-first-session--journey-flow-authoritative) (build order), [§3 MVP web screen inventory](#3-mvp-web-screen-inventory), [STORYLINE_SCENES_FOR_AI_ART.md](./STORYLINE_SCENES_FOR_AI_ART.md) (AI art prompts). **Full day-gating:** [UX_JOURNEY.md](./UX_JOURNEY.md).
 
 ---
 
-## 2. First-session entry flow (authoritative)
+## 2. First-session & journey flow (authoritative)
 
-**Purpose:** Single source of truth for the path from **cold start** to **daily use**: splash → story/ritual (water) → account creation → main app. Aligns implementation (routes, state, assets) with narrative intent.
+**Canonical detail:** **[UX_JOURNEY.md](./UX_JOURNEY.md)** — isekai (rainy megapolis → truck-kun → **Maceracı Han**), diegetic dialogue, **Days 1–3** water focus + Innkeeper/Garden browse, **Days 4–21** seven micro-habits × three days, **Day 22+** freedom; **water** stays a **baseline routine** that **strengthens over time**; **custom habits** code-ready, **premium/post-journey** in product.
 
-**Related:** [§1 Product concept](#1-product-concept-vibes-only), [§3 MVP screens](#3-mvp-web-screen-inventory).
-
----
-
-## Screen order
-
-1. **Splash / “Begin”**
-   - Short **animation or video** when available.
-   - **Until then:** static **placeholder PNG** (full-screen) in `src/assets/` (or equivalent).
-   - Single primary action: **Begin** → next step.
-
-2. **Awakening scene (isekai tavern, morning)**
-   - Visual: waking in a tavern room; **glass of water on the table** near the bed.
-   - **Copy / UI overlay** (same screen or a light sub-step):
-     - Introduce **habit tracking** in-world (gentle framing, not a settings manual).
-     - **Leveling:** the user levels by sticking to habits.
-     - **First gate:** **3 consecutive days** of completing the **drink water** habit to **level up** and **unlock further features** (which features unlock is specified in product/gating docs, not repeated here).
-   - **Interaction:** user completes the **“drink water”** beat (tap / hold / confirm — implement one pattern consistently) → advance **only** after this.
-
-3. **Sign up + name**
-   - After the water beat: **account** (e.g. email + password via local auth) and **display name** (“What should we call you?”).
-   - In this flow, **first auth** happens **after** the ritual, not before.
-
-4. **Main app**
-   - Navigate to **dashboard**; existing **OnboardingWizard** and habit logic apply as needed.
-   - **Coordination:** If this first session already teaches water + the 3-day gate, avoid duplicating the same tutorial in the wizard—either skip redundant steps or restrict the wizard to other habits.
+**Purpose (this section):** Summary for implementers. If anything conflicts, **[UX_JOURNEY.md](./UX_JOURNEY.md)** wins.
 
 ---
 
-## Asset mapping: `scene1.png` vs `scene1.1.png`
+### Screen / beat order (first launch)
 
-Use these roles in code comments, imports, and design handoff so filenames stay meaningful.
+1. **Splash / Begin** — Motion when ready; else full-screen placeholder in `src/assets/`.
+2. **Isekai cinematic** — Rainy megapolis, crossing, **truck-kun** → **Han room** (see STORYLINE §Isekai).
+3. **Diegetic handoff** — “Video” ends; app **talks to** the adventurer; first quest = **water on the table**; real-life bridge (wake → drink).
+4. **Sign up + name** — Cookie session auth as today; **story before habit buffet** is the intent.
+5. **Main app** — Gating per **UX_JOURNEY**; avoid duplicate water tutorial in **OnboardingWizard**.
+
+---
+
+### Asset mapping: `scene1.png` vs `scene1.1.png`
 
 | Asset | Role | Suggested visual |
 |--------|------|-------------------|
-| **`scene1.png`** | **Establishing beat** (after Begin) | Wider shot: morning in the isekai tavern room, bed, table, **water glass visible** — establishes “you are here.” |
-| **`scene1.1.png`** | **Ritual / focus beat** | Closer shot: **glass on the table**; natural place for the “Drink water” card, leveling copy, and **tap to drink** interaction. |
+| **`scene1.png`** | Han establishing | Wide: room, bed, table, **water glass**. |
+| **`scene1.1.png`** | Ritual focus | Close: **glass**; drink CTA. |
 
-**Other assets (e.g. `login.png`, `signup.png`):** Use for distinct auth art if the sign-up / sign-in screens are illustrated separately; not required for the first-time path above if auth is a single combined screen after the ritual.
-
----
-
-## Placeholders until motion exists
-
-- **Splash:** placeholder PNG + **Begin** CTA.
-- **Tavern / glass:** `scene1.png` / `scene1.1.png` (or one combined image if the team collapses beats) until replaced by video, Lottie, or other motion.
-- When motion ships, document **format** here (e.g. MP4 + poster frame, Lottie path) and **fallback** behavior (static frame on low-end devices).
+Add **city / rain / truck** as separate beats per [STORYLINE_SCENES_FOR_AI_ART.md](./STORYLINE_SCENES_FOR_AI_ART.md).
 
 ---
 
-## Open implementation decisions
+### Placeholders until motion exists
+
+- Static PNGs + Begin; document MP4/Lottie + fallback when added.
+
+---
+
+### Open implementation decisions
 
 | Topic | Decision needed |
-|--------|------------------|
-| **OnboardingWizard** | How much runs after this flow for brand-new users; avoid repeating water + 3-day tutorial. |
-| **“3 consecutive days”** | Calendar day vs rolling window; timezone; what counts as “complete” for water (one check-in vs quantity). |
-| **Returning users** | This doc describes **first session**; sign-in for returners can reuse art (`login.png`) or a shorter path without the full ritual. |
+|--------|-----------------|
+| **OnboardingWizard** | Skip/shorten when UX_JOURNEY path already seeded water. |
+| **3-day / 21-day** | Calendar vs rolling; timezone; server `journey_day` flags. |
+| **Returning users** | Abbreviated path if isekai already completed. |
 
 ---
 
-## One-line summary (engineering)
+### One-line summary (engineering)
 
-`Begin` → splash placeholder (future: motion) → **`scene1`** (establish tavern + water) → **`scene1.1`** (focus glass + habits / leveling / 3-day gate copy) → **drink interaction** → **sign up + name** → **dashboard** (then existing authenticated app).
+`Begin` → **isekai** (city → truck → Han) → **diegetic water quest** → **auth** → **gated app** per [UX_JOURNEY.md](./UX_JOURNEY.md).
 
 ---
 
 ## 3. MVP web screen inventory
 
-**Purpose:** P0/P1 **screens/views** checklist. **Canonical first-session order** (splash → ritual → sign up + name → app): [§2](#2-first-session-entry-flow-authoritative). Narrative intent: [§1](#1-product-concept-vibes-only).
+**Purpose:** P0/P1 **screens/views** checklist. **Canonical journey order:** [§2](#2-first-session--journey-flow-authoritative) and [UX_JOURNEY.md](./UX_JOURNEY.md). Narrative intent: [§1](#1-product-concept-vibes-only).
 
 This is **product/UI scope**, not a component tree. Mark **P0** = must ship for MVP, **P1** = next slice.
 
@@ -219,6 +200,8 @@ This is **product/UI scope**, not a component tree. Mark **P0** = must ship for 
 ---
 
 ## P0 — First-session storyline (replaces habit-pick buffet for MVP direction)
+
+**Scope:** Rows below are **post-account** story beats (welcome, routine, cloak, etc.). **Pre-auth** isekai / truck-kun / Han awakening / first water are defined in [§2](#2-first-session--journey-flow-authoritative) and [UX_JOURNEY.md](./UX_JOURNEY.md).
 
 | Screen | Job | Notes |
 |--------|-----|--------|
@@ -297,7 +280,7 @@ This is **product/UI scope**, not a component tree. Mark **P0** = must ship for 
 
 ---
 
-*Traceability below is narrative pacing; **build order** is always §2.*
+*Traceability below is narrative pacing; **build order** is [UX_JOURNEY.md](./UX_JOURNEY.md) + §2.*
 
 ## Traceability
 
@@ -408,7 +391,7 @@ The shipped UI is **web-first**: **Tailwind**, **glass / card** surfaces, **Luci
 ### Goals
 
 - **S.M.A.R.T. goal wizard** (`SmartGoalWizard.tsx`) ties targets to habits with deadlines and achievement state.
-- Stored as `Goal` entities in app state (persisted to localStorage).
+- Stored as `Goal` entities in app state and synced with **`GET/PUT /api/state`** (PostgreSQL via the API); see [ARCHITECTURE.md](./ARCHITECTURE.md).
 
 ### Routines
 
@@ -426,7 +409,7 @@ Orchestrated by **`FUTDashboard.tsx`**: date navigation, quick log bar, daily mi
 ### Onboarding
 
 - **`OnboardingWizard.tsx`**: name + template habits.
-- **`missions.ts`**: **7-day mission chain** aligned to account age (`getOnboardingDay`) with scripted objectives (first completion, streaks, community visit, first goal, level 2).
+- **`missions.ts`**: **7-day mission chain** (gamification / XP lumps), aligned to account age (`getOnboardingDay`). This is **not** the same as **calendar journey gating** in [UX_JOURNEY.md](./UX_JOURNEY.md) (water Days 1–3, micro Days 4–21, free Day 22+)—those layers should stay **conceptually separate** in product and engineering.
 
 ### Profile, journey, achievements
 
@@ -517,11 +500,11 @@ Layout: **`AppLayout`** + **`Sidebar`** + mobile **`BottomNav`**.
 
 ### Persistence
 
-- **localStorage** via Zustand `persist` (offline-first, source of truth in-browser).
+- **Server:** `GET/PUT /api/state` with PostgreSQL as system of record (debounced sync from `habitStore`). Legacy notes may mention localStorage-only; **current architecture** is in [ARCHITECTURE.md](./ARCHITECTURE.md).
 
 ### Auth
 
-**`AuthContext`** + `Auth.tsx`: email/password; gated tree in `App.tsx` (load → onboarding if empty → main app).
+**`AuthContext`** + `Auth.tsx`: email/password, HTTP-only session cookie; gated tree in `App.tsx` (load → onboarding if empty → main app).
 
 See **ARCHITECTURE.md** for the data-flow diagram.
 
@@ -641,7 +624,7 @@ These goals guide every refinement pass on `FUTDashboard.tsx` and its widget com
 | 1 | **Primary CTA is obvious** | `LogEntryBar` anchored at top header; "Add Habit" button visible in empty state |
 | 2 | **Stats hierarchy is clear** | Daily Mission → Goals → Schedule (habits) → Sidebar widgets (weekly/streak/radar) |
 | 3 | **Mobile-first responsive** | XP bar visible at all sizes; sidebar collapses on `< lg`; bottom-nav on mobile |
-| 4 | **Premium dusk-purple aesthetic** | `luxury-glass` on all cards, consistent `night-*` palette, `primary` accent |
+| 4 | **Cozy adventurer aesthetic** | Warm surfaces + story-forward art; tokens in `index.css` / Tailwind — see [COLOR_SCHEMA.md](./COLOR_SCHEMA.md) |
 | 5 | **Graceful empty states** | Every data-less section shows a helpful prompt + action button |
 
 **Component inventory (main dashboard surface):**

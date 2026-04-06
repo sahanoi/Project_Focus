@@ -22,7 +22,7 @@ export default function BottomNav({ activeTab, setActiveTab }: BottomNavProps) {
     ];
 
     return (
-        <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-surface dark:bg-night-surface border-t border-dark-border dark:border-night-border z-40 transition-colors pb-[env(safe-area-inset-bottom)]">
+        <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-hearth-surface-highest/95 dark:bg-night-surface z-40 transition-colors pb-[env(safe-area-inset-bottom)] hearth-fab-shadow">
             <div className="flex justify-around items-center px-1 py-1 h-[72px] mb-2">
                 {navItems.map((item) => {
                     const Icon = item.icon;

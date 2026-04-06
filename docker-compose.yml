@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: focus_ftp
+      POSTGRES_PASSWORD: focus_ftp_local
+      POSTGRES_DB: focus_ftp
+    volumes:
+      - focus_ftp_pgdata:/var/lib/postgresql/data
+
+volumes:
+  focus_ftp_pgdata:

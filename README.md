@@ -1,77 +1,61 @@
 # Project Focus (Habit Tracker)
 
-A modern, feature-rich habit tracking application built with React, TypeScript, and Vite. Designed to help users track their daily habits, visualize progress, and maintain consistency through gamification elements.
+A **cozy adventurer**–themed habit app: RPG-style progression, story-first onboarding (see **[docs/UX_JOURNEY.md](./docs/UX_JOURNEY.md)**), and real habit logging. Frontend is **React + TypeScript + Vite**; backend is **Hono + PostgreSQL + Drizzle** in `server/`.
 
-## 🚀 Features
+## Features
 
--   **Habit Tracking**: Create, edit, and delete daily habits.
--   **Progress Visualization**: view your progress with interactive charts using Recharts.
--   **Gamification**: Earn levels and badges as you complete habits.
--   **Responsive Design**: Fully responsive interface built with Tailwind CSS.
--   **Local Storage**: Data is persisted locally using Zustand.
+- **Habit tracking** — Create, edit, archive habits; schedules include non-daily cadences.
+- **Progress & gamification** — XP, levels, character stats, achievements, collectibles.
+- **Story & journey** — Canonical UX: isekai intro → water focus → guided 21-day micro-habits → free roam ([UX_JOURNEY.md](./docs/UX_JOURNEY.md)).
+- **Charts** — Recharts on the Statistics tab (tier-gated where applicable).
+- **Responsive UI** — Tailwind; mobile bottom nav + desktop sidebar.
+- **Auth & sync** — Email/password, HTTP-only session cookie; client state syncs to **`/api/state`**.
 
-## 🛠 Tech Stack
+## Tech stack
 
--   **Frontend Framework**: [React](https://react.dev/)
--   **Build Tool**: [Vite](https://vitejs.dev/)
--   **Language**: [TypeScript](https://www.typescriptlang.org/)
--   **Styling**: [Tailwind CSS](https://tailwindcss.com/)
--   **State Management**: [Zustand](https://github.com/pmndrs/zustand)
--   **Charts**: [Recharts](https://recharts.org/)
--   **Icons**: [Lucide React](https://lucide.dev/)
--   **Testing**: [Vitest](https://vitest.dev/) & [React Testing Library](https://testing-library.com/)
+| Layer | Technology |
+|--------|------------|
+| Frontend | React 18, TypeScript, Vite 5 |
+| Styling | Tailwind CSS 3 |
+| State | Zustand (debounced sync to API) |
+| API | Hono (`server/`) |
+| Database | PostgreSQL, Drizzle ORM |
+| Tests | Vitest, React Testing Library |
 
-## 📦 Getting Started
+## Documentation
 
-Follow these steps to set up the project locally.
+| Doc | Purpose |
+|-----|---------|
+| [docs/UX_JOURNEY.md](./docs/UX_JOURNEY.md) | **Authoritative** onboarding & day-gating |
+| [docs/STITCH_PROMPTS_MASTER.md](./docs/STITCH_PROMPTS_MASTER.md) | **Google Stitch** prompts for every major UI surface |
+| [docs/PRODUCT.md](./docs/PRODUCT.md) | Vision, screens, RPG feature map |
+| [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) | Stack & data flow |
+| [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md) | Local + production setup |
 
-### Prerequisites
+## Getting started
 
--   Node.js (v18 or higher recommended)
--   npm or yarn
-
-### Installation
-
-1.  **Clone the repository**
-    ```bash
-    git clone https://github.com/sahanoi/Project_Focus.git
-    cd Project_Focus
-    ```
-
-2.  **Install dependencies**
-    ```bash
-    npm install
-    ```
-
-3.  **Start the development server**
-    ```bash
-    npm run dev
-    ```
-
-4.  **Build for production**
-    ```bash
-    npm run build
-    ```
-
-## 🧪 Running Tests
-
-To run the test suite:
+**Prerequisites:** Node.js 18+, PostgreSQL (local or Docker via `docker-compose.yml`).
 
 ```bash
-npm run test:run
+npm install
+cd server && npm install && cd ..
+cp .env.example .env
+# Set DATABASE_URL, then:
+cd server && npx tsx src/migrate.ts && cd ..
+npm run dev
 ```
 
-## 📂 Project Structure
+- App: `http://localhost:5173` (proxies `/auth`, `/api` to the API)
+- API: `http://localhost:3001`
 
-```
-src/
-├── components/   # Reusable UI components
-├── store/        # Global state management (Zustand)
-├── utils/        # Helper functions and gamification logic
-├── App.tsx       # Main application component
-└── main.tsx      # Entry point
-```
+## Scripts
 
-## 📄 License
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Vite + API concurrently |
+| `npm run build` | Production build |
+| `npm run test:run` | Tests once |
 
-This project is open source and available under the [MIT License](LICENSE).
+## License
+
+MIT — see [LICENSE](LICENSE).

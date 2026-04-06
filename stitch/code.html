@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Adventurer’s Hearth - Begin Your Journey</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;family=Manrope:wght@200..800&amp;family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-background": "#25190d",
+                        "on-primary": "#ffffff",
+                        "secondary": "#45645e",
+                        "primary-fixed": "#ffdcc3",
+                        "surface-container": "#ffead8",
+                        "on-secondary-fixed-variant": "#2d4c46",
+                        "on-tertiary-container": "#fffbff",
+                        "tertiary-container": "#d9352f",
+                        "surface-bright": "#fff8f4",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb4ab",
+                        "surface-variant": "#f5dfcb",
+                        "surface": "#fff8f4",
+                        "surface-container-high": "#fbe4d0",
+                        "secondary-fixed-dim": "#accec5",
+                        "primary-fixed-dim": "#ffb77d",
+                        "error": "#ba1a1a",
+                        "outline-variant": "#dbc2b0",
+                        "surface-container-lowest": "#ffffff",
+                        "background": "#fff8f4",
+                        "on-primary-fixed": "#2f1500",
+                        "on-primary-fixed-variant": "#6e3900",
+                        "secondary-container": "#c7eae1",
+                        "surface-dim": "#ecd6c3",
+                        "inverse-primary": "#ffb77d",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-container": "#fffbff",
+                        "error-container": "#ffdad6",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-fixed": "#410002",
+                        "surface-tint": "#904d00",
+                        "on-error": "#ffffff",
+                        "primary": "#8d4b00",
+                        "on-surface-variant": "#554336",
+                        "surface-container-highest": "#f5dfcb",
+                        "on-secondary-fixed": "#00201b",
+                        "surface-container-low": "#fff1e6",
+                        "on-secondary-container": "#4b6a63",
+                        "primary-container": "#b15f00",
+                        "inverse-surface": "#3b2e21",
+                        "inverse-on-surface": "#ffeedf",
+                        "tertiary-fixed": "#ffdad6",
+                        "on-surface": "#25190d",
+                        "outline": "#887364",
+                        "tertiary": "#b6191a",
+                        "secondary-fixed": "#c7eae1",
+                        "on-tertiary-fixed-variant": "#93000b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Newsreader"],
+                        "body": ["Manrope"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Manrope', sans-serif; }
+        .font-newsreader { font-family: 'Newsreader', serif; }
+        .parchment-texture {
+            background-color: #fdf6e3;
+            background-image: radial-gradient(circle at 2px 2px, rgba(141, 75, 0, 0.05) 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+        .sigil-shadow {
+            box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.2), 0 4px 12px rgba(141, 75, 0, 0.2);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface m-0 p-0 overflow-hidden">
+<!-- Full-Bleed Story Backdrop -->
+<div class="fixed inset-0 z-0">
+<div class="absolute inset-0 bg-on-background/40 z-10 backdrop-blur-[2px]"></div>
+<img alt="Inn Backdrop" class="w-full h-full object-cover" data-alt="cinematic interior of a cozy fantasy inn at night with warm candle light glowing on wooden tables and rain hitting the windows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCef2hZkj5H_P9A1AaRHrlAPsfbWKFRNc1vzP_am9ANGnYafc5bjwppxv7on7tYdKsgeu0mqPXus4ax6wkzkMm7sYK1HG8IwhO4k4ZBuH3RnY4mOY4e61_lQv5OdAaEPMkuchRA82WGQhdbr7RBX_gRSuXUxcWUalVkKu1jVljQ88HAM20npkvxPrnCF39pAnbEg9B9S7uExazcFrB1_o6jVxKjIrbTwTbWvXBag-iAP77UKsLUS0SzrRN2_Sc2m-VwnQbYfKSx70g"/>
+</div>
+<!-- Main Content Canvas -->
+<main class="relative z-20 flex min-h-screen items-center justify-center p-6">
+<!-- Auth Card: The Traveler's Log Entry -->
+<div class="w-full max-w-md parchment-texture rounded-2xl p-8 md:p-12 shadow-[0_20px_50px_rgba(37,25,13,0.3)] border border-outline-variant/10">
+<!-- Heading -->
+<div class="text-center mb-10">
+<h1 class="font-newsreader text-4xl font-medium text-primary tracking-tight leading-tight">
+                    Begin your journey
+                </h1>
+<p class="font-body text-on-surface-variant mt-3 text-sm italic">
+                    "Every great chronicler begins with a single drop of ink."
+                </p>
+</div>
+<!-- Form -->
+<form class="space-y-8" onsubmit="return false;">
+<!-- Email Field -->
+<div class="space-y-2">
+<label class="block font-label text-[10px] font-bold uppercase tracking-[0.15em] text-on-surface-variant ml-1">
+                        Email Address
+                    </label>
+<div class="relative group">
+<input class="w-full bg-surface-container-lowest border-none rounded-xl px-5 py-4 text-on-surface font-body text-base focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-outline/40" placeholder="traveler@hearth.com" type="email"/>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-outline/30">mail</span>
+</div>
+<p class="text-[11px] text-on-surface-variant/60 italic ml-1">The owl needs a destination for your scrolls.</p>
+</div>
+<!-- Password Field -->
+<div class="space-y-2">
+<div class="flex justify-between items-end">
+<label class="block font-label text-[10px] font-bold uppercase tracking-[0.15em] text-on-surface-variant ml-1">
+                            Secret Cipher
+                        </label>
+</div>
+<div class="relative group">
+<input class="w-full bg-surface-container-lowest border-none rounded-xl px-5 py-4 text-on-surface font-body text-base focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-outline/40" placeholder="••••••••" type="password"/>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-outline/30">lock</span>
+</div>
+<p class="text-[11px] text-on-surface-variant/60 italic ml-1">Keep it guarded like a dragon's hoard.</p>
+</div>
+<!-- Primary CTA -->
+<div class="pt-4">
+<button class="w-full bg-[#D97706] text-white font-body font-bold py-4 rounded-xl sigil-shadow active:scale-[0.98] transition-transform flex items-center justify-center gap-3 text-lg min-h-[44px]">
+<span>Enter the Han</span>
+<span class="material-symbols-outlined text-xl">login</span>
+</button>
+</div>
+</form>
+<!-- Secondary Actions -->
+<div class="mt-10 pt-8 border-t border-outline-variant/20 space-y-4 text-center">
+<button class="w-full group">
+<p class="font-body text-sm text-on-surface-variant">
+                        New to the journey? 
+                        <span class="text-primary font-bold ml-1 group-hover:underline underline-offset-4 transition-all">Create account</span>
+</p>
+</button>
+<button class="inline-block pt-2">
+<span class="font-label text-[10px] font-bold uppercase tracking-widest text-outline hover:text-primary transition-colors cursor-pointer">
+                        Forgot password?
+                    </span>
+</button>
+</div>
+</div>
+<!-- Ambient Decoration (Bottom Corners) -->
+<div class="absolute bottom-6 left-6 hidden lg:flex items-center gap-3 text-white/40">
+<span class="material-symbols-outlined text-sm">auto_stories</span>
+<span class="font-label text-[10px] tracking-[0.2em] uppercase">Chronicle v1.4</span>
+</div>
+<div class="absolute bottom-6 right-6 hidden lg:flex items-center gap-3 text-white/40">
+<span class="font-label text-[10px] tracking-[0.2em] uppercase">Weather: Stormy</span>
+<span class="material-symbols-outlined text-sm">thunderstorm</span>
+</div>
+</main>
+<!-- Visual Layer: Tonal Overlay for Depth -->
+<div class="fixed inset-0 pointer-events-none z-30 bg-gradient-to-t from-on-background/20 to-transparent"></div>
+</body></html>

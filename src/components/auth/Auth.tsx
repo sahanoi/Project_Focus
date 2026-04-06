@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { localSignIn, localSignUp } from '../../lib/localAuth';
-import { Loader2, Mail, Lock, Sparkles, ArrowRight } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
+import { loginApi, registerApi } from '../../lib/api';
+import { Loader2, Mail, Lock, LogIn } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import AppLogo from '../ui/AppLogo';
 
@@ -11,6 +12,7 @@ type AuthProps = {
 };
 
 export default function Auth({ variant = 'standalone' }: AuthProps) {
+    const { refreshAuth } = useAuth();
     const [loading, setLoading] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -27,13 +29,12 @@ export default function Auth({ variant = 'standalone' }: AuthProps) {
 
         try {
             if (isSignUp) {
-                const { error: err } = localSignUp(email, password);
-                if (err) throw err;
-                setMessage('Account created — you are signed in locally.');
+                await registerApi(email, password);
+                setMessage('Account created — welcome!');
             } else {
-                const { error: err } = localSignIn(email, password);
-                if (err) throw err;
+                await loginApi(email, password);
             }
+            await refreshAuth();
         } catch (err: unknown) {
             setError(err instanceof Error ? err.message : 'Something went wrong');
         } finally {
@@ -47,7 +48,7 @@ export default function Auth({ variant = 'standalone' }: AuthProps) {
         setError(null);
         setMessage(null);
         setError(
-            'Accounts and passwords are stored only on this device. There is no email reset. If you forgot your password, clear site data for this app and create the account again (your habit data in this browser profile is separate).'
+            'Password reset is not available yet. If you use a local dev database, an admin can reset your account in PostgreSQL; otherwise contact support for your deployment.'
         );
         setLoading(false);
     };
@@ -62,27 +63,18 @@ export default function Auth({ variant = 'standalone' }: AuthProps) {
             ? 'min-h-[100dvh] justify-center py-10 pb-12 sm:py-14 px-4'
             : 'min-h-screen justify-center p-4';
 
-    const isAtmosphere = variant === 'atmosphere';
-    /** Labels / links: full opacity. Inputs use solid fill — transparency stays on the glass card only. */
-    const formLabelClass = isAtmosphere
-        ? 'block text-[11px] font-bold text-black uppercase tracking-[0.2em] drop-shadow-[0_1px_1px_rgba(255,255,255,0.5)]'
-        : 'block text-[11px] font-bold text-black uppercase tracking-[0.2em]';
-    const formLabelClassMb = `${formLabelClass} mb-3 ml-1`;
-    const forgotLinkClass = isAtmosphere
-        ? 'text-[11px] font-bold text-black uppercase tracking-wider underline transition-colors hover:brightness-110'
-        : 'text-[11px] font-bold text-black hover:underline transition-colors uppercase tracking-wider';
-    const inputIconClass = isAtmosphere
-        ? 'absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-black group-focus-within:text-black transition-colors'
-        : 'absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-black group-focus-within:text-black transition-colors';
+    const formLabelClass =
+        'block font-label text-[10px] font-bold uppercase tracking-[0.15em] text-hearth-on-surface-variant ml-1';
+    const formLabelClassMb = `${formLabelClass} mb-2`;
+    const inputIconClass =
+        'absolute right-4 top-1/2 -translate-y-1/2 w-[22px] h-[22px] text-hearth-outline-variant/50 group-focus-within:text-primary/60 transition-colors pointer-events-none';
     const inputFieldClass =
-        'auth-form-input w-full bg-white border-2 border-black rounded-2xl py-4 pl-12 pr-4 text-black placeholder:text-black focus:outline-none focus:border-black focus:ring-4 focus:ring-black/10 transition-all text-sm font-bold shadow-none';
-    const formFooterClass = isAtmosphere
-        ? 'text-sm font-bold text-black'
-        : 'text-sm font-bold text-black';
+        'auth-form-input w-full bg-white border-0 rounded-xl px-5 py-4 pr-12 text-base font-body font-medium placeholder:text-hearth-outline-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all shadow-[inset_0_0_0_1px_rgba(219,194,176,0.35)]';
+    const formFooterClass = 'text-sm font-body text-hearth-on-surface-variant';
 
     return (
         <div
-            className={`flex flex-col items-center ${rootLayout} relative overflow-hidden font-inter z-10 ${rootClass}`}
+            className={`flex flex-col items-center ${rootLayout} relative overflow-hidden font-body z-10 ${rootClass}`}
         >
 
             {/* Global Floating Toasts for Auth */}
@@ -93,7 +85,7 @@ export default function Auth({ variant = 'standalone' }: AuthProps) {
                             initial={{ opacity: 0, y: -20, scale: 0.95 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: -20, scale: 0.95 }}
-                            className="w-full max-w-sm p-4 bg-warm-card dark:bg-warm-night-card border border-danger/35 dark:border-danger/40 text-danger-dark dark:text-red-200 rounded-2xl text-sm font-semibold flex items-center gap-3 pointer-events-auto shadow-sm shadow-stone-900/5 dark:shadow-none"
+                            className="w-full max-w-sm p-4 bg-hearth-surface-highest dark:bg-warm-night-card border-0 text-hearth-tertiary dark:text-red-200 rounded-xl text-sm font-semibold flex items-center gap-3 pointer-events-auto shadow-[0_8px_24px_rgba(37,25,13,0.08)]"
                         >
                             <span className="bg-danger/10 dark:bg-danger/20 shrink-0 w-8 h-8 flex items-center justify-center rounded-full text-sm">!</span>
                             <span className="flex-1">{error}</span>
@@ -108,7 +100,7 @@ export default function Auth({ variant = 'standalone' }: AuthProps) {
                             initial={{ opacity: 0, y: -20, scale: 0.95 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: -20, scale: 0.95 }}
-                            className="w-full max-w-sm p-4 bg-warm-card dark:bg-warm-night-card border border-success/40 dark:border-emerald-400/35 text-success-dark dark:text-emerald-200 rounded-2xl text-sm font-semibold flex items-center gap-3 pointer-events-auto shadow-sm shadow-stone-900/5 dark:shadow-none"
+                            className="w-full max-w-sm p-4 bg-hearth-secondary-container/90 dark:bg-warm-night-card border-0 text-hearth-secondary dark:text-emerald-200 rounded-xl text-sm font-semibold flex items-center gap-3 pointer-events-auto shadow-[0_8px_24px_rgba(37,25,13,0.08)]"
                         >
                             <span className="bg-success/10 dark:bg-success/20 shrink-0 w-8 h-8 flex items-center justify-center rounded-full text-sm">✨</span>
                             <span className="flex-1">{message}</span>
@@ -124,69 +116,61 @@ export default function Auth({ variant = 'standalone' }: AuthProps) {
                 transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
                 className="w-full max-w-md relative z-10"
             >
-                {/* Logo area */}
-                <div
-                    className={
-                        variant === 'atmosphere'
-                            ? 'text-center mb-10 [&_h1]:text-white [&_p]:text-white [&_h1]:drop-shadow-md [&_p]:drop-shadow-[0_1px_3px_rgba(0,0,0,0.75)]'
-                            : 'text-center mb-10'
-                    }
-                >
-                    <motion.div
-                        initial={{ y: 20, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        transition={{ duration: 0.5, delay: 0.2 }}
-                        className="inline-flex items-center justify-center mb-6 group"
-                    >
-                        <AppLogo size={64} />
-                    </motion.div>
-                    <h1 className="text-4xl font-black text-warm-text dark:text-warm-night-text tracking-tight leading-none mb-2">
-                        Focus FTP
-                    </h1>
-                    <p className="text-warm-muted dark:text-warm-night-muted font-medium max-w-[280px] mx-auto leading-relaxed">
-                        {isForgotPassword ? 'Local account help' : isSignUp ? 'Begin your 7-day journey to mastery' : 'Your ultimate habit tracker awaits'}
-                    </p>
-                </div>
+                {/* Traveler’s log — parchment card (stitch / Adventurer’s Hearth) */}
+                <div className="parchment-texture rounded-2xl border border-hearth-outline-variant/10 dark:border-warm-night-border/40 p-8 md:p-12 shadow-[0_20px_50px_rgba(37,25,13,0.28)] dark:bg-warm-night-card/90 dark:backdrop-blur-md">
+                    <div className="text-center mb-10">
+                        <motion.div
+                            initial={{ y: 12, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            transition={{ duration: 0.45, delay: 0.1 }}
+                            className="inline-flex items-center justify-center mb-5"
+                        >
+                            <AppLogo size={56} />
+                        </motion.div>
+                        <h1 className="font-headline text-3xl md:text-4xl font-medium text-primary tracking-tight leading-tight">
+                            {isForgotPassword
+                                ? 'When the path is lost'
+                                : isSignUp
+                                  ? 'Start your journey'
+                                  : 'Begin your journey'}
+                        </h1>
+                        <p className="font-body text-hearth-on-surface-variant mt-3 text-sm italic max-w-xs mx-auto leading-relaxed">
+                            {isForgotPassword
+                                ? 'We’ll point you toward help when the road returns.'
+                                : isSignUp
+                                  ? 'Every quest log opens with a single line of intent.'
+                                  : '“Every great chronicler begins with a single drop of ink.”'}
+                        </p>
+                        <p className="font-label text-[10px] font-bold uppercase tracking-[0.2em] text-hearth-on-surface-variant/70 mt-4">
+                            Focus FTP — habits, goals, and the map of your days
+                        </p>
+                    </div>
 
-                {/* Warm cream card; purple stays on CTAs + focus */}
-                <div className="rounded-[32px] border border-warm-border/70 dark:border-warm-night-border/80 bg-warm-card/25 dark:bg-warm-night-card/25 backdrop-blur-md p-8 md:p-10 shadow-sm shadow-amber-950/5 dark:shadow-none">
-
-                    <form onSubmit={isForgotPassword ? handleForgotInfo : handleAuth} className="space-y-6">
-                        <div>
-                            <label className={formLabelClassMb}>Email Address</label>
+                    <form onSubmit={isForgotPassword ? handleForgotInfo : handleAuth} className="space-y-8">
+                        <div className="space-y-2">
+                            <label className={formLabelClassMb}>Email address</label>
                             <div className="relative group">
-                                <Mail className={inputIconClass} />
                                 <input
                                     type="email"
                                     required={!isForgotPassword}
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     className={inputFieldClass}
-                                    placeholder="name@energy.com"
+                                    placeholder="traveler@hearth.com"
                                 />
+                                <Mail className={inputIconClass} strokeWidth={2} aria-hidden />
                             </div>
+                            <p className="text-[11px] text-hearth-on-surface-variant/70 italic ml-1">
+                                The owl needs a destination for your scrolls.
+                            </p>
                         </div>
 
                         {!isForgotPassword && (
-                            <div>
-                                <div className="flex justify-between items-center mb-3 ml-1">
-                                    <label className={formLabelClass}>Password</label>
-                                    {!isSignUp && (
-                                        <button
-                                            type="button"
-                                            onClick={() => {
-                                                setIsForgotPassword(true);
-                                                setError(null);
-                                                setMessage(null);
-                                            }}
-                                            className={forgotLinkClass}
-                                        >
-                                            Forgot?
-                                        </button>
-                                    )}
+                            <div className="space-y-2">
+                                <div className="flex justify-between items-end">
+                                    <label className={formLabelClass}>Secret cipher</label>
                                 </div>
                                 <div className="relative group">
-                                    <Lock className={inputIconClass} />
                                     <input
                                         type="password"
                                         required
@@ -194,54 +178,52 @@ export default function Auth({ variant = 'standalone' }: AuthProps) {
                                         onChange={(e) => setPassword(e.target.value)}
                                         className={inputFieldClass}
                                         placeholder="••••••••"
-                                        minLength={6}
+                                        minLength={isSignUp ? 8 : 1}
                                     />
+                                    <Lock className={inputIconClass} strokeWidth={2} aria-hidden />
                                 </div>
+                                <p className="text-[11px] text-hearth-on-surface-variant/70 italic ml-1">
+                                    Keep it guarded like a dragon&apos;s hoard.
+                                </p>
                             </div>
                         )}
 
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className="w-full bg-primary hover:bg-primary-dark text-white font-black py-4 rounded-2xl transition-colors flex items-center justify-center gap-3 disabled:opacity-60 disabled:cursor-not-allowed"
-                        >
-                            {loading ? (
-                                <Loader2 className="w-5 h-5 animate-spin" />
-                            ) : (
-                                <>
-                                    {isForgotPassword ? (
-                                        <>
-                                            <Mail size={18} />
-                                            <span>Show help</span>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Sparkles size={18} />
-                                            <span>{isSignUp ? 'Initialize Journey' : 'Enter Dashboard'}</span>
-                                            <ArrowRight size={18} />
-                                        </>
-                                    )}
-                                </>
-                            )}
-                        </button>
+                        <div className="pt-2">
+                            <button
+                                type="submit"
+                                disabled={loading}
+                                className="w-full min-h-[48px] bg-primary hover:bg-primary-dark text-white font-body font-bold py-4 rounded-xl sigil-shadow active:scale-[0.98] transition-transform flex items-center justify-center gap-3 text-lg disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100"
+                            >
+                                {loading ? (
+                                    <Loader2 className="w-5 h-5 animate-spin" />
+                                ) : (
+                                    <>
+                                        <span>
+                                            {isForgotPassword
+                                                ? 'Show help'
+                                                : isSignUp
+                                                  ? 'Open your log'
+                                                  : 'Enter the inn'}
+                                        </span>
+                                        {!isForgotPassword && <LogIn className="w-5 h-5" strokeWidth={2.25} aria-hidden />}
+                                    </>
+                                )}
+                            </button>
+                        </div>
 
-                        <div className="mt-8 text-center">
+                        <div className="mt-10 pt-8 border-t border-hearth-outline-variant/20 space-y-4 text-center">
                             <p className={formFooterClass}>
                                 {isForgotPassword ? (
                                     <button
                                         type="button"
                                         onClick={() => setIsForgotPassword(false)}
-                                        className={`font-bold transition-all underline-offset-4 hover:underline ${
-                                            isAtmosphere
-                                                ? 'text-primary-light drop-shadow-[0_1px_2px_rgba(0,0,0,0.85)] hover:brightness-110'
-                                                : 'text-primary hover:text-primary-light'
-                                        }`}
+                                        className="font-semibold text-primary hover:text-primary-dark underline-offset-4 hover:underline transition-colors"
                                     >
-                                        ← Back to Sign In
+                                        ← Back to sign in
                                     </button>
                                 ) : (
                                     <>
-                                        {isSignUp ? 'Already a player?' : 'New to Focus FTP?'}{' '}
+                                        {isSignUp ? 'Already mapping your days? ' : 'New to the journey? '}
                                         <button
                                             type="button"
                                             onClick={() => {
@@ -249,17 +231,26 @@ export default function Auth({ variant = 'standalone' }: AuthProps) {
                                                 setError(null);
                                                 setMessage(null);
                                             }}
-                                            className={`font-bold transition-all underline-offset-4 hover:underline ${
-                                                isAtmosphere
-                                                    ? 'text-primary-light drop-shadow-[0_1px_2px_rgba(0,0,0,0.85)] hover:brightness-110'
-                                                    : 'text-primary hover:text-primary-light'
-                                            }`}
+                                            className="text-primary font-bold ml-1 hover:underline underline-offset-4 transition-all"
                                         >
-                                            {isSignUp ? 'Sign In' : 'Create Account'}
+                                            {isSignUp ? 'Sign in' : 'Create account'}
                                         </button>
                                     </>
                                 )}
                             </p>
+                            {!isForgotPassword && !isSignUp && (
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setIsForgotPassword(true);
+                                        setError(null);
+                                        setMessage(null);
+                                    }}
+                                    className="inline-block pt-1 font-label text-[10px] font-bold uppercase tracking-widest text-hearth-outline-variant hover:text-primary transition-colors"
+                                >
+                                    Forgot password?
+                                </button>
+                            )}
                         </div>
                     </form>
                 </div>
@@ -272,7 +263,7 @@ export default function Auth({ variant = 'standalone' }: AuthProps) {
                             : 'text-center text-warm-muted/50 dark:text-warm-night-muted/45 text-[11px] font-bold uppercase tracking-[0.2em] mt-8'
                     }
                 >
-                    Level up your habits, one day at a time ✨
+                    One log at a time — your journey, your map
                 </p>
             </motion.div>
         </div>

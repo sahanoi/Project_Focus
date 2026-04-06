@@ -170,6 +170,13 @@ function AuthenticatedApp() {
 
 function AppBackground() {
     const { session, loading } = useAuth();
+    // Story art (login.png) is only for the sign-in atmosphere. After auth, use a flat surface
+    // so onboarding and the rest of the app are not layered over the irrelevant LOGIN scene.
+    if (session) {
+        return (
+            <div className="fixed inset-0 z-0 bg-surface dark:bg-night-bg" aria-hidden />
+        );
+    }
     return <WebBgBackdrop showReadabilityScrim={loading || !session} />;
 }
 

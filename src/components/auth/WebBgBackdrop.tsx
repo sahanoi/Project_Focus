@@ -1,8 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import mobileBg01Img from '../../assets/Mobile bg01.png';
-import webBg01Img from '../../assets/Web bg01.png';
-import placeholderImg from '../../assets/placeholder.png';
+import mobileBg01Img from '../../assets/mobile bg.jpg';
+import webBg01Img from '../../assets/login.png';
+import placeholderImg from '../../assets/scene1.1.png';
 import AuthStoryBackdropImage from './AuthStoryBackdropImage';
 import { PLACEHOLDER_MS } from '../../constants/entryIntro';
 
@@ -57,7 +57,10 @@ export default function WebBgBackdrop({ showReadabilityScrim = true }: WebBgBack
             </motion.div>
 
             {showReadabilityScrim && (
-                <div className="pointer-events-none absolute inset-0 z-20 bg-gradient-to-t from-[#1a0f0c]/60 via-[#0c0807]/25 to-transparent" />
+                <>
+                    <div className="pointer-events-none absolute inset-0 z-20 bg-[#25190d]/40 backdrop-blur-[2px]" />
+                    <div className="pointer-events-none absolute inset-0 z-[21] bg-gradient-to-t from-[#25190d]/25 via-transparent to-transparent" />
+                </>
             )}
         </div>
     );

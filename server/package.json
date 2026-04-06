@@ -9,6 +9,7 @@
     "start": "node dist/index.js",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx src/migrate.ts",
+    "db:seed:dev": "tsx src/scripts/seedDevUser.ts",
     "db:studio": "drizzle-kit studio",
     "test": "vitest run",
     "test:watch": "vitest"
@@ -16,6 +17,7 @@
   "dependencies": {
     "@hono/node-server": "^1.13.7",
     "bcryptjs": "^2.4.3",
+    "dotenv": "^17.4.0",
     "drizzle-orm": "^0.36.4",
     "hono": "^4.6.12",
     "pg": "^8.13.1",

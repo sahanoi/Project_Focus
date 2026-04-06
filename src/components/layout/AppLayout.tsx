@@ -18,7 +18,7 @@ export default function AppLayout({ children, onAddHabit }: AppLayoutProps) {
     };
 
     return (
-        <div className="relative z-10 flex h-screen bg-surface/80 dark:bg-night-bg/85 backdrop-blur-md overflow-hidden transition-colors duration-300">
+        <div className="relative z-10 flex h-screen bg-surface/92 dark:bg-night-bg/90 backdrop-blur-md overflow-hidden transition-colors duration-300">
             <Sidebar
                 activeTab={activeTab}
                 setActiveTab={handleTabChange}

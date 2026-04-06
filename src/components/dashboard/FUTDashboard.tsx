@@ -39,11 +39,11 @@ export default function FUTDashboard({ onAddHabit, onEditHabit, onAddGoal }: FUT
     };
 
     return (
-        <div className="flex flex-col h-full bg-surface-dark dark:bg-night-surface text-dark dark:text-night-text overflow-hidden transition-colors duration-300">
-            {/* Top Bar / Header Area */}
-            <div className="relative border-b border-dark-border dark:border-night-border bg-surface dark:bg-night-surface fade-down z-40 transition-colors">
+        <div className="flex flex-col h-full bg-surface dark:bg-night-surface text-dark dark:text-night-text overflow-hidden transition-colors duration-300 font-body">
+            {/* Top Bar — tonal layers, no hard divider line */}
+            <div className="relative bg-hearth-surface-low/90 dark:bg-night-surface fade-down z-40 transition-colors shadow-[0_1px_0_rgba(37,25,13,0.06)] dark:shadow-[0_1px_0_rgba(255,255,255,0.04)]">
                 {/* Row 1: Search + XP */}
-                <div className="flex items-center justify-between px-4 lg:px-8 py-3 gap-4 bg-surface/50 dark:bg-night-surface/80 transition-colors">
+                <div className="flex items-center justify-between px-4 lg:px-8 py-3 gap-4 bg-hearth-surface-bright/70 dark:bg-night-surface/90 transition-colors">
                     <div className="flex-1 max-w-2xl min-w-0">
                         <LogEntryBar />
                     </div>
@@ -52,7 +52,7 @@ export default function FUTDashboard({ onAddHabit, onEditHabit, onAddGoal }: FUT
                     </div>
                 </div>
                 {/* Row 2: Date Navigator + mobile XP */}
-                <div className="px-4 lg:px-8 pb-1.5 flex items-center gap-2 bg-surface/40 dark:bg-night-border/25 transition-colors">
+                <div className="px-4 lg:px-8 pb-1.5 flex items-center gap-2 bg-hearth-surface-low/50 dark:bg-night-bg/40 transition-colors">
                     <div className="flex-1">
                         <DateNavigator />
                     </div>
@@ -64,7 +64,7 @@ export default function FUTDashboard({ onAddHabit, onEditHabit, onAddGoal }: FUT
             </div>
 
             {/* Main Content */}
-            <div className="flex-1 flex min-h-0 container mx-auto max-w-7xl pt-6 px-4 pb-8 bg-surface/30 dark:bg-night-bg/70 transition-colors">
+            <div className="flex-1 flex min-h-0 container mx-auto max-w-7xl pt-6 px-4 pb-8 bg-hearth-background/80 dark:bg-night-bg/70 transition-colors">
 
                 {/* Goals -> Routines -> Habits */}
                 <div className="flex-1 overflow-y-auto pr-0 scrollbar-thin scrollbar-thumb-gray-700/60 scrollbar-track-transparent min-w-0 flex flex-col gap-8">
@@ -82,7 +82,7 @@ export default function FUTDashboard({ onAddHabit, onEditHabit, onAddGoal }: FUT
                     {/* Level 1: GOALS (The Umbrella) */}
                     <section aria-label="Active goals">
                         <div className="flex items-center justify-between mb-4">
-                            <h2 className="text-2xl font-bold tracking-tight text-dark dark:text-night-text flex items-center gap-2 transition-colors">
+                            <h2 className="font-headline text-2xl font-semibold tracking-tight text-hearth-on-surface dark:text-night-text flex items-center gap-2 transition-colors">
                                 <Target className="text-primary dark:text-primary-light transition-colors" size={24} />
                                 Active Goals
                             </h2>
@@ -122,7 +122,7 @@ export default function FUTDashboard({ onAddHabit, onEditHabit, onAddGoal }: FUT
                     {/* Level 2 & 3: ROUTINES AND HABITS */}
                     <section aria-label="Today routines and habits">
                         <div className="flex items-center justify-between mb-4">
-                            <h2 className="text-2xl font-bold tracking-tight text-dark dark:text-night-text flex items-center gap-2 transition-colors">
+                            <h2 className="font-headline text-2xl font-semibold tracking-tight text-hearth-on-surface dark:text-night-text flex items-center gap-2 transition-colors">
                                 <Sparkles className="text-warning" size={24} />
                                 Today's Schedule
                             </h2>

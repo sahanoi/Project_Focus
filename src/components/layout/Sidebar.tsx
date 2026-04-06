@@ -87,8 +87,8 @@ export default function Sidebar({ activeTab, setActiveTab, onAddHabit, isCollaps
                                 handleTabChange(item.id);
                             }}
                             title={isCollapsed ? item.label : undefined}
-                            className={`w-full flex items-center ${isCollapsed ? 'justify-center' : 'gap-3'} px-3 py-2.5 rounded-lg transition-colors duration-200 group ${isActive
-                                ? 'bg-primary/10 dark:bg-primary/15 text-primary-dark dark:text-primary-light border border-primary/20'
+                            className={`w-full flex items-center ${isCollapsed ? 'justify-center' : 'gap-3'} px-3 py-2.5 rounded-xl transition-colors duration-200 group ${isActive
+                                ? 'bg-hearth-surface-high dark:bg-primary/15 text-primary-dark dark:text-primary-light'
                                 : isLocked
                                     ? 'text-dark-lighter/50 dark:text-night-text-muted/50 cursor-not-allowed'
                                     : 'text-dark-lighter dark:text-night-text-muted hover:bg-surface-dark/50 dark:hover:bg-white/5 hover:text-dark-light dark:hover:text-night-text'

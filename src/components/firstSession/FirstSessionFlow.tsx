@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Droplets, Sparkles } from 'lucide-react';
-import mobileBg01Img from '../../assets/Mobile bg01.png';
-import webBg01Img from '../../assets/Web bg01.png';
-import placeholderImg from '../../assets/placeholder.png';
+import mobileBg01Img from '../../assets/mobile bg.jpg';
+import webBg01Img from '../../assets/login.png';
+import placeholderImg from '../../assets/scene1.1.png';
 import AuthStoryBackdropImage from '../auth/AuthStoryBackdropImage';
 import {
     setRitualDone,

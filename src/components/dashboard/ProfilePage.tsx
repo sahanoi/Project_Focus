@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useModalClose } from '../../hooks/useModalClose';
 import { useHabitStore } from '../../store/habitStore';
 import { useAuth } from '../../contexts/AuthContext';
-import { updateLocalUserMetadata } from '../../lib/localAuth';
+import { patchProfileApi } from '../../lib/api';
 import { Award, Star, Edit3, Check, X, Camera, Info, Lock } from 'lucide-react';
 import { getUserTierName } from '../../utils/featureGateUtils';
 import { COLLECTIBLES } from '../../data/collectibles';
@@ -272,7 +272,7 @@ function EditProfileModal({ currentUsername, currentBio, currentAvatarSeed, onCl
 // ─────────────────────────────────────────────
 export default function ProfilePage() {
     const { stats, habits } = useHabitStore();
-    const { user } = useAuth();
+    const { user, refreshAuth } = useAuth();
     const tierName = getUserTierName(stats);
     const progressPercent = Math.min(100, Math.round((stats.xp / stats.nextLevelXp) * 100));
 
@@ -298,12 +298,16 @@ export default function ProfilePage() {
     }, [user]);
 
     const handleSaveProfile = async (newName: string, newBio: string, newSeed: string) => {
-        if (user?.email) {
-            updateLocalUserMetadata(user.email, {
+        try {
+            await patchProfileApi({
                 display_name: newName,
                 bio: newBio,
                 avatar_seed: newSeed,
             });
+            await refreshAuth();
+        } catch (e) {
+            console.error(e);
+            throw e;
         }
         setDisplayName(newName);
         setBio(newBio);

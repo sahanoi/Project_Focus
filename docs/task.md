@@ -1,5 +1,7 @@
 # Task - Auth Color Schema Refinement (Golden Amber Upgrade)
 
+> **Historical / checklist complete.** For current product UX, see [UX_JOURNEY.md](./UX_JOURNEY.md).
+
 Refine the auth screen's "warm" layer to eliminate "pale/faded" tones. Update to a premium **Golden Amber** and **Warm Dark Coffee** palette as requested for better contrast and a more "premium RPG guild" aesthetic.
 
 ## 1. Project Reference

@@ -1,111 +1,84 @@
-# Plan: Journey-first cold start (PRODUCT.md §2)
+# Plan: Journey-first cold start (aligned with `docs/UX_JOURNEY.md`)
 
-## Goal
+## Canonical spec
 
-Move new users from **habit-setup energy** to **story-first cold start**: Begin → establishing scene → water ritual → **then** sign up, with post-auth handoff that avoids duplicating the same tutorial.
+**Single source of truth for narrative + day-gating:** [`docs/UX_JOURNEY.md`](../../docs/UX_JOURNEY.md)
 
-**Canonical spec:** `docs/PRODUCT.md` §1–§2 and P0 “First-session storyline” table.
+Summary:
 
-## Current state
+1. **Isekai** — Rainy megapolis, street crossing, **truck-kun** → wake in **Maceracı Han** (room). Story assets (PNG/video) carry the transition from “cinematic” to **diegetic** UI.
+2. **Diegetic beat** — App speaks to the adventurer: change is slow; habits are **drop by drop**; first quest = **water on the table** (real life: wake → drink).
+3. **Days 1–3** — Only **water** is the main actionable habit; **Innkeeper** (stories) and **Garden** (other heroes’ tales) are **browse / glimpse** only.
+4. **Water forever** — After day 3, water remains a **baseline routine habit** that **strengthens over time** (Duolingo-style bond)—not deleted.
+5. **Days 4–21** — Seven micro-habits × three days each (not all must be daily).
+6. **Day 22+** — Free selection of habits/challenges; **custom habits** supported in code, **premium / post-journey** in product.
 
-- `IntroGate` runs `EntryIntroSequence` (timing only; UI is global backdrop), then `AuthenticatedApp`.
-- No session → `Auth` (sign-in first).
-- No habits → `OnboardingWizard` (template picking; Drink Water anchored).
-
-## Target state (incremental)
-
-1. **Pre-auth journey module** — Self-contained flow component + storage constants (no `App.tsx` in slice 1).
-2. **Shell integration** — Unauthenticated users see journey until ritual complete (or explicit skip), then existing `Auth`.
-3. **Post-auth bridge** — After sign-up with ritual done: seed `Drink Water` (`STARTER_QUEST_HABIT_NAME`), consume flags, shorten or skip `OnboardingWizard` per PRODUCT coordination note.
-
-## Shared contract (do not rename without updating all slices)
-
-| Constant | Value | Meaning |
-|----------|--------|---------|
-| `FIRST_SESSION_RITUAL_DONE_KEY` | `focus_ftp_first_session_ritual_v1` | `localStorage` truthy after user completes water beat pre-auth |
-| `FIRST_SESSION_SKIP_KEY` | `focus_ftp_first_session_skip_v1` | Optional: user chose “I already have an account” / skip story |
-
-Implement in `src/constants/firstSessionStorage.ts` (create in Job 1).
-
-**Handoff:** Job 2 reads/writes these keys via helpers exported from that file. Job 3 reads `FIRST_SESSION_RITUAL_DONE_KEY` after authenticated load to decide seed + wizard skip.
-
-## Execution order for agents
-
-1. **Job 1** first (isolated components + constants).
-2. **Job 2** after Job 1 merges (routing).
-3. **Job 3** after Job 2 merges (or in parallel only if Job 2’s integration already sets the storage key on ritual complete — safest sequential).
-
-## Out of scope for this plan
-
-- Video/Lottie (keep static placeholders; document filenames in PRODUCT §2).
-- Cloak picker / first collectible modal (future slices).
-- Changing any remote database schema (no cloud DB in this stack).
-
-## Verification (each job)
-
-- Job 1: Storybook or manual mount of `FirstSessionFlow` in a throwaway route optional; no regression to prod routes if not wired.
-- Job 2: Cold incognito: intro → journey → auth; refresh mid-journey resumes or resets per implemented policy (document in code comment).
-- Job 3: New account after ritual: lands on dashboard with Drink Water present; wizard not repeating water tutorial.
+Companion: [`docs/PRODUCT.md`](../../docs/PRODUCT.md) §2, [`docs/STORYLINE_SCENES_FOR_AI_ART.md`](../../docs/STORYLINE_SCENES_FOR_AI_ART.md).
 
 ---
 
-## Job 1 — First-session UI module (no App wiring)
+## Goal (engineering)
 
-**Copy everything in the block below to Agent 1.**
+Move new users from **auth-first** energy to **story-first** cold start: optional **Begin** → isekai beats → water ritual → **then** account, with post-auth gating that **does not duplicate** the water tutorial. Wire **`FirstSessionFlow`** (or successor) into `App.tsx` when product approves.
 
-```
-You are working in the Project F repo (React + TS + Vite + Tailwind + framer-motion). Read docs/PRODUCT.md §1–§2 for narrative intent.
+---
 
-Task: Add a self-contained first-session journey module. Do NOT modify src/App.tsx or IntroGate yet.
+## Current state (repo) — implementation, not product target
 
-Create:
-- src/constants/firstSessionStorage.ts — export FIRST_SESSION_RITUAL_DONE_KEY = 'focus_ftp_first_session_ritual_v1', FIRST_SESSION_SKIP_KEY = 'focus_ftp_first_session_skip_v1', plus small helpers setRitualDone(), isRitualDone(), setSkippedToAuth(), hasSkippedToAuth() using localStorage (try/catch for SSR/private mode).
-- src/components/firstSession/ — a step flow: (1) full-screen Begin CTA matching warm RPG tone from Auth copy, (2) establishing “tavern morning” beat using a placeholder image (reuse existing assets like placeholder.png or Web bg until scene1.png exists per PRODUCT), (3) closer “glass / water” beat with one clear primary action to complete the ritual (tap/confirm — pick one pattern and use it consistently). On complete: call setRitualDone() and invoke onRitualComplete prop.
-- Export default or named FirstSessionFlow with props: { onRitualComplete: () => void; onSkipToAuth?: () => void }. If onSkipToAuth provided, show a subtle secondary control “I already have an account” that calls setSkippedToAuth() then onSkipToAuth.
+- `IntroGate` runs `EntryIntroSequence` (timers only; backdrop is global), then `AuthenticatedApp`.
+- No session → `Auth` (**sign-in first in current code**; **target** narrative order is story-first per [`docs/UX_JOURNEY.md`](../../docs/UX_JOURNEY.md)).
+- `FirstSessionFlow` exists under `src/components/firstSession/` but is **not mounted** in `App.tsx`.
+- No habits → `OnboardingWizard`.
 
-Constraints: Match existing component patterns (Tailwind, dark mode classes used elsewhere). Keep total new code focused; no new dependencies. No markdown files unless the user asked.
+---
 
-Deliverable: Module compiles; brief note in reply listing files added.
-```
+## Target state (incremental)
 
-## Job 2 — Wire pre-auth journey before Auth
+1. **Pre-auth journey module** — Full **isekai → Han → water** beat; storage flags for ritual / skip (`src/constants/firstSessionStorage.ts`).
+2. **Shell integration** — Unauthenticated users see journey until ritual complete (or skip), then `Auth`.
+3. **Post-auth bridge** — Seed **Drink Water**, set **journey phase** (server or client flags per UX_JOURNEY); shorten/skip `OnboardingWizard` when redundant.
+4. **Gating** — Days 1–3 / 4–21 / 22+ UI locks **per UX_JOURNEY** (separate slice; may need `users` or `user_stats` fields).
 
-**Copy everything in the block below to Agent 2.**
+---
 
-```
-Prerequisite: Job 1 merged — FirstSessionFlow + firstSessionStorage exist.
+## Shared contract (do not rename without updating all slices)
 
-Read .cursor/plans/journey-first-session.md and docs/PRODUCT.md §2.
+| Constant | Meaning |
+|----------|---------|
+| `FIRST_SESSION_RITUAL_DONE_KEY` | localStorage: pre-auth water beat completed |
+| `FIRST_SESSION_SKIP_KEY` | User skipped story to auth |
 
-Task: For users with no auth session (and not password recovery), after IntroGate’s intro completes, show FirstSessionFlow instead of going straight to Auth when neither isRitualDone() nor hasSkippedToAuth() is true. When user completes ritual (onRitualComplete) or skips (onSkipToAuth), render the existing Auth component as today (variant="atmosphere" wrapper unchanged unless necessary).
+Implement in `src/constants/firstSessionStorage.ts`. **Journey day / phase** should move to **server-backed** fields when gating ships (see UX_JOURNEY §7).
 
-Touch only what you need: likely src/App.tsx (unauthenticated branch) and/or src/components/auth/IntroGate.tsx. Do not break authenticated routes.
+---
 
-Edge cases: If ritual already done or user skipped, show Auth immediately after intro. Document in a short code comment what happens on full page refresh mid-journey (your choice: resume step vs restart — pick one and keep it simple).
+## Execution order for agents
 
-Verify: Incognito cold load → intro → journey → Auth; second visit with ritual flag → Auth directly.
+1. **Job 1** — Isekai + Han + water ritual UI module + storage helpers (**no** `App.tsx` until approved).
+2. **Job 2** — Wire pre-auth journey before `Auth` when flags allow.
+3. **Job 3** — Post-auth seed + wizard coordination + baseline water habit persistence.
+4. **Job 4** — Journey gating service (days 1–3, 4–21, 22+) + exploration surfaces (Innkeeper / Garden placeholders).
 
-Deliverable: Working flow + list of files changed.
-```
+Jobs 2–4 depend on product sign-off on copy and beat order.
 
-## Job 3 — Post-auth seed + OnboardingWizard coordination
+---
 
-**Copy everything in the block below to Agent 3.**
+## Out of scope (this plan file)
 
-```
-Prerequisite: Job 2 merged — pre-auth ritual sets FIRST_SESSION_RITUAL_DONE_KEY via firstSessionStorage.
+- Full video pipeline (keep static placeholders; document assets in STORYLINE doc).
+- Premium paywall implementation (documented only in UX_JOURNEY).
+- Changing DB schema without a dedicated migration task (coordinate with `server/src/db/schema.ts`).
 
-Read docs/PRODUCT.md §2 “Coordination” about avoiding duplicate water tutorial.
+---
 
-Task: After successful sign-up (first session ever in this browser with ritual done): when authenticated data finishes initial load and habits.length === 0, if isRitualDone() then auto-create the Drink Water habit using the same shape as OnboardingWizard’s template for HABIT_TEMPLATES.health[0] (name must match STARTER_QUEST_HABIT_NAME in src/utils/starterQuestUtils.ts). Then clear the ritual flag from localStorage (add clearRitualDone() helper if missing) so repeat visits don’t re-seed. Skip showing OnboardingWizard entirely for this path, OR reduce to a single short “welcome” screen — prefer skip entirely if copy on dashboard is enough.
+## Legacy agent copy (Jobs 1–3) — optional
 
-For users who signed in without ritual flag, keep current behavior (OnboardingWizard when no habits).
+The detailed copy-paste blocks for **tavern-only** first session in older revisions are **superseded** by **`UX_JOURNEY.md`** (megapolis + truck + 3-day + 21-day). When implementing, use the **beats in UX_JOURNEY**, not the old “Begin → tavern only” text alone.
 
-Do not break existing users with habits. Handle race: only seed once.
+---
 
-Files likely: src/App.tsx (AuthenticatedApp), src/store/habitStore.ts or a small util, possibly OnboardingWizard.
+## Verification
 
-Optional: Add or extend a minimal test if the repo already tests habitStore/addHabit.
-
-Deliverable: New user path ritual → sign up → dashboard with Drink Water, no duplicate wizard water step; files changed listed.
-```
+- Cold incognito: intro → **isekai path** → auth → dashboard with water + correct **phase**.
+- Returning user: abbreviated path if flags say isekai completed.
+- No duplicate water tutorial between ritual and `OnboardingWizard`.

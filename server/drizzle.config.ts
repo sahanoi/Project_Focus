@@ -5,6 +5,6 @@ export default defineConfig({
     out: './drizzle',
     dialect: 'postgresql',
     dbCredentials: {
-        url: process.env.DATABASE_URL ?? 'postgres://postgres:postgres@localhost:5432/focus_ftp',
+        url: process.env.DATABASE_URL ?? 'postgres://focus_ftp:focus_ftp_local@localhost:5432/focus_ftp',
     },
 });

@@ -1,5 +1,7 @@
 # Focus FTP — color schema
 
+**Product visual direction:** **Cozy adventurer** (warm entry, story-forward); not “premium dusk purple” as a north star — see [UX_JOURNEY.md](./UX_JOURNEY.md) and [PRODUCT.md](./PRODUCT.md). Tokens below reflect **current** implementation; retheme by editing `src/index.css` + `tailwind.config.js`.
+
 Single reference for UI surfaces, borders, and theme-driven accents. **Source of truth for RGB tokens** is `src/index.css` (`:root` / `.theme-pastel-violet` and optional `.theme-charcoal-violet`). **Tailwind names** are in `tailwind.config.js` under `theme.extend.colors`.
 
 ## Light mode (cozy lavender)

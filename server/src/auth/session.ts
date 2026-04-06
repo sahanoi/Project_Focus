@@ -47,6 +47,8 @@ export async function resolveUserFromRequest(c: Context) {
             expiresAt: sessions.expiresAt,
             email: users.email,
             displayName: users.displayName,
+            bio: users.bio,
+            avatarSeed: users.avatarSeed,
             createdAt: users.createdAt,
             updatedAt: users.updatedAt,
         })
@@ -67,6 +69,8 @@ export async function resolveUserFromRequest(c: Context) {
         id: row.userId,
         email: row.email,
         displayName: row.displayName,
+        bio: row.bio,
+        avatarSeed: row.avatarSeed,
         createdAt: row.createdAt,
         updatedAt: row.updatedAt,
     };

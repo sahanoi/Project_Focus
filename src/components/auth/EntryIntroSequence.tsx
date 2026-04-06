@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import placeholderImg from '../../assets/placeholder.png';
-import mobileBg01Img from '../../assets/Mobile bg01.png';
-import webBg01Img from '../../assets/Web bg01.png';
+import placeholderImg from '../../assets/scene1.1.png';
+import mobileBg01Img from '../../assets/mobile bg.jpg';
+import webBg01Img from '../../assets/login.png';
 import { PLACEHOLDER_MS, AUTH_REVEAL_DELAY_MS } from '../../constants/entryIntro';
 import AuthStoryBackdropImage from './AuthStoryBackdropImage';
 
