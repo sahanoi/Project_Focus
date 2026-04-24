@@ -64,11 +64,12 @@ export default {
                 'warm-accent': '#8D4B00',
                 'warm-night-page': '#1a141b',
                 'warm-night-card': '#261f26',
-                'warm-night-field': '#FFFFFF', /* White field in dark mode for black text contrast */
-                'warm-night-border': '#000000',
-                'warm-night-text': '#000000',
-                'warm-night-muted': '#000000',
-                'warm-night-accent': '#000000',
+                /** Auth fields: dark-tinted surface; pair with light text in CSS */
+                'warm-night-field': '#1f1a24',
+                'warm-night-border': '#3d3545',
+                'warm-night-text': '#ece8f0',
+                'warm-night-muted': '#a89eb8',
+                'warm-night-accent': '#c4b5fd',
             },
             fontFamily: {
                 sans: ['Manrope', 'Inter', 'system-ui', '-apple-system', 'sans-serif'],

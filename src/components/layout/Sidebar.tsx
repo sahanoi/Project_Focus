@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useHabitStore } from '../../store/habitStore';
 import { useAuth } from '../../contexts/AuthContext';
 import { useThemeStore } from '../../store/themeStore';
-import { LayoutDashboard, BarChart2, Settings, User, LogOut, Plus, Menu, X, Award, Globe, Lock, Sun, Moon, ChevronLeft, ChevronRight } from 'lucide-react';
+import { LayoutDashboard, BarChart2, Settings, User, LogOut, Plus, Menu, X, Award, Globe, Lock, Sun, Moon, ChevronLeft, ChevronRight, Map } from 'lucide-react';
 import AppLogo from '../ui/AppLogo';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TabView } from '../../types';
@@ -31,6 +31,7 @@ export default function Sidebar({ activeTab, setActiveTab, onAddHabit, isCollaps
         { id: 'profile', label: 'Profile', icon: User },
         { id: 'statistics', label: 'Statistics', icon: BarChart2 },
         { id: 'community', label: 'Community', icon: Globe },
+        { id: 'journey', label: 'Journey', icon: Map },
         { id: 'achievements', label: 'Achievements', icon: Award },
         { id: 'settings', label: 'Settings', icon: Settings },
     ] as const;
@@ -44,7 +45,7 @@ export default function Sidebar({ activeTab, setActiveTab, onAddHabit, isCollaps
         <>
             {/* Brand / Logo */}
             <div
-                className={`flex items-center justify-between transition-colors group ${isCollapsed ? 'px-3 py-4' : 'p-4 px-5'} lg:cursor-pointer lg:hover:bg-black/5 dark:lg:hover:bg-white/5`}
+                className={`flex items-center justify-between transition-colors group ${isCollapsed ? 'px-3 py-4' : 'p-4 px-5'} lg:cursor-pointer lg:hover:bg-black/5 dark:lg:hover:bg-primary/10`}
                 onClick={() => {
                     if (window.innerWidth >= 1024) {
                         setIsCollapsed?.(!isCollapsed);
@@ -60,7 +61,7 @@ export default function Sidebar({ activeTab, setActiveTab, onAddHabit, isCollaps
                 {!isCollapsed && (
                     <button
                         onClick={(e) => { e.stopPropagation(); setMobileOpen(false); }}
-                        className="lg:hidden p-2 rounded-lg hover:bg-surface-dark/50 dark:hover:bg-night-border/70 text-dark-lighter dark:text-night-text-muted transition-colors"
+                        className="lg:hidden p-2 rounded-lg hover:bg-surface-dark/50 dark:hover:bg-primary/15 text-dark-lighter dark:text-night-text-muted transition-colors"
                     >
                         <X size={20} />
                     </button>
@@ -91,7 +92,7 @@ export default function Sidebar({ activeTab, setActiveTab, onAddHabit, isCollaps
                                 ? 'bg-hearth-surface-high dark:bg-primary/15 text-primary-dark dark:text-primary-light'
                                 : isLocked
                                     ? 'text-dark-lighter/50 dark:text-night-text-muted/50 cursor-not-allowed'
-                                    : 'text-dark-lighter dark:text-night-text-muted hover:bg-surface-dark/50 dark:hover:bg-white/5 hover:text-dark-light dark:hover:text-night-text'
+                                    : 'text-dark-lighter dark:text-night-text-muted hover:bg-surface-dark/50 dark:hover:bg-primary/10 hover:text-dark-light dark:hover:text-night-text'
                                 }`}
                         >
                             <Icon size={20} className={isActive ? 'text-primary dark:text-primary-light' : isLocked ? 'text-dark-lighter/40 dark:text-night-text-muted/40' : 'text-dark-lighter dark:text-night-text-muted group-hover:text-primary-dark dark:group-hover:text-primary'} />
@@ -122,7 +123,7 @@ export default function Sidebar({ activeTab, setActiveTab, onAddHabit, isCollaps
             <div className={`px-4 pb-4 pt-2 border-t border-dark-border dark:border-night-border bg-surface/50 dark:bg-night-surface/50 space-y-2 transition-colors flex ${isCollapsed ? 'flex-col items-center' : 'flex-col'}`}>
                 <button
                     onClick={() => handleTabChange('profile')}
-                    className={`w-full flex items-center ${isCollapsed ? 'justify-center p-2' : 'justify-between p-2'} rounded-lg gap-2 hover:bg-black/5 dark:hover:bg-white/5 transition-colors group`}
+                    className={`w-full flex items-center ${isCollapsed ? 'justify-center p-2' : 'justify-between p-2'} rounded-lg gap-2 hover:bg-black/5 dark:hover:bg-primary/10 transition-colors group`}
                     title={isCollapsed ? "Profile" : undefined}
                 >
                     <div className="flex items-center gap-3 min-w-0">

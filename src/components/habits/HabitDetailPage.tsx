@@ -241,7 +241,7 @@ export default function HabitDetailPage({ habitId, onBack, onEdit }: HabitDetail
                 <div className="flex items-center gap-2">
                     <button
                         onClick={() => setShowShareModal(true)}
-                        className="btn-secondary flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold bg-surface-dark/50 dark:bg-night-bg border-2 border-gray-200 dark:border-night-border text-dark-lighter dark:text-night-text hover:border-indigo-400 dark:hover:border-indigo-400 hover:text-indigo-500 transition-colors"
+                        className="btn-secondary flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold bg-surface-dark/50 dark:bg-night-bg border-2 border-gray-200 dark:border-night-border text-dark-lighter dark:text-night-text hover:border-primary dark:hover:border-primary-light hover:text-primary dark:hover:text-primary-light transition-colors"
                         title="Share Habit Template"
                     >
                         <Share2 size={16} />
@@ -384,7 +384,7 @@ export default function HabitDetailPage({ habitId, onBack, onEdit }: HabitDetail
                                         ? 'text-white'
                                         : isToday
                                             ? 'ring-2 ring-primary dark:ring-primary-light ring-offset-2 dark:ring-offset-night-surface text-dark dark:text-night-text font-black'
-                                            : 'bg-gray-50 dark:bg-night-bg text-dark-lighter dark:text-night-text hover:bg-gray-100 dark:hover:bg-night-border'
+                                            : 'bg-gray-50 dark:bg-night-bg text-dark-lighter dark:text-night-text hover:bg-gray-100 dark:hover:bg-primary/15'
                                         }`}
                                     style={cell.completed ? { backgroundColor: cellBg } : undefined}
                                     title={cell.value !== undefined ? `${cell.value} ${habit.unit || ''}` : cell.completed ? 'Done ✅' : 'Missed'}

@@ -94,7 +94,7 @@ export default function DailyReviewModal({ isOpen, onClose }: DailyReviewModalPr
             >
                 {/* Header */}
                 <div className="relative bg-primary/5 dark:bg-primary/10 p-6 border-b border-[#D4C8E8] dark:border-night-border transition-colors">
-                    <button onClick={onClose} className="absolute top-4 right-4 p-2 rounded-xl hover:bg-white/50 dark:hover:bg-white/10 text-dark-lighter dark:text-night-text-muted transition-colors">
+                    <button onClick={onClose} className="absolute top-4 right-4 p-2 rounded-xl hover:bg-white/50 dark:hover:bg-primary/15 text-dark-lighter dark:text-night-text-muted transition-colors">
                         <X size={20} />
                     </button>
                     <div className="flex items-center gap-3">

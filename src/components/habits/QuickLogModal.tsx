@@ -251,7 +251,7 @@ export default function QuickLogModal() {
                         <h3 className="font-bold text-dark dark:text-night-text flex items-center gap-2"><Calendar size={18} className="text-primary" /> History</h3>
                         <button
                             onClick={handleClose}
-                            className="p-2 text-dark-lighter dark:text-night-text-muted hover:text-dark dark:hover:text-night-text hover:bg-gray-100 dark:hover:bg-night-bg rounded-full transition-colors hidden md:block"
+                            className="p-2 text-dark-lighter dark:text-night-text-muted hover:text-dark dark:hover:text-night-text hover:bg-gray-100 dark:hover:bg-primary/15 rounded-full transition-colors hidden md:block"
                         >
                             <X size={20} />
                         </button>
@@ -262,7 +262,7 @@ export default function QuickLogModal() {
                         <div className="flex items-center justify-between mb-5 bg-surface dark:bg-night-surface p-2 rounded-2xl border border-gray-100 dark:border-night-border">
                             <button
                                 onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
-                                className="p-1.5 hover:bg-gray-100 dark:hover:bg-night-bg rounded-xl text-dark-lighter dark:text-night-text-muted hover:text-dark dark:hover:text-night-text transition-colors"
+                                className="p-1.5 hover:bg-gray-100 dark:hover:bg-primary/15 rounded-xl text-dark-lighter dark:text-night-text-muted hover:text-dark dark:hover:text-night-text transition-colors"
                             >
                                 <ChevronLeft size={20} />
                             </button>
@@ -271,7 +271,7 @@ export default function QuickLogModal() {
                             </span>
                             <button
                                 onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
-                                className="p-1.5 hover:bg-gray-100 dark:hover:bg-night-bg rounded-xl text-dark-lighter dark:text-night-text-muted hover:text-dark dark:hover:text-night-text transition-colors"
+                                className="p-1.5 hover:bg-gray-100 dark:hover:bg-primary/15 rounded-xl text-dark-lighter dark:text-night-text-muted hover:text-dark dark:hover:text-night-text transition-colors"
                             >
                                 <ChevronRight size={20} />
                             </button>
@@ -303,7 +303,7 @@ export default function QuickLogModal() {
                                         onClick={() => setModalDate(dateStr)}
                                         className={`
                                             aspect-square rounded-xl flex items-center justify-center text-xs font-bold relative transition-all duration-300
-                                            ${!isCurrentMonth ? 'text-dark-light dark:text-night-text-muted/50' : 'text-dark-lighter dark:text-night-text-muted hover:bg-gray-200 dark:hover:bg-night-border'}
+                                            ${!isCurrentMonth ? 'text-dark-light dark:text-night-text-muted/50' : 'text-dark-lighter dark:text-night-text-muted hover:bg-gray-200 dark:hover:bg-primary/15'}
                                             ${isTargetDate ? 'ring-2 ring-primary ring-offset-2 dark:ring-offset-night-surface bg-primary/10 text-dark dark:text-night-text z-10' : ''}
                                             ${dayCompleted ? 'bg-primary/10 dark:bg-primary/15 border border-gray-100 dark:border-night-border' : ''}
                                         `}

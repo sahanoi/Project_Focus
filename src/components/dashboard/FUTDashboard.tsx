@@ -10,8 +10,6 @@ import StreakLifeLine from './StreakLifeLine';
 import WeeklyDigest from './WeeklyDigest';
 import MiniHeatmap from './MiniHeatmap';
 import HabitList from '../habits/HabitList';
-import DailyMissionCard from './DailyMissionCard';
-import StarterQuestCard from './StarterQuestCard';
 import { Target, Check, ChevronDown, ChevronRight, Sparkles, Moon } from 'lucide-react';
 import { Habit, Routine } from '../../types';
 
@@ -24,7 +22,7 @@ interface FUTDashboardProps {
 /*
  * Dashboard UX goals: docs/PRODUCT.md §5
  * 1. PRIMARY CTA: Logging today's habits is the #1 action — LogEntryBar sits at the very top.
- * 2. HIERARCHY: Daily Mission → Active Goals → Routine Habits → Stats sidebar.
+ * 2. HIERARCHY: Active Goals → Routine Habits → Habit list (story quests live on JOURNEY).
  * 3. MOBILE-FIRST: Full XP bar visible on all screen sizes; sidebar widgets collapse on small screens.
  * 4. AESTHETIC: Consistent "premium dusk purple / glassmorphism" via luxury-glass across all cards.
  * 5. EMPTY STATES: Every section has a clear prompt when there's no data yet.
@@ -69,16 +67,6 @@ export default function FUTDashboard({ onAddHabit, onEditHabit, onAddGoal }: FUT
                 {/* Goals -> Routines -> Habits */}
                 <div className="flex-1 overflow-y-auto pr-0 scrollbar-thin scrollbar-thumb-gray-700/60 scrollbar-track-transparent min-w-0 flex flex-col gap-8">
 
-                    {/* Structured starter: Drink Water → L3 streak, then free play across selected habits */}
-                    <section aria-label="Foundation quest">
-                        <StarterQuestCard />
-                    </section>
-
-                    {/* 7-DAY ONBOARDING MISSION */}
-                    <section aria-label="Daily mission">
-                        <DailyMissionCard />
-                    </section>
-
                     {/* Level 1: GOALS (The Umbrella) */}
                     <section aria-label="Active goals">
                         <div className="flex items-center justify-between mb-4">
@@ -121,15 +109,11 @@ export default function FUTDashboard({ onAddHabit, onEditHabit, onAddGoal }: FUT
 
                     {/* Level 2 & 3: ROUTINES AND HABITS */}
                     <section aria-label="Today routines and habits">
-                        <div className="flex items-center justify-between mb-4">
+                        <div className="mb-4">
                             <h2 className="font-headline text-2xl font-semibold tracking-tight text-hearth-on-surface dark:text-night-text flex items-center gap-2 transition-colors">
                                 <Sparkles className="text-warning" size={24} />
                                 Today's Schedule
                             </h2>
-                            <div className="flex gap-2">
-                                <span className="badge bg-purple/10 dark:bg-purple/20 text-purple-dark dark:text-primary-light border border-purple/20 dark:border-purple/30 transition-colors">{stats.attributes.stk} Streak</span>
-                                <span className="badge bg-teal/10 dark:bg-teal/20 text-teal-dark dark:text-teal border border-teal/20 dark:border-teal/30 transition-colors">{stats.attributes.foc} Focus</span>
-                            </div>
                         </div>
 
                         <div className="flex flex-col gap-4">

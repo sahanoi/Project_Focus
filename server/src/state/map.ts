@@ -1,6 +1,7 @@
 import { eq, inArray } from 'drizzle-orm';
 import { db } from '../db/index.js';
 import * as schema from '../db/schema.js';
+import { toIsoTimestamp } from '../util/dates.js';
 
 /** Matches client CharacterStats defaults when user has no row yet. */
 export const DEFAULT_STATS = {
@@ -40,7 +41,7 @@ async function loadStatsSlice(userId: string) {
               level: s.level,
               xp: s.xp,
               nextLevelXp: s.nextLevelXp,
-              accountCreatedDate: s.accountCreatedDate.toISOString(),
+              accountCreatedDate: toIsoTimestamp(s.accountCreatedDate),
               unlockedCollectibles: s.unlockedCollectibles,
               attributes: s.attributes as (typeof DEFAULT_STATS)['attributes'],
           }
@@ -66,7 +67,7 @@ export async function loadFullStateForUser(userId: string): Promise<ApiState> {
         unit: g.unit,
         ...(g.deadline ? { deadline: g.deadline } : {}),
         achieved: g.achieved,
-        createdAt: g.createdAt.toISOString(),
+        createdAt: toIsoTimestamp(g.createdAt),
     }));
 
     const routineRows = await db
@@ -129,7 +130,7 @@ export async function loadFullStateForUser(userId: string): Promise<ApiState> {
             ...(h.startDate ? { startDate: h.startDate } : {}),
             ...(h.endDate ? { endDate: h.endDate } : {}),
             completions,
-            createdAt: h.createdAt.toISOString(),
+            createdAt: toIsoTimestamp(h.createdAt),
             archived: h.archived,
         };
     });

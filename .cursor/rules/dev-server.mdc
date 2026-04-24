@@ -1,0 +1,38 @@
+---
+description: When the user wants to run or open the local app (dev server, Vite, localhost 5173), start the full stack from the project root automatically.
+alwaysApply: true
+---
+
+# Local dev server (Project F)
+
+When the user asks to **run**, **open**, or **start** the app, **dev**, **Vite**, **localhost:5173**, **çalıştır**, **aç**, or similar (including Turkish):
+
+1. Use the **workspace / repository root** (the folder that contains `package.json` and `docker-compose.yml`), not `server/` alone.
+2. Run **`npm run dev`** as a **long-running background** process.
+
+**What `npm run dev` already does (full checklist — do not ask the user to repeat these unless something failed):**
+
+- Ensures root **`.env`** / **`DATABASE_URL`** (`scripts/ensure-local-env.mjs`)
+- **`SKIP_DOCKER=1`:** skips Compose; otherwise ensures **Docker engine** (`scripts/ensure-docker.mjs`) and **`docker compose up`** Postgres
+- Waits until Postgres accepts TCP (`scripts/wait-for-pg.mjs`)
+- Runs **migrations** (`db:migrate`)
+- **Seeds dev user only if that email is missing** (`db:seed:if-missing` — does not reset passwords on every start)
+- **Frees default dev ports** `3001` / `5173` from stale Node/Vite processes (`scripts/free-dev-ports.mjs`), unless `SKIP_FREE_DEV_PORTS=1` (see `docs/LOCAL_DEV_PORTS.md` and rule **`dev-ports` / `@dev-ports`**)
+- Starts **Vite + API** (`dev:app`)
+
+3. After starting, **wait a few seconds**, then **poll** (retry 2–3 times if needed):
+
+   - **`http://localhost:5173`** (frontend)
+   - **`http://localhost:3001/health`** (API)
+
+4. Summarize readiness: **Docker / Postgres / migrations / app** (from terminal output + HTTP checks). Give URLs: **frontend `http://localhost:5173`**, **API `http://localhost:3001`**. Default dev login after first seed: **`leo@fcs.com`** / **`paswrod123!`** (unless overridden by env).
+
+5. **Do not** tell the user to run **`db:setup`** or manual **`db:up` / `db:wait`** for normal “open the app” — that is redundant with `npm run dev`. Only mention **`npm run db:setup`** or **`npm run db:seed`** if they need a **forced** dev password reset or explicit full re-seed.
+
+**If dev fails**
+
+- Docker / engine / `dockerDesktopLinuxEngine` / `ECONNREFUSED` to Docker: Docker Desktop must be installed; `ensure-docker.mjs` tries to start it on Windows. They can start Docker manually and retry.
+- **External Postgres:** **`SKIP_DOCKER=1`** (PowerShell: `$env:SKIP_DOCKER="1"; npm run dev`) and a valid **`DATABASE_URL`** in **`.env`**.
+- **Port already in use (EADDRINUSE, 5173, 3001, stale Vite/Node, multiple projects):** use **`@dev-ports`**, read **`docs/LOCAL_DEV_PORTS.md`**, or run `npm run dev:ports-inspect` from the repo root. Do not guess ports; the project defaults are **5173** (Vite) and **3001** (API).
+
+**Do not** replace this with only **`npm run dev:app`** unless the user explicitly wants to skip the full bootstrap and understands the implications.

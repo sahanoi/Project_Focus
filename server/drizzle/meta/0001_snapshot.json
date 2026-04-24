@@ -1,0 +1,10 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "id": "0001_community",
+  "prevId": "0000_initial",
+  "tables": {},
+  "enums": {},
+  "schemas": {},
+  "sequences": {}
+}

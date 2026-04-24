@@ -174,7 +174,7 @@ function EditProfileModal({ currentUsername, currentBio, currentAvatarSeed, onCl
                 {/* Header */}
                 <div className="flex items-center justify-between mb-6">
                     <h2 className="text-xl font-black text-dark dark:text-night-text transition-colors">Edit Profile</h2>
-                    <button onClick={onClose} className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-night-surface text-dark-lighter dark:text-night-text-muted transition-colors">
+                    <button onClick={onClose} className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-primary/10 text-dark-lighter dark:text-night-text-muted transition-colors">
                         <X size={20} />
                     </button>
                 </div>
@@ -245,7 +245,7 @@ function EditProfileModal({ currentUsername, currentBio, currentAvatarSeed, onCl
                 <div className="flex gap-3">
                     <button
                         onClick={onClose}
-                        className="flex-1 py-3 rounded-xl border border-gray-200 dark:border-night-border text-dark-lighter dark:text-night-text-muted font-bold hover:bg-gray-50 dark:hover:bg-night-surface transition-colors"
+                        className="flex-1 py-3 rounded-xl border border-gray-200 dark:border-night-border text-dark-lighter dark:text-night-text-muted font-bold hover:bg-gray-50 dark:hover:bg-primary/10 transition-colors"
                     >
                         Cancel
                     </button>
@@ -454,7 +454,7 @@ export default function ProfilePage() {
                         </div>
                         <button
                             onClick={() => setShowGPIInfo(!showGPIInfo)}
-                            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-night-surface text-dark-lighter dark:text-night-text-muted transition-colors"
+                            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-primary/10 text-dark-lighter dark:text-night-text-muted transition-colors"
                         >
                             <Info size={16} />
                         </button>

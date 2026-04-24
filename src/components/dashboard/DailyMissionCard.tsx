@@ -76,10 +76,28 @@ export default function DailyMissionCard() {
         if (mission.targetAction === 'VISIT_COMMUNITY') {
             localStorage.setItem('visited_community', 'true');
             setActiveTab('community');
-        } else if (mission.targetAction === 'CREATE_FIRST_GOAL') {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else if (
+            mission.targetAction === 'CREATE_FIRST_GOAL' ||
+            mission.targetAction === 'CREATE_CUSTOM_HABIT' ||
+            mission.targetAction === 'COMPLETE_1_HABIT' ||
+            mission.targetAction === 'COMPLETE_2_HABITS' ||
+            mission.targetAction === 'ACHIEVE_STREAK_3' ||
+            mission.targetAction === 'REACH_LEVEL_2'
+        ) {
+            setActiveTab('dashboard');
         }
     };
+
+    const actionLink =
+        mission.targetAction === 'VISIT_COMMUNITY'
+            ? 'Go to Community →'
+            : mission.targetAction === 'CREATE_FIRST_GOAL'
+              ? 'Open Home & set a goal →'
+              : mission.targetAction === 'CREATE_CUSTOM_HABIT'
+                ? 'Open Home & add a habit →'
+                : ['COMPLETE_1_HABIT', 'COMPLETE_2_HABITS', 'ACHIEVE_STREAK_3', 'REACH_LEVEL_2'].includes(mission.targetAction)
+                  ? 'Go to Home →'
+                  : null;
 
     return (
         <div className="flex-shrink-0">
@@ -122,9 +140,9 @@ export default function DailyMissionCard() {
                                     <div className="w-4 h-4 rounded-full border-2 border-dark-lighter/50 dark:border-night-text-muted/50" />
                                     Pending...
                                 </div>
-                                {mission.targetAction === 'VISIT_COMMUNITY' && (
-                                    <button onClick={handleActionClick} className="text-xs text-primary dark:text-primary-light font-bold hover:underline">
-                                        Go to Community →
+                                {actionLink && (
+                                    <button type="button" onClick={handleActionClick} className="text-xs text-primary dark:text-primary-light font-bold hover:underline">
+                                        {actionLink}
                                     </button>
                                 )}
                             </div>

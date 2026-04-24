@@ -170,7 +170,7 @@ export default function HabitCard({ habit, date, onEdit }: HabitCardProps) {
                             onClick={handleCheckToggle}
                             className={`w-8 h-8 rounded-xl border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition-colors duration-300 ${isCompleted
                                 ? 'text-white border-transparent'
-                                : 'border-gray-300 dark:border-night-border bg-gray-50 dark:bg-night-bg/50 hover:border-gray-400 dark:hover:border-gray-600'
+                                : 'border-gray-300 dark:border-night-border bg-gray-50 dark:bg-night-bg/50 hover:border-gray-400 dark:hover:border-primary-light/45'
                                 }`}
                             style={isCompleted ? { backgroundColor: habit.color } : undefined}
                         >
@@ -229,7 +229,7 @@ export default function HabitCard({ habit, date, onEdit }: HabitCardProps) {
                                     <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
                                         <button
                                             onClick={() => handleNumericalInput(currentNumValue - 0.5)}
-                                            className="w-6 h-6 rounded-lg bg-gray-100 dark:bg-night-bg flex items-center justify-center text-dark-lighter dark:text-night-text-muted hover:text-dark dark:hover:text-night-text hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
+                                            className="w-6 h-6 rounded-lg bg-gray-100 dark:bg-night-bg flex items-center justify-center text-dark-lighter dark:text-night-text-muted hover:text-dark dark:hover:text-night-text hover:bg-gray-200 dark:hover:bg-primary/15 transition-colors"
                                         >
                                             <Minus size={12} />
                                         </button>
@@ -243,7 +243,7 @@ export default function HabitCard({ habit, date, onEdit }: HabitCardProps) {
                                         />
                                         <button
                                             onClick={() => handleNumericalInput(currentNumValue + 0.5)}
-                                            className="w-6 h-6 rounded-lg bg-gray-100 dark:bg-night-bg flex items-center justify-center text-dark-lighter dark:text-night-text-muted hover:text-dark dark:hover:text-night-text hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
+                                            className="w-6 h-6 rounded-lg bg-gray-100 dark:bg-night-bg flex items-center justify-center text-dark-lighter dark:text-night-text-muted hover:text-dark dark:hover:text-night-text hover:bg-gray-200 dark:hover:bg-primary/15 transition-colors"
                                         >
                                             <Plus size={12} />
                                         </button>
@@ -288,7 +288,7 @@ export default function HabitCard({ habit, date, onEdit }: HabitCardProps) {
                 <div className="relative" onClick={(e) => e.stopPropagation()}>
                     <button
                         onClick={() => setShowMenu(!showMenu)}
-                        className="btn-icon opacity-0 group-hover:opacity-100 transition-opacity bg-transparent hover:bg-gray-100 dark:hover:bg-white/10 text-dark-lighter dark:text-night-text-muted transition-colors p-1 rounded"
+                        className="btn-icon opacity-0 group-hover:opacity-100 transition-opacity bg-transparent hover:bg-gray-100 dark:hover:bg-primary/15 text-dark-lighter dark:text-night-text-muted transition-colors p-1 rounded"
                     >
                         <MoreVertical size={18} />
                     </button>
@@ -299,19 +299,19 @@ export default function HabitCard({ habit, date, onEdit }: HabitCardProps) {
                             <div ref={menuRef} className="absolute right-0 top-8 bg-surface dark:bg-night-surface border border-dark-border dark:border-night-border rounded-2xl z-20 py-2 min-w-[160px] animate-fade-in-up transition-colors">
                                 <button
                                     onClick={() => { onEdit(habit); setShowMenu(false); }}
-                                    className="flex items-center gap-3 w-full px-4 py-2 text-sm hover:bg-gray-50 dark:hover:bg-white/5 text-left font-medium text-dark dark:text-night-text transition-colors"
+                                    className="flex items-center gap-3 w-full px-4 py-2 text-sm hover:bg-gray-50 dark:hover:bg-primary/10 text-left font-medium text-dark dark:text-night-text transition-colors"
                                 >
                                     <Edit3 size={16} className="text-dark-lighter dark:text-night-text-muted" /> Edit
                                 </button>
                                 <button
                                     onClick={() => { duplicateHabit(habit.id); setShowMenu(false); }}
-                                    className="flex items-center gap-3 w-full px-4 py-2 text-sm hover:bg-gray-50 dark:hover:bg-white/5 text-left font-medium text-dark dark:text-night-text transition-colors"
+                                    className="flex items-center gap-3 w-full px-4 py-2 text-sm hover:bg-gray-50 dark:hover:bg-primary/10 text-left font-medium text-dark dark:text-night-text transition-colors"
                                 >
                                     <Copy size={16} className="text-dark-lighter dark:text-night-text-muted" /> Duplicate
                                 </button>
                                 <button
                                     onClick={() => { archiveHabit(habit.id); setShowMenu(false); }}
-                                    className="flex items-center gap-3 w-full px-4 py-2 text-sm hover:bg-gray-50 dark:hover:bg-white/5 text-left font-medium text-dark dark:text-night-text transition-colors"
+                                    className="flex items-center gap-3 w-full px-4 py-2 text-sm hover:bg-gray-50 dark:hover:bg-primary/10 text-left font-medium text-dark dark:text-night-text transition-colors"
                                 >
                                     <Archive size={16} className="text-dark-lighter dark:text-night-text-muted" /> {habit.archived ? 'Unarchive' : 'Archive'}
                                 </button>

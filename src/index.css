@@ -11,6 +11,11 @@
     background-size: 24px 24px;
   }
 
+  /* Dark: drop warm paper speckle; use a subtle light dot grid on charcoal */
+  .dark .parchment-texture {
+    background-image: radial-gradient(circle at 2px 2px, rgba(255, 255, 255, 0.06) 1px, transparent 0);
+  }
+
   .sigil-shadow {
     box-shadow:
       inset 0 2px 4px rgba(255, 255, 255, 0.2),
@@ -97,6 +102,17 @@
   --tooltip-bg: rgb(var(--tone-night-surface));
   --tooltip-border: rgb(var(--tone-night-border));
   --tooltip-text: rgb(var(--tone-night-text));
+
+  /* Brand in dark mode — lilac/violet (light keeps ember hearth primary in :root) */
+  --tone-primary: 167 139 250;
+  --tone-primary-dark: 139 92 246;
+  --tone-primary-light: 196 181 253;
+}
+
+.dark .sigil-shadow {
+  box-shadow:
+    inset 0 2px 4px rgba(255, 255, 255, 0.15),
+    0 4px 12px rgba(167, 139, 250, 0.28);
 }
 
 /* ==========================================
@@ -143,13 +159,13 @@ body.dark {
 }
 
 .dark .auth-form-input {
-  color: #ffeedf !important;
-  caret-color: #ffeedf !important;
+  color: #f4f0f8 !important;
+  caret-color: #f4f0f8 !important;
 }
 
 .dark .auth-form-input::placeholder {
-  color: #c4b5a8 !important;
-  opacity: 0.9;
+  color: #9c91ad !important;
+  opacity: 1;
 }
 
 .auth-form-input:-webkit-autofill,
@@ -166,9 +182,9 @@ body.dark {
 .dark .auth-form-input:-webkit-autofill:hover,
 .dark .auth-form-input:-webkit-autofill:focus,
 .dark .auth-form-input:-webkit-autofill:active {
-  -webkit-text-fill-color: #ffeedf !important;
-  -webkit-box-shadow: 0 0 0 1000px #2a2218 inset !important;
-  caret-color: #ffeedf !important;
+  -webkit-text-fill-color: #f4f0f8 !important;
+  -webkit-box-shadow: 0 0 0 1000px #1f1a24 inset !important;
+  caret-color: #f4f0f8 !important;
   transition: background-color 5000s ease-in-out 0s;
 }
 
@@ -211,7 +227,7 @@ body.dark {
   }
 
   .btn-icon {
-    @apply p-2 rounded-2xl hover:bg-surface-dark dark:hover:bg-night-bg text-primary-dark dark:text-primary-light transition-colors duration-200;
+    @apply p-2 rounded-2xl hover:bg-surface-dark dark:hover:bg-primary/15 text-primary-dark dark:text-primary-light transition-colors duration-200;
   }
 
   /* ---- Inputs — paper bed, focus ring not box border ---- */
@@ -317,7 +333,7 @@ body.dark {
 }
 
 .dark ::-webkit-scrollbar-thumb:hover {
-  background: rgb(var(--tone-night-border) / 0.85);
+  background: rgb(167 139 250 / 0.35);
 }
 
 /* ==========================================

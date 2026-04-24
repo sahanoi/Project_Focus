@@ -39,9 +39,9 @@ export interface FeatureGate {
 }
 
 export const FEATURE_GATES: Record<UserTier, FeatureGate> = {
-    novice: { maxHabits: 3, availableHabitTypes: ['regular'], analyticsEnabled: false, routinesEnabled: false, goalsEnabled: false, customScheduleEnabled: false },
-    apprentice: { maxHabits: 6, availableHabitTypes: ['regular', 'numerical'], analyticsEnabled: false, routinesEnabled: false, goalsEnabled: false, customScheduleEnabled: false },
-    /** Level 3+: analytics, goals, custom schedules — habit types stay regular + numerical only until Strategist. */
+    novice: { maxHabits: 3, availableHabitTypes: ['regular'], analyticsEnabled: true, routinesEnabled: false, goalsEnabled: false, customScheduleEnabled: false },
+    apprentice: { maxHabits: 6, availableHabitTypes: ['regular', 'numerical'], analyticsEnabled: true, routinesEnabled: false, goalsEnabled: false, customScheduleEnabled: false },
+    /** Level 3+: goals & custom schedules — habit types stay regular + numerical only until Strategist. */
     practitioner: { maxHabits: 12, availableHabitTypes: ['regular', 'numerical'], analyticsEnabled: true, routinesEnabled: false, goalsEnabled: true, customScheduleEnabled: true },
     /** Level 4+: Infinite Loop habits (separate tier from Challenge). */
     strategist: { maxHabits: 18, availableHabitTypes: ['regular', 'numerical', 'infinite'], analyticsEnabled: true, routinesEnabled: false, goalsEnabled: true, customScheduleEnabled: true },

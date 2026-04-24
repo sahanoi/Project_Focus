@@ -64,13 +64,14 @@ export default function Auth({ variant = 'standalone' }: AuthProps) {
             : 'min-h-screen justify-center p-4';
 
     const formLabelClass =
-        'block font-label text-[10px] font-bold uppercase tracking-[0.15em] text-hearth-on-surface-variant ml-1';
+        'block font-label text-[10px] font-bold uppercase tracking-[0.15em] text-hearth-on-surface-variant dark:text-warm-night-text ml-1';
     const formLabelClassMb = `${formLabelClass} mb-2`;
     const inputIconClass =
-        'absolute right-4 top-1/2 -translate-y-1/2 w-[22px] h-[22px] text-hearth-outline-variant/50 group-focus-within:text-primary/60 transition-colors pointer-events-none';
+        'absolute right-4 top-1/2 -translate-y-1/2 w-[22px] h-[22px] text-hearth-outline-variant/50 group-focus-within:text-primary/60 dark:text-warm-night-muted dark:group-focus-within:text-primary-light transition-colors pointer-events-none';
     const inputFieldClass =
-        'auth-form-input w-full bg-white border-0 rounded-xl px-5 py-4 pr-12 text-base font-body font-medium placeholder:text-hearth-outline-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all shadow-[inset_0_0_0_1px_rgba(219,194,176,0.35)]';
-    const formFooterClass = 'text-sm font-body text-hearth-on-surface-variant';
+        'auth-form-input w-full bg-white dark:bg-warm-night-field border-0 rounded-xl px-5 py-4 pr-12 text-base font-body font-medium placeholder:text-hearth-outline-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/20 dark:focus:ring-primary/35 transition-all shadow-[inset_0_0_0_1px_rgba(219,194,176,0.35)] dark:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.1)]';
+    const formFooterClass =
+        'text-sm font-body text-hearth-on-surface-variant dark:text-warm-night-text';
 
     return (
         <div
@@ -127,21 +128,21 @@ export default function Auth({ variant = 'standalone' }: AuthProps) {
                         >
                             <AppLogo size={56} />
                         </motion.div>
-                        <h1 className="font-headline text-3xl md:text-4xl font-medium text-primary tracking-tight leading-tight">
+                        <h1 className="font-headline text-3xl md:text-4xl font-medium text-primary dark:text-primary-light tracking-tight leading-tight">
                             {isForgotPassword
                                 ? 'When the path is lost'
                                 : isSignUp
                                   ? 'Start your journey'
                                   : 'Begin your journey'}
                         </h1>
-                        <p className="font-body text-hearth-on-surface-variant mt-3 text-sm italic max-w-xs mx-auto leading-relaxed">
+                        <p className="font-body text-hearth-on-surface-variant dark:text-warm-night-text mt-3 text-sm italic max-w-xs mx-auto leading-relaxed">
                             {isForgotPassword
                                 ? 'We’ll point you toward help when the road returns.'
                                 : isSignUp
                                   ? 'Every quest log opens with a single line of intent.'
                                   : '“Every great chronicler begins with a single drop of ink.”'}
                         </p>
-                        <p className="font-label text-[10px] font-bold uppercase tracking-[0.2em] text-hearth-on-surface-variant/70 mt-4">
+                        <p className="font-label text-[10px] font-bold uppercase tracking-[0.2em] text-hearth-on-surface-variant/70 dark:text-warm-night-muted mt-4">
                             Focus FTP — habits, goals, and the map of your days
                         </p>
                     </div>
@@ -160,7 +161,7 @@ export default function Auth({ variant = 'standalone' }: AuthProps) {
                                 />
                                 <Mail className={inputIconClass} strokeWidth={2} aria-hidden />
                             </div>
-                            <p className="text-[11px] text-hearth-on-surface-variant/70 italic ml-1">
+                            <p className="text-[11px] text-hearth-on-surface-variant/70 dark:text-warm-night-muted italic ml-1">
                                 The owl needs a destination for your scrolls.
                             </p>
                         </div>
@@ -182,7 +183,7 @@ export default function Auth({ variant = 'standalone' }: AuthProps) {
                                     />
                                     <Lock className={inputIconClass} strokeWidth={2} aria-hidden />
                                 </div>
-                                <p className="text-[11px] text-hearth-on-surface-variant/70 italic ml-1">
+                                <p className="text-[11px] text-hearth-on-surface-variant/70 dark:text-warm-night-muted italic ml-1">
                                     Keep it guarded like a dragon&apos;s hoard.
                                 </p>
                             </div>
@@ -211,7 +212,7 @@ export default function Auth({ variant = 'standalone' }: AuthProps) {
                             </button>
                         </div>
 
-                        <div className="mt-10 pt-8 border-t border-hearth-outline-variant/20 space-y-4 text-center">
+                        <div className="mt-10 pt-8 border-t border-hearth-outline-variant/20 dark:border-warm-night-border/60 space-y-4 text-center">
                             <p className={formFooterClass}>
                                 {isForgotPassword ? (
                                     <button
@@ -246,7 +247,7 @@ export default function Auth({ variant = 'standalone' }: AuthProps) {
                                         setError(null);
                                         setMessage(null);
                                     }}
-                                    className="inline-block pt-1 font-label text-[10px] font-bold uppercase tracking-widest text-hearth-outline-variant hover:text-primary transition-colors"
+                                    className="inline-block pt-1 font-label text-[10px] font-bold uppercase tracking-widest text-hearth-outline-variant hover:text-primary dark:text-warm-night-muted dark:hover:text-primary-light transition-colors"
                                 >
                                     Forgot password?
                                 </button>
@@ -260,7 +261,7 @@ export default function Auth({ variant = 'standalone' }: AuthProps) {
                     className={
                         variant === 'atmosphere'
                             ? 'text-center text-white text-[11px] font-bold uppercase tracking-[0.2em] mt-8 drop-shadow-[0_1px_2px_rgba(0,0,0,0.75)]'
-                            : 'text-center text-warm-muted/50 dark:text-warm-night-muted/45 text-[11px] font-bold uppercase tracking-[0.2em] mt-8'
+                            : 'text-center text-warm-muted/50 dark:text-warm-night-muted/90 text-[11px] font-bold uppercase tracking-[0.2em] mt-8'
                     }
                 >
                     One log at a time — your journey, your map

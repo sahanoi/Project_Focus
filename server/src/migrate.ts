@@ -5,6 +5,8 @@ import pg from 'pg';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
 async function main() {
     const url = process.env.DATABASE_URL;
     if (!url) {

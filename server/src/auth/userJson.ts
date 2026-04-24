@@ -1,11 +1,13 @@
+import { toIsoTimestamp } from '../util/dates.js';
+
 export type UserRow = {
     id: string;
     email: string;
     displayName: string | null;
     bio: string | null;
     avatarSeed: string | null;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: Date | string;
+    updatedAt: Date | string;
 };
 
 export function toPublicUser(u: UserRow) {
@@ -17,7 +19,7 @@ export function toPublicUser(u: UserRow) {
             bio: u.bio ?? undefined,
             avatar_seed: u.avatarSeed ?? undefined,
         },
-        created_at: u.createdAt.toISOString(),
-        updated_at: u.updatedAt.toISOString(),
+        created_at: toIsoTimestamp(u.createdAt),
+        updated_at: toIsoTimestamp(u.updatedAt),
     };
 }

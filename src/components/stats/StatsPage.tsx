@@ -212,14 +212,14 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                 <div className="flex rounded-lg border border-[#D4C8E8] dark:border-night-border overflow-hidden transition-colors">
                     <button
                         onClick={() => { setActiveView('habits'); setSelectedRoutineId(null); }}
-                        className={`px-4 py-2 text-sm font-semibold transition-colors ${activeView === 'habits' ? 'bg-primary dark:bg-primary-dark text-white' : 'bg-surface dark:bg-night-surface text-dark-lighter dark:text-night-text-muted hover:bg-[#D4C8E8] dark:hover:bg-white/5'
+                        className={`px-4 py-2 text-sm font-semibold transition-colors ${activeView === 'habits' ? 'bg-primary dark:bg-primary-dark text-white' : 'bg-surface dark:bg-night-surface text-dark-lighter dark:text-night-text-muted hover:bg-[#D4C8E8] dark:hover:bg-primary/10'
                             }`}
                     >
                         Habits
                     </button>
                     <button
                         onClick={() => setActiveView('routines')}
-                        className={`px-4 py-2 text-sm font-semibold transition-colors ${activeView === 'routines' ? 'bg-primary dark:bg-primary-dark text-white' : 'bg-surface dark:bg-night-surface text-dark-lighter dark:text-night-text-muted hover:bg-[#D4C8E8] dark:hover:bg-white/5'
+                        className={`px-4 py-2 text-sm font-semibold transition-colors ${activeView === 'routines' ? 'bg-primary dark:bg-primary-dark text-white' : 'bg-surface dark:bg-night-surface text-dark-lighter dark:text-night-text-muted hover:bg-[#D4C8E8] dark:hover:bg-primary/10'
                             }`}
                     >
                         Routines
@@ -234,7 +234,7 @@ export default function StatsPage({ onEditHabit }: StatsPageProps) {
                             onClick={() => setSelectedRange(opt.value)}
                             className={`px-4 py-2 text-sm font-semibold transition-colors ${selectedRange === opt.value
                                 ? 'bg-primary dark:bg-primary-dark text-white'
-                                : 'bg-surface dark:bg-night-surface text-dark-lighter dark:text-night-text-muted hover:bg-[#D4C8E8] dark:hover:bg-white/5'
+                                : 'bg-surface dark:bg-night-surface text-dark-lighter dark:text-night-text-muted hover:bg-[#D4C8E8] dark:hover:bg-primary/10'
                                 }`}
                         >
                             {opt.label}

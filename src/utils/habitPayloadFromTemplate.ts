@@ -1,7 +1,7 @@
 import { CharacterStats, Habit, HabitTemplate } from '../types';
 import { isHabitTypeAvailable } from './featureGateUtils';
 
-/** Same mapping as OnboardingWizard — keeps ritual auto-seed aligned with wizard templates. */
+/** Same mapping as first-launch seed (Drink Water template) — keeps ritual auto-seed aligned. */
 export function habitPayloadFromTemplate(
     template: HabitTemplate,
     stats: CharacterStats

@@ -9,6 +9,7 @@ import {
     clearSessionCookie,
     createSessionForUser,
     deleteSessionById,
+    isValidSessionId,
     resolveUserFromRequest,
     setSessionCookie,
     SESSION_COOKIE,
@@ -92,8 +93,14 @@ authRoutes.post('/login', async (c) => {
     if (!user) {
         return c.json({ error: 'Invalid email or password' }, 401);
     }
-    const ok = await bcrypt.compare(body.password, user.passwordHash);
-    if (!ok) {
+    let passwordOk = false;
+    try {
+        passwordOk = await bcrypt.compare(body.password, user.passwordHash);
+    } catch {
+        console.error('bcrypt.compare failed for user', email);
+        return c.json({ error: 'Invalid email or password' }, 401);
+    }
+    if (!passwordOk) {
         return c.json({ error: 'Invalid email or password' }, 401);
     }
 
@@ -115,7 +122,7 @@ authRoutes.post('/login', async (c) => {
 
 authRoutes.post('/logout', async (c) => {
     const sessionId = getCookie(c, SESSION_COOKIE);
-    if (sessionId) {
+    if (sessionId && isValidSessionId(sessionId)) {
         await deleteSessionById(sessionId);
     }
     clearSessionCookie(c);

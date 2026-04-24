@@ -25,13 +25,14 @@ describe('getFeatureGate', () => {
     it('returns novice gate for level 1', () => {
         const gate = getFeatureGate(statsAtLevel(1));
         expect(gate.maxHabits).toBe(3);
-        expect(gate.analyticsEnabled).toBe(false);
+        expect(gate.analyticsEnabled).toBe(true);
         expect(gate.routinesEnabled).toBe(false);
     });
 
     it('returns apprentice gate for level 2', () => {
         const gate = getFeatureGate(statsAtLevel(2));
         expect(gate.maxHabits).toBe(6);
+        expect(gate.analyticsEnabled).toBe(true);
         expect(gate.availableHabitTypes).toContain('numerical');
     });
 
@@ -124,12 +125,12 @@ describe('getMinLevelForHabitType', () => {
 });
 
 describe('isAnalyticsEnabled', () => {
-    it('disabled for novice (level 1)', () => {
-        expect(isAnalyticsEnabled(statsAtLevel(1))).toBe(false);
+    it('enabled for novice (level 1)', () => {
+        expect(isAnalyticsEnabled(statsAtLevel(1))).toBe(true);
     });
 
-    it('disabled for apprentice (level 2)', () => {
-        expect(isAnalyticsEnabled(statsAtLevel(2))).toBe(false);
+    it('enabled for apprentice (level 2)', () => {
+        expect(isAnalyticsEnabled(statsAtLevel(2))).toBe(true);
     });
 
     it('enabled for practitioner (level 3)', () => {

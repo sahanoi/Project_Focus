@@ -273,7 +273,7 @@ export default function HabitModal({ isOpen, onClose, editHabit }: HabitModalPro
                                 <button
                                     type="button"
                                     onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                                    className="w-12 h-12 rounded-xl border border-gray-200 dark:border-night-border bg-gray-50 dark:bg-night-bg flex items-center justify-center text-2xl hover:bg-gray-100 dark:hover:bg-night-border hover:border-gray-300 dark:hover:border-night-border transition-colors flex-shrink-0"
+                                    className="w-12 h-12 rounded-xl border border-gray-200 dark:border-night-border bg-gray-50 dark:bg-night-bg flex items-center justify-center text-2xl hover:bg-gray-100 dark:hover:bg-primary/15 hover:border-gray-300 dark:hover:border-primary-light/40 transition-colors flex-shrink-0"
                                 >
                                     {icon}
                                 </button>
@@ -297,7 +297,7 @@ export default function HabitModal({ isOpen, onClose, editHabit }: HabitModalPro
                                                 key={e}
                                                 type="button"
                                                 onClick={() => { setIcon(e); setShowEmojiPicker(false); }}
-                                                className={`w-9 h-9 rounded-xl flex items-center justify-center text-xl hover:bg-gray-100 dark:hover:bg-night-border transition-colors ${icon === e ? 'bg-primary/10 ring-2 ring-primary' : ''}`}
+                                                className={`w-9 h-9 rounded-xl flex items-center justify-center text-xl hover:bg-gray-100 dark:hover:bg-primary/15 transition-colors ${icon === e ? 'bg-primary/10 ring-2 ring-primary' : ''}`}
                                             >
                                                 {e}
                                             </button>
@@ -325,7 +325,7 @@ export default function HabitModal({ isOpen, onClose, editHabit }: HabitModalPro
                                         className={`flex items-start gap-3 p-4 rounded-2xl border-2 text-left transition-colors duration-300 ${type === opt.value
                                             ? 'border-primary bg-primary/5'
                                             : unlocked
-                                                ? 'border-transparent bg-gray-50 dark:bg-night-bg hover:bg-gray-100 dark:hover:bg-night-border'
+                                                ? 'border-transparent bg-gray-50 dark:bg-night-bg hover:bg-gray-100 dark:hover:bg-primary/15'
                                                 : 'border-transparent bg-gray-50/60 dark:bg-night-bg/60 opacity-70 cursor-not-allowed'
                                             }`}
                                     >
@@ -358,7 +358,7 @@ export default function HabitModal({ isOpen, onClose, editHabit }: HabitModalPro
                                         onClick={() => setScheduleType(opt.value)}
                                         className={`p-3 rounded-xl border text-left transition-colors ${scheduleType === opt.value
                                             ? 'border-primary bg-primary/5 ring-1 ring-primary/20'
-                                            : 'border-gray-200 dark:border-night-border bg-surface dark:bg-night-surface hover:border-gray-300 dark:hover:border-night-border'
+                                            : 'border-gray-200 dark:border-night-border bg-surface dark:bg-night-surface hover:border-gray-300 dark:hover:border-primary-light/40'
                                             }`}
                                     >
                                         <p className={`text-xs font-bold ${scheduleType === opt.value ? 'text-primary' : 'text-dark dark:text-night-text'}`}>{opt.label}</p>
@@ -377,7 +377,7 @@ export default function HabitModal({ isOpen, onClose, editHabit }: HabitModalPro
                                             onClick={() => toggleDay(i)}
                                             className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all ${selectedDays.includes(i)
                                                 ? 'bg-primary text-white'
-                                                : 'bg-gray-100 dark:bg-night-bg text-dark-lighter dark:text-night-text-muted hover:bg-gray-200 dark:hover:bg-night-border'
+                                                : 'bg-gray-100 dark:bg-night-bg text-dark-lighter dark:text-night-text-muted hover:bg-gray-200 dark:hover:bg-primary/15'
                                                 }`}
                                         >
                                             {day}
@@ -396,7 +396,7 @@ export default function HabitModal({ isOpen, onClose, editHabit }: HabitModalPro
                                             onClick={() => toggleMonthDay(d)}
                                             className={`w-8 h-8 rounded-md text-xs font-bold transition-all ${selectedMonthDays.includes(d)
                                                 ? 'bg-primary text-white'
-                                                : 'bg-gray-100 dark:bg-night-bg text-dark-lighter dark:text-night-text-muted hover:bg-gray-200 dark:hover:bg-night-border'
+                                                : 'bg-gray-100 dark:bg-night-bg text-dark-lighter dark:text-night-text-muted hover:bg-gray-200 dark:hover:bg-primary/15'
                                                 }`}
                                         >
                                             {d}

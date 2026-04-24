@@ -10,6 +10,8 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx src/migrate.ts",
     "db:seed:dev": "tsx src/scripts/seedDevUser.ts",
+    "db:seed:if-missing": "tsx src/scripts/seedDevUserIfMissing.ts",
+    "db:seed:community": "tsx src/scripts/seedCommunityHabits.ts",
     "db:studio": "drizzle-kit studio",
     "test": "vitest run",
     "test:watch": "vitest"
