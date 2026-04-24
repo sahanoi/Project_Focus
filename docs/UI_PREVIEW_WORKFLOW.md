@@ -8,14 +8,17 @@ This doc implements the **See and edit UI** plan: Stitch for exploration, Cursor
 
 Tool: [Google Stitch](https://blog.google/innovation-and-ai/models-and-research/google-labs/stitch-ai-ui-design/) (Google Labs). Tips: [Stitch prompt guide (forum)](https://discuss.ai.google.dev/t/stitch-prompt-guide/83844).
 
+**Full prompt pack (every major screen + widget):** [STITCH_PROMPTS_MASTER.md](./STITCH_PROMPTS_MASTER.md) — paste `GLOBAL_CONTEXT` plus individual `Stitch prompt` blocks per batch.
+
 Paste the block below into Stitch to get **three** visual directions (Arena Card / Calm RPG / Data Athlete) for the same six screens.
 
 ```
 You are designing UI for a production web app: **Project Focus** — a gamified habit tracker for adults who want sustainable self-improvement without boring spreadsheets.
 
 PRODUCT CONTEXT
-- Core loop: log habits daily, build streaks, earn XP, level up, see RPG-style "character stats" derived from consistency (not micro-transactions).
-- Philosophy: "What would this look like if it were fun?" — productivity that feels like a game, not childish.
+- **Journey:** See [UX_JOURNEY.md](./UX_JOURNEY.md) — optional **pre-auth** isekai / Han / first water beats, then account; water baseline habit, 3-day / 21-day gating, then free roam.
+- Core loop: log habits, build streaks, earn XP, level up, RPG-style character stats from real consistency (not micro-transactions).
+- Philosophy: cozy adventurer — productivity that feels like a game, not childish.
 - Platform: responsive web app (mobile-first), primary use on phone; also comfortable on desktop.
 - Visual lineage (optional inspiration, not a copy): sports trading card / squad hub energy — premium cards, stats, progression — but must feel original and app-store credible, not a knockoff game UI.
 

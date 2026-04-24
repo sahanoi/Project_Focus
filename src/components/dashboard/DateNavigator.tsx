@@ -54,7 +54,7 @@ export default function DateNavigator() {
             {/* Week nav */}
             <button
                 onClick={() => navigateWeek(-1)}
-                className="p-1 rounded-md hover:bg-white/70 dark:hover:bg-white/10 text-dark-lighter dark:text-night-text-muted transition-colors flex-shrink-0"
+                className="p-1 rounded-md hover:bg-white/70 dark:hover:bg-primary/15 text-dark-lighter dark:text-night-text-muted transition-colors flex-shrink-0"
                 aria-label="Previous week"
             >
                 <ChevronLeft size={14} />
@@ -70,7 +70,7 @@ export default function DateNavigator() {
                             ? 'bg-primary text-white'
                             : day.isToday
                                 ? 'bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary-light hover:bg-primary/15 dark:hover:bg-primary/30'
-                                : 'hover:bg-white/70 dark:hover:bg-white/10 text-dark-lighter dark:text-night-text-muted'
+                                : 'hover:bg-white/70 dark:hover:bg-primary/15 text-dark-lighter dark:text-night-text-muted'
                             }`}
                     >
                         <span className={`text-[8px] font-bold uppercase tracking-[0.12em] ${day.isSelected ? 'text-white/80' : ''
@@ -96,7 +96,7 @@ export default function DateNavigator() {
             <div className="flex items-center gap-1.5 flex-shrink-0">
                 <button
                     onClick={() => navigateWeek(1)}
-                    className="p-1 rounded-md hover:bg-white/70 dark:hover:bg-white/10 text-dark-lighter dark:text-night-text-muted transition-colors"
+                    className="p-1 rounded-md hover:bg-white/70 dark:hover:bg-primary/15 text-dark-lighter dark:text-night-text-muted transition-colors"
                     aria-label="Next week"
                 >
                     <ChevronRight size={14} />

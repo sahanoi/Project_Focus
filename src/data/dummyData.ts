@@ -1,6 +1,7 @@
 import { Habit, Goal, Completion, Routine } from '../types';
 import { v4 as uuidv4 } from 'uuid';
 import { format, subDays } from 'date-fns';
+import { inferSkillFocusFromCategoryType } from '../utils/skillFocusUtils';
 
 // ==========================================
 // Demo Data Generator — Persona: Leo (CS Student & Runner)
@@ -169,7 +170,14 @@ export function generateDummyHabits(): Habit[] {
 
     // Ensure today is somewhat realistic (maybe some done, some not)
     // We generated back from today.
-    return habits;
+    return habits.map((h) => {
+        const i = inferSkillFocusFromCategoryType(h.category, h.type);
+        return {
+            ...h,
+            primarySkills: i.primarySkills,
+            secondarySkills: i.secondarySkills,
+        };
+    });
 }
 
 export function generateDummyGoals(habits: Habit[]): Goal[] {

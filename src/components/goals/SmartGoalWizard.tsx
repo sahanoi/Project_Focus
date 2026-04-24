@@ -105,7 +105,7 @@ export default function SmartGoalWizard({ isOpen, onClose }: SmartGoalWizardProp
                             <p className="text-xs text-dark-lighter dark:text-night-text-muted transition-colors">Step {currentStep + 1} of {STEPS.length}</p>
                         </div>
                     </div>
-                    <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-surface-dark dark:hover:bg-night-border transition-colors">
+                    <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-surface-dark dark:hover:bg-primary/15 transition-colors">
                         <X size={16} className="text-dark-lighter dark:text-night-text-muted transition-colors" />
                     </button>
                 </div>
@@ -347,7 +347,7 @@ export default function SmartGoalWizard({ isOpen, onClose }: SmartGoalWizardProp
                 <div className="px-5 py-4 border-t border-dark-border dark:border-night-border flex items-center justify-between transition-colors">
                     <button
                         onClick={currentStep === 0 ? onClose : handleBack}
-                        className="px-4 py-2 rounded-xl text-sm text-dark-lighter dark:text-night-text-muted hover:text-dark dark:hover:text-night-text hover:bg-surface-dark dark:hover:bg-night-border transition-all"
+                        className="px-4 py-2 rounded-xl text-sm text-dark-lighter dark:text-night-text-muted hover:text-dark dark:hover:text-night-text hover:bg-surface-dark dark:hover:bg-primary/15 transition-all"
                     >
                         {currentStep === 0 ? 'Cancel' : (
                             <span className="flex items-center gap-1">

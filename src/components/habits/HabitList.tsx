@@ -4,6 +4,7 @@ import { Habit } from '../../types';
 import HabitCard from './HabitCard';
 import { Inbox } from 'lucide-react';
 import { getDay, parseISO, differenceInCalendarDays } from 'date-fns';
+import { findStarterWaterHabit, isStarterQuestComplete } from '../../utils/starterQuestUtils';
 
 interface HabitListProps {
     onEditHabit: (habit: Habit) => void;
@@ -48,11 +49,22 @@ function isScheduledForDate(habit: Habit, dateStr: string): boolean {
 export default function HabitList({ onEditHabit, onAddHabit }: HabitListProps) {
     const { habits, selectedDate } = useHabitStore();
 
-    // Filter: active + scheduled for selected date
+    // Filter: active + scheduled for selected date; pin Drink Water first while foundation quest is active
     const todaysHabits = useMemo(() => {
-        return habits
+        const list = habits
             .filter((h) => !h.archived)
             .filter((h) => isScheduledForDate(h, selectedDate));
+        if (!isStarterQuestComplete(habits)) {
+            const water = findStarterWaterHabit(habits);
+            if (water) {
+                return [...list].sort((a, b) => {
+                    if (a.id === water.id) return -1;
+                    if (b.id === water.id) return 1;
+                    return 0;
+                });
+            }
+        }
+        return list;
     }, [habits, selectedDate]);
 
     // Group habits by type

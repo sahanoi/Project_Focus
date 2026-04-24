@@ -1,0 +1,49 @@
+---
+description: Stale dev servers, EADDRINUSE, ports 3001/5173, free-dev-ports, dev:ports-inspect, multi-project, SKIP_FREE_DEV_PORTS, DRYRUN, lsof, netstat, Get-NetTCPConnection.
+globs: scripts/free-dev-ports.mjs,scripts/inspect-dev-ports.mjs,scripts/run-dev.mjs
+alwaysApply: false
+---
+
+# Local dev ports (Project F)
+
+## Defaults
+
+- **Vite (frontend):** `5173` — fixed in `vite.config.ts` with **`strictPort: true`** (no silent hop to 5174).
+- **API (Hono):** `3001` — from **`PORT`** in `server` (default `3001`).
+
+## What runs before `dev:app`
+
+`scripts/run-dev.mjs` runs **`scripts/free-dev-ports.mjs`** after DB prep, unless **`SKIP_FREE_DEV_PORTS=1`**. The script can terminate listeners on those ports, then log what was stopped.
+
+**Env:**
+
+| Variable | Purpose |
+|----------|---------|
+| `SKIP_FREE_DEV_PORTS=1` | Do not kill anything; use when two stacks must share 3001/5173. |
+| `DEV_FREE_PORTS` | Comma list, e.g. `3001,5173,5174` (default: `3001,5173`). |
+| `DEV_FREE_PORTS_DRYRUN=1` | Only print what *would* be freed; no `taskkill`/`kill`. |
+
+## npm scripts (repo root)
+
+| Command | What it does |
+|---------|----------------|
+| `npm run dev` | Full bootstrap, then free ports (unless skipped), then Vite + API. |
+| `npm run dev:free-ports` | Run `free-dev-ports.mjs` only (kill + log). |
+| `npm run dev:ports-inspect` | `inspect-dev-ports.mjs` — list listeners, **no kill** (or “No listeners on ports…”). |
+
+## Log lines the user cares about
+
+Before killing, the script logs **port, pid,** and a best-effort line (Windows: CIM: **name, executable path, command line**). The **command line** usually shows the **project path** (e.g. `...Project F...`, `vite`, `tsx watch`) so the user can tell which of several local projects was holding the port.
+
+## Manual checks (no Node)
+
+- **Windows (PowerShell):** `Get-NetTCPConnection -LocalPort 3001,5173 -State Listen` and match **OwningProcess** to `Get-Process -Id <pid>`.
+- **Any OS:** `netstat -ano` (Windows) / `lsof -iTCP:3001 -sTCP:LISTEN` (macOS/Linux) when `lsof` exists.
+
+## Multi-project (3–4 repos)
+
+Prefer **different default ports per repo** (set **`PORT`**, Vite `server.port`, `CORS_ORIGIN`, and Vite `proxy` targets consistently). For this app only, `SKIP_FREE_DEV_PORTS=1` when another process must own 3001/5173 on purpose.
+
+## Human doc
+
+For a copy-paste reference, see **`docs/LOCAL_DEV_PORTS.md`**.

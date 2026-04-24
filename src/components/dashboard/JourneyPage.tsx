@@ -2,18 +2,21 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useHabitStore } from '../../store/habitStore';
 import { Sparkles, Lock, Star, Zap } from 'lucide-react';
+import StarterQuestCard from './StarterQuestCard';
+import DailyMissionCard from './DailyMissionCard';
 
 /** Aligns with `LEVEL_TO_TIER` / `FEATURE_GATES` in `src/types/index.ts`. Higher levels are aspirational flair. */
 const LEVEL_MILESTONES = [
-    { level: 1,  label: 'Initiate',     xpRequired: 0,     reward: 'Regular habits' },
+    { level: 1,  label: 'Initiate',     xpRequired: 0,     reward: 'Regular habits & statistics' },
     { level: 2,  label: 'Apprentice',   xpRequired: 1000,  reward: 'Numerical habits' },
-    { level: 3,  label: 'Practitioner', xpRequired: 2000,  reward: 'Analytics, goals & custom schedules' },
+    { level: 3,  label: 'Practitioner', xpRequired: 2000,  reward: 'Goals & custom schedules' },
     { level: 4,  label: 'Strategist',   xpRequired: 3000,  reward: 'Infinite Loop habits' },
     { level: 5,  label: 'Competent',    xpRequired: 4000,  reward: 'Challenge habits & routines' },
     { level: 6,  label: 'Expert',       xpRequired: 5000,  reward: 'Unlimited active habits' },
     { level: 10, label: 'Veteran',      xpRequired: 9000,  reward: 'Community leaderboard rank badge (roadmap)' },
     { level: 20, label: 'Master',       xpRequired: 19000, reward: 'Custom radar themes (roadmap)' },
     { level: 50, label: 'Legend',       xpRequired: 49000, reward: 'Legend collectible frame (roadmap)' },
+    { level: 61, label: 'Immortal',     xpRequired: 60000, reward: 'Immortal title & profile aura (roadmap)' },
 ];
 
 export default function JourneyPage() {
@@ -23,13 +26,22 @@ export default function JourneyPage() {
     const xpToNextLevel = 1000 - (xp % 1000);
 
     return (
-        <div className="p-6 max-w-2xl mx-auto space-y-8 pb-24 lg:pb-8">
+        <div className="p-6 max-w-3xl mx-auto space-y-8 pb-24 lg:pb-8">
             <header>
-                <h1 className="text-3xl font-black text-dark dark:text-night-text tracking-tight">Level Journey</h1>
-                <p className="text-dark-lighter dark:text-night-text-muted mt-1 text-sm">
-                    Your progression path — keep logging habits to level up and unlock rewards.
+                <h1 className="text-3xl font-black text-dark dark:text-night-text tracking-tight">Journey</h1>
+                <p className="text-dark-lighter dark:text-night-text-muted mt-1 text-sm max-w-xl">
+                    Story-style quests, guideline habits, and your long-term level path — separate from the main dashboard, so home stays a straightforward habit tracker.
                 </p>
             </header>
+
+            {/* Foundation + 7-day missions (isekai / guided layer) */}
+            <section aria-label="Story quests and missions" className="space-y-4">
+                <h2 className="text-sm font-bold uppercase tracking-wider text-dark-lighter dark:text-night-text-muted px-1">Quests &amp; missions</h2>
+                <StarterQuestCard />
+                <DailyMissionCard />
+            </section>
+
+            <h2 className="text-sm font-bold uppercase tracking-wider text-dark-lighter dark:text-night-text-muted px-1 pt-2">Level progression</h2>
 
             {/* Current Level Card */}
             <motion.div

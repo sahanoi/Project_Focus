@@ -64,7 +64,7 @@ export default function ShareHabitModal({ isOpen, onClose, habit }: ShareHabitMo
                         </h3>
                         <button
                             onClick={onClose}
-                            className="p-2 rounded-xl text-dark-lighter dark:text-night-text-muted hover:bg-surface-dark dark:hover:bg-night-bg transition-colors"
+                            className="p-2 rounded-xl text-dark-lighter dark:text-night-text-muted hover:bg-surface-dark dark:hover:bg-primary/15 transition-colors"
                         >
                             <X size={20} />
                         </button>
@@ -125,13 +125,13 @@ export default function ShareHabitModal({ isOpen, onClose, habit }: ShareHabitMo
                         <div className="mt-8 w-full flex gap-3">
                             <button
                                 onClick={handleCopy}
-                                className="flex-1 py-3.5 bg-dark dark:bg-night-text text-white dark:text-night-bg rounded-xl font-bold hover:bg-dark-light dark:hover:bg-night-text/80 transition-colors flex items-center justify-center gap-2"
+                                className="flex-1 py-3.5 bg-dark dark:bg-night-text text-white dark:text-night-bg rounded-xl font-bold hover:bg-dark-light dark:hover:bg-primary dark:hover:text-white transition-colors flex items-center justify-center gap-2"
                             >
                                 <Copy size={18} /> Copy Link
                             </button>
                             <button
                                 onClick={handleCopy}
-                                className="flex-1 py-3.5 bg-surface dark:bg-night-surface text-dark dark:text-night-text border border-dark-border dark:border-night-border rounded-xl font-bold hover:bg-surface-dark dark:hover:bg-night-bg transition-colors flex items-center justify-center gap-2"
+                                className="flex-1 py-3.5 bg-surface dark:bg-night-surface text-dark dark:text-night-text border border-dark-border dark:border-night-border rounded-xl font-bold hover:bg-surface-dark dark:hover:bg-primary/15 transition-colors flex items-center justify-center gap-2"
                             >
                                 <Download size={18} /> Save Image
                             </button>

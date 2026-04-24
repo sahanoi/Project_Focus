@@ -85,7 +85,7 @@ export default function CollectibleToast() {
                                 setVisibleId(null);
                                 setTimeout(() => clearNewlyUnlockedCollectibles(), 300);
                             }}
-                            className="p-1.5 rounded-lg text-dark-lighter dark:text-night-text-muted hover:bg-black/5 dark:hover:bg-white/10 transition-colors flex-shrink-0"
+                            className="p-1.5 rounded-lg text-dark-lighter dark:text-night-text-muted hover:bg-black/5 dark:hover:bg-primary/15 transition-colors flex-shrink-0"
                         >
                             <X size={16} />
                         </button>

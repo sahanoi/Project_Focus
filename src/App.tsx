@@ -7,6 +7,8 @@ import QuickLogModal from './components/habits/QuickLogModal';
 import StatsPage from './components/stats/StatsPage';
 import SettingsPage from './components/settings/SettingsPage';
 import Auth from './components/auth/Auth';
+import IntroGate from './components/auth/IntroGate';
+import WebBgBackdrop from './components/auth/WebBgBackdrop';
 import OnboardingWizard from './components/onboarding/OnboardingWizard';
 import SmartGoalWizard from './components/goals/SmartGoalWizard';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
@@ -24,8 +26,8 @@ import AchievementToast from './components/dashboard/AchievementToast';
 import LevelUpModal from './components/dashboard/LevelUpModal';
 
 function AuthenticatedApp() {
-    const { activeTab, habits, selectedHabitId, setSelectedHabitId, detailViewHabitId, setDetailViewHabitId, showModal, setShowModal, fetchAllData, isLoading } = useHabitStore();
-    const { session, loading, isRecovery } = useAuth();
+    const { activeTab, habits, selectedHabitId, setSelectedHabitId, detailViewHabitId, setDetailViewHabitId, showModal, setShowModal, fetchAllData } = useHabitStore();
+    const { session, loading } = useAuth();
     const { theme } = useThemeStore();
     const [editHabit, setEditHabit] = useState<Habit | null>(null);
     const [onboardingDone, setOnboardingDone] = useState(false);
@@ -33,9 +35,7 @@ function AuthenticatedApp() {
     const [initialLoadDone, setInitialLoadDone] = useState(false);
     const hasFetchedRef = useRef(false);
 
-    // Fetch data from Supabase ONCE when session becomes available.
-    // We use a ref to prevent re-fetching when Supabase fires TOKEN_REFRESHED
-    // on window focus (alt-tab), which creates a new session object reference.
+    // Run fetchAllData once when session appears (no-op for local-only store; keeps loading UX consistent).
     useEffect(() => {
         if (session && !hasFetchedRef.current) {
             hasFetchedRef.current = true;
@@ -74,8 +74,8 @@ function AuthenticatedApp() {
         );
     }
 
-    if (!session || isRecovery) {
-        return <Auth />;
+    if (!session) {
+        return <Auth variant="atmosphere" />;
     }
 
     // Only show full-screen loading on initial data fetch, not on subsequent re-renders
@@ -168,10 +168,25 @@ function AuthenticatedApp() {
     );
 }
 
+function AppBackground() {
+    const { session, loading } = useAuth();
+    // Story art (login.png) is only for the sign-in atmosphere. After auth, use a flat surface
+    // so onboarding and the rest of the app are not layered over the irrelevant LOGIN scene.
+    if (session) {
+        return (
+            <div className="fixed inset-0 z-0 bg-surface dark:bg-night-bg" aria-hidden />
+        );
+    }
+    return <WebBgBackdrop showReadabilityScrim={loading || !session} />;
+}
+
 export default function App() {
     return (
         <AuthProvider>
-            <AuthenticatedApp />
+            <AppBackground />
+            <IntroGate>
+                <AuthenticatedApp />
+            </IntroGate>
         </AuthProvider>
     );
 }

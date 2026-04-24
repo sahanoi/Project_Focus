@@ -2,17 +2,66 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+
+  /* Stitch / Hearth — parchment + sigil (warm paper, pressed button) */
+  .parchment-texture {
+    background-color: #fdf6e3;
+    background-image: radial-gradient(circle at 2px 2px, rgba(141, 75, 0, 0.05) 1px, transparent 0);
+    background-size: 24px 24px;
+  }
+
+  /* Dark: drop warm paper speckle; use a subtle light dot grid on charcoal */
+  .dark .parchment-texture {
+    background-image: radial-gradient(circle at 2px 2px, rgba(255, 255, 255, 0.06) 1px, transparent 0);
+  }
+
+  .sigil-shadow {
+    box-shadow:
+      inset 0 2px 4px rgba(255, 255, 255, 0.2),
+      0 4px 12px rgba(141, 75, 0, 0.2);
+  }
+
+  .hearth-fab-shadow {
+    box-shadow: 0 12px 32px rgba(37, 25, 13, 0.08);
+  }
+
+  /* Pixel-art assets: avoid blurry browser smoothing when scaled */
+  .pixel-art-image {
+    image-rendering: pixelated;
+    -ms-interpolation-mode: nearest-neighbor;
+  }
+
+  /*
+   * Letterbox / pillarbox fill behind object-contain story art (Web bg01 vibe):
+   * deep neutral center, warm browns and amber toward the edges.
+   */
+  .auth-story-backdrop-fill {
+    background-color: #0c0a09;
+    background-image:
+      radial-gradient(ellipse 130% 90% at 50% 42%, rgba(88, 62, 48, 0.22) 0%, transparent 52%),
+      radial-gradient(ellipse 70% 55% at 50% 100%, rgba(120, 72, 42, 0.18) 0%, transparent 45%),
+      linear-gradient(90deg,
+        #3d2a20 0%,
+        #1a1411 14%,
+        #0a0808 50%,
+        #1a1411 86%,
+        #3d2a20 100%),
+      linear-gradient(180deg, #100e0c 0%, #161210 38%, #120f0d 100%);
+  }
+}
+
 /* ==========================================
    CSS Variables for Tooltip / Recharts
    ========================================== */
 :root,
 .theme-pastel-violet {
-  /* Primary tone controls (edit these to retheme quickly) */
-  --tone-primary: 196 181 253;
-  --tone-primary-dark: 167 139 250;
-  --tone-primary-light: 221 214 254;
-  --tone-success: 110 231 183;
-  --tone-success-dark: 16 185 129;
+  /* Hearth / cartographer desk — ember primary, sage success */
+  --tone-primary: 141 75 0;
+  --tone-primary-dark: 113 58 0;
+  --tone-primary-light: 196 145 95;
+  --tone-success: 69 100 94;
+  --tone-success-dark: 52 78 72;
   --tone-warning: 252 211 77;
   --tone-warning-dark: 245 158 11;
   --tone-danger: 252 165 165;
@@ -53,6 +102,17 @@
   --tooltip-bg: rgb(var(--tone-night-surface));
   --tooltip-border: rgb(var(--tone-night-border));
   --tooltip-text: rgb(var(--tone-night-text));
+
+  /* Brand in dark mode — lilac/violet (light keeps ember hearth primary in :root) */
+  --tone-primary: 167 139 250;
+  --tone-primary-dark: 139 92 246;
+  --tone-primary-light: 196 181 253;
+}
+
+.dark .sigil-shadow {
+  box-shadow:
+    inset 0 2px 4px rgba(255, 255, 255, 0.15),
+    0 4px 12px rgba(167, 139, 250, 0.28);
 }
 
 /* ==========================================
@@ -67,12 +127,9 @@
 }
 
 body {
-  font-family: 'Nunito', 'Inter', system-ui, -apple-system, sans-serif;
-  background-color: #F0ECF5;
-  /* Lavender mist */
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
-  color: #2D2640;
-  /* Deep plum text */
+  font-family: 'Manrope', 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: #fff8f4;
+  color: #25190d;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -90,34 +147,75 @@ body.dark {
   min-height: 100vh;
 }
 
+/* Auth inputs — warm on-surface text on fresh paper */
+.auth-form-input {
+  color: #25190d !important;
+  caret-color: #25190d !important;
+}
+
+.auth-form-input::placeholder {
+  color: #887364 !important;
+  opacity: 0.85;
+}
+
+.dark .auth-form-input {
+  color: #f4f0f8 !important;
+  caret-color: #f4f0f8 !important;
+}
+
+.dark .auth-form-input::placeholder {
+  color: #9c91ad !important;
+  opacity: 1;
+}
+
+.auth-form-input:-webkit-autofill,
+.auth-form-input:-webkit-autofill:hover,
+.auth-form-input:-webkit-autofill:focus,
+.auth-form-input:-webkit-autofill:active {
+  -webkit-text-fill-color: #25190d !important;
+  -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+  caret-color: #25190d !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+.dark .auth-form-input:-webkit-autofill,
+.dark .auth-form-input:-webkit-autofill:hover,
+.dark .auth-form-input:-webkit-autofill:focus,
+.dark .auth-form-input:-webkit-autofill:active {
+  -webkit-text-fill-color: #f4f0f8 !important;
+  -webkit-box-shadow: 0 0 0 1000px #1f1a24 inset !important;
+  caret-color: #f4f0f8 !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
 /* ==========================================
    Custom Utilities - Light + Dark
    ========================================== */
 
 @layer components {
 
-  /* ---- Cards ---- */
+  /* ---- Cards — tonal layering, no harsh 1px “template” outlines ---- */
   .card {
-    @apply bg-[#FAF7FE] dark:bg-night-surface rounded-3xl border border-dark-border dark:border-night-border p-5;
+    @apply bg-hearth-surface-highest/80 dark:bg-night-surface rounded-2xl p-5;
     box-shadow: none;
   }
 
   .card-flat {
-    @apply bg-[#FAF7FE] dark:bg-night-surface rounded-2xl border border-dark-border dark:border-night-border p-4;
+    @apply bg-hearth-surface-low dark:bg-night-surface rounded-xl p-4;
   }
 
   .chart-card {
-    @apply bg-[#FAF7FE] dark:bg-night-surface rounded-3xl border border-dark-border dark:border-night-border p-6;
+    @apply bg-hearth-surface-highest/90 dark:bg-night-surface rounded-2xl p-6;
     box-shadow: none;
   }
 
-  /* ---- Buttons ---- */
+  /* ---- Buttons (sigils) ---- */
   .btn-primary {
-    @apply bg-primary text-white font-semibold px-5 py-3 rounded-2xl hover:bg-primary-dark transition-colors duration-200;
+    @apply bg-primary text-white font-semibold px-5 py-3 rounded-xl sigil-shadow hover:bg-primary-dark transition-colors duration-200 min-h-[48px];
   }
 
   .btn-secondary {
-    @apply bg-[#FAF7FE] dark:bg-night-bg text-dark dark:text-night-text font-medium px-5 py-3 rounded-2xl border border-dark-border dark:border-night-border hover:bg-surface-dark dark:hover:bg-primary/20 transition-colors duration-200;
+    @apply bg-hearth-secondary-container text-hearth-on-background/90 dark:bg-night-bg dark:text-night-text font-medium px-5 py-3 rounded-xl hover:bg-hearth-surface-high dark:hover:bg-primary/15 transition-colors duration-200 min-h-[48px];
   }
 
   .btn-danger {
@@ -129,16 +227,16 @@ body.dark {
   }
 
   .btn-icon {
-    @apply p-2 rounded-2xl hover:bg-surface-dark dark:hover:bg-night-bg text-primary-dark dark:text-primary-light transition-colors duration-200;
+    @apply p-2 rounded-2xl hover:bg-surface-dark dark:hover:bg-primary/15 text-primary-dark dark:text-primary-light transition-colors duration-200;
   }
 
-  /* ---- Inputs ---- */
+  /* ---- Inputs — paper bed, focus ring not box border ---- */
   .input-field {
-    @apply w-full px-4 py-3 rounded-2xl border border-dark-border dark:border-night-border bg-[#FAF7FE] dark:bg-night-bg text-dark dark:text-night-text font-medium placeholder-dark-lighter/50 dark:placeholder-night-text-muted/50 focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none transition-all;
+    @apply w-full px-4 py-3 rounded-xl bg-white dark:bg-night-bg text-dark dark:text-night-text font-medium placeholder-dark-lighter/50 dark:placeholder-night-text-muted/50 border-0 focus:ring-2 focus:ring-primary/25 focus:outline-none transition-all shadow-[inset_0_0_0_1px_rgba(219,194,176,0.35)] dark:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)];
   }
 
   .select-field {
-    @apply w-full px-4 py-3 rounded-2xl border border-dark-border dark:border-night-border bg-[#FAF7FE] dark:bg-night-bg text-dark dark:text-night-text font-medium focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none transition-all appearance-none cursor-pointer;
+    @apply w-full px-4 py-3 rounded-xl bg-white dark:bg-night-bg text-dark dark:text-night-text font-medium focus:ring-2 focus:ring-primary/25 focus:outline-none transition-all appearance-none cursor-pointer shadow-[inset_0_0_0_1px_rgba(219,194,176,0.35)] dark:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)];
   }
 
   /* ---- Badges ---- */
@@ -174,12 +272,12 @@ body.dark {
 
   /* ---- Modal ---- */
   .modal-overlay {
-    @apply fixed inset-0 bg-dark/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 transition-opacity duration-300;
+    @apply fixed inset-0 bg-[#25190d]/35 backdrop-blur-md z-50 flex items-center justify-center p-4 transition-opacity duration-300;
   }
 
   .modal-content {
-    @apply bg-[#FAF7FE] dark:bg-night-surface rounded-[2rem] border border-dark-border dark:border-night-border w-full max-w-lg max-h-[90vh] overflow-y-auto;
-    box-shadow: none;
+    @apply bg-hearth-surface-bright dark:bg-night-surface rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto;
+    box-shadow: 0 20px 50px rgba(37, 25, 13, 0.12);
   }
 
   .dark .modal-content {
@@ -195,16 +293,16 @@ body.dark {
     @apply inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-primary/10 text-primary-dark font-bold text-sm border border-primary/20;
   }
 
-  /* ---- Premium Agency Senior Developer Patterns ---- */
+  /* ---- Editorial “map desk” glass ---- */
   .luxury-glass {
-    background: #FAF7FE;
-    border: 1px solid rgba(212, 200, 232, 0.6);
-    border-radius: 1.5rem;
+    background: rgba(255, 241, 230, 0.85);
+    border-radius: 1rem;
+    box-shadow: 0 12px 32px rgba(37, 25, 13, 0.06);
   }
 
   .dark .luxury-glass {
-    background: rgb(var(--tone-night-surface));
-    border: 1px solid rgb(var(--tone-night-text-muted) / 0.18);
+    background: rgb(var(--tone-night-surface) / 0.92);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
   }
 }
 
@@ -235,7 +333,7 @@ body.dark {
 }
 
 .dark ::-webkit-scrollbar-thumb:hover {
-  background: rgb(var(--tone-night-border) / 0.85);
+  background: rgb(167 139 250 / 0.35);
 }
 
 /* ==========================================
@@ -281,9 +379,9 @@ input[type='number'] {
   @apply relative inline-flex h-6 w-11 items-center rounded-full cursor-pointer transition-colors;
 }
 
-  .toggle-switch-knob {
-    @apply inline-block h-5 w-5 rounded-full bg-white transition-transform;
-  }
+.toggle-switch-knob {
+  @apply inline-block h-5 w-5 rounded-full bg-white transition-transform;
+}
 
 /* ==========================================
    Streak & Gamification Animations
@@ -332,6 +430,7 @@ input[type='number'] {
     opacity: 0;
     transform: translateY(-6px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -347,29 +446,30 @@ input[type='number'] {
    ========================================== */
 
 @keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
 }
 
 .skeleton {
-  background: linear-gradient(
-    90deg,
-    rgba(212, 200, 232, 0.3) 25%,
-    rgba(212, 200, 232, 0.6) 50%,
-    rgba(212, 200, 232, 0.3) 75%
-  );
+  background: linear-gradient(90deg,
+      rgba(212, 200, 232, 0.3) 25%,
+      rgba(212, 200, 232, 0.6) 50%,
+      rgba(212, 200, 232, 0.3) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.6s ease-in-out infinite;
   border-radius: 0.75rem;
 }
 
 .dark .skeleton {
-  background: linear-gradient(
-    90deg,
-    rgba(58, 52, 72, 0.35) 25%,
-    rgba(121, 111, 148, 0.45) 50%,
-    rgba(58, 52, 72, 0.35) 75%
-  );
+  background: linear-gradient(90deg,
+      rgba(58, 52, 72, 0.35) 25%,
+      rgba(121, 111, 148, 0.45) 50%,
+      rgba(58, 52, 72, 0.35) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.6s ease-in-out infinite;
 }
