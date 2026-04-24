@@ -140,6 +140,21 @@ export interface Collectible {
     condition: (stats: CharacterStats, habits: Habit[]) => boolean;
 }
 
+/** RPG skill areas (matches CharacterStats attributes except ovr). */
+export type SkillAttributeKey = 'dsc' | 'foc' | 'stk' | 'bal' | 'grt' | 'vit';
+
+export const SKILL_LABELS: Record<
+    SkillAttributeKey,
+    { label: string; short: string; icon: string }
+> = {
+    dsc: { label: 'Discipline', short: 'DSC', icon: '🛡️' },
+    foc: { label: 'Focus', short: 'FOC', icon: '👁' },
+    stk: { label: 'Streak', short: 'STK', icon: '🔗' },
+    bal: { label: 'Balance', short: 'BAL', icon: '⚖️' },
+    grt: { label: 'Grit', short: 'GRT', icon: '🔥' },
+    vit: { label: 'Vitality', short: 'VIT', icon: '💪' },
+};
+
 export interface CharacterStats {
     level: number;
     xp: number;
@@ -190,6 +205,10 @@ export interface Habit {
     startDate?: string; // 'YYYY-MM-DD'
     endDate?: string;   // 'YYYY-MM-DD'
 
+    /** Trains these RPG skill areas; copied from template or chosen for custom habits. */
+    primarySkills?: SkillAttributeKey[];
+    secondarySkills?: SkillAttributeKey[];
+
     // Tracking
     completions: Record<string, Completion>; // keyed by 'YYYY-MM-DD'
     createdAt: string;
@@ -236,59 +255,63 @@ export interface HabitTemplate {
     goalValue?: number;
     unit?: string;
     dailyTarget?: number;
+    /** Main skills this habit develops (at least one). */
+    primarySkills: SkillAttributeKey[];
+    /** Optional supporting skills. */
+    secondarySkills?: SkillAttributeKey[];
 }
 
 export const HABIT_TEMPLATES: Record<HabitCategory, HabitTemplate[]> = {
     health: [
-        { name: 'Drink Water', icon: '💧', type: 'numerical', category: 'health', color: '#2563EB', schedule: { type: 'daily' }, goalValue: 8, unit: 'glasses', dailyTarget: 6 },
-        { name: 'Take Vitamins', icon: '💊', type: 'regular', category: 'health', color: '#10B981', schedule: { type: 'daily' } },
-        { name: 'Sleep 8 Hours', icon: '😴', type: 'numerical', category: 'health', color: '#8B5CF6', schedule: { type: 'daily' }, goalValue: 8, unit: 'hours', dailyTarget: 7 },
-        { name: 'No Junk Food', icon: '🍎', type: 'infinite', category: 'health', color: '#EF4444', schedule: { type: 'daily' } },
-        { name: 'Brush Teeth', icon: '🦷', type: 'regular', category: 'health', color: '#14B8A6', schedule: { type: 'daily' } },
+        { name: 'Drink Water', icon: '💧', type: 'numerical', category: 'health', color: '#2563EB', schedule: { type: 'daily' }, goalValue: 8, unit: 'glasses', dailyTarget: 6, primarySkills: ['vit', 'foc'], secondarySkills: ['dsc', 'stk'] },
+        { name: 'Take Vitamins', icon: '💊', type: 'regular', category: 'health', color: '#10B981', schedule: { type: 'daily' }, primarySkills: ['vit'], secondarySkills: ['dsc', 'grt'] },
+        { name: 'Sleep 8 Hours', icon: '😴', type: 'numerical', category: 'health', color: '#8B5CF6', schedule: { type: 'daily' }, goalValue: 8, unit: 'hours', dailyTarget: 7, primarySkills: ['vit', 'foc'], secondarySkills: ['dsc'] },
+        { name: 'No Junk Food', icon: '🍎', type: 'infinite', category: 'health', color: '#EF4444', schedule: { type: 'daily' }, primarySkills: ['vit', 'dsc', 'grt'], secondarySkills: ['foc', 'stk'] },
+        { name: 'Brush Teeth', icon: '🦷', type: 'regular', category: 'health', color: '#14B8A6', schedule: { type: 'daily' }, primarySkills: ['vit', 'dsc'], secondarySkills: ['stk'] },
     ],
     fitness: [
-        { name: 'Morning Run', icon: '🏃', type: 'numerical', category: 'fitness', color: '#F59E0B', schedule: { type: 'weekly', daysOfWeek: [1, 3, 5] }, goalValue: 5, unit: 'km', dailyTarget: 2 },
-        { name: 'Push-ups', icon: '💪', type: 'numerical', category: 'fitness', color: '#EF4444', schedule: { type: 'daily' }, goalValue: 50, unit: 'reps', dailyTarget: 30 },
-        { name: 'Gym Session', icon: '🏋️', type: 'regular', category: 'fitness', color: '#14B8A6', schedule: { type: 'weekly', daysOfWeek: [1, 2, 4, 5] } },
-        { name: 'Stretching', icon: '🧘', type: 'regular', category: 'fitness', color: '#EC4899', schedule: { type: 'daily' } },
-        { name: 'Cycling', icon: '🚴', type: 'numerical', category: 'fitness', color: '#06B6D4', schedule: { type: 'weekly', daysOfWeek: [0, 6] }, goalValue: 20, unit: 'km' },
+        { name: 'Morning Run', icon: '🏃', type: 'numerical', category: 'fitness', color: '#F59E0B', schedule: { type: 'weekly', daysOfWeek: [1, 3, 5] }, goalValue: 5, unit: 'km', dailyTarget: 2, primarySkills: ['vit', 'foc', 'grt'], secondarySkills: ['dsc', 'stk'] },
+        { name: 'Push-ups', icon: '💪', type: 'numerical', category: 'fitness', color: '#EF4444', schedule: { type: 'daily' }, goalValue: 50, unit: 'reps', dailyTarget: 30, primarySkills: ['vit', 'foc', 'grt'], secondarySkills: ['dsc'] },
+        { name: 'Gym Session', icon: '🏋️', type: 'regular', category: 'fitness', color: '#14B8A6', schedule: { type: 'weekly', daysOfWeek: [1, 2, 4, 5] }, primarySkills: ['vit', 'dsc', 'grt'], secondarySkills: ['stk'] },
+        { name: 'Stretching', icon: '🧘', type: 'regular', category: 'fitness', color: '#EC4899', schedule: { type: 'daily' }, primarySkills: ['vit', 'dsc'], secondarySkills: ['foc'] },
+        { name: 'Cycling', icon: '🚴', type: 'numerical', category: 'fitness', color: '#06B6D4', schedule: { type: 'weekly', daysOfWeek: [0, 6] }, goalValue: 20, unit: 'km', primarySkills: ['vit', 'foc', 'grt'], secondarySkills: ['dsc'] },
     ],
     learning: [
-        { name: 'Read 30 min', icon: '📚', type: 'numerical', category: 'learning', color: '#2563EB', schedule: { type: 'daily' }, goalValue: 30, unit: 'min', dailyTarget: 15 },
-        { name: 'Practice Coding', icon: '🧠', type: 'numerical', category: 'learning', color: '#8B5CF6', schedule: { type: 'daily' }, goalValue: 60, unit: 'min', dailyTarget: 30 },
-        { name: 'Learn New Word', icon: '📝', type: 'regular', category: 'learning', color: '#F97316', schedule: { type: 'daily' } },
-        { name: 'Online Course', icon: '🎓', type: 'numerical', category: 'learning', color: '#10B981', schedule: { type: 'weekly', daysOfWeek: [1, 3, 5] }, goalValue: 45, unit: 'min' },
+        { name: 'Read 30 min', icon: '📚', type: 'numerical', category: 'learning', color: '#2563EB', schedule: { type: 'daily' }, goalValue: 30, unit: 'min', dailyTarget: 15, primarySkills: ['foc', 'grt'], secondarySkills: ['dsc', 'bal'] },
+        { name: 'Practice Coding', icon: '🧠', type: 'numerical', category: 'learning', color: '#8B5CF6', schedule: { type: 'daily' }, goalValue: 60, unit: 'min', dailyTarget: 30, primarySkills: ['foc', 'grt', 'dsc'], secondarySkills: ['bal'] },
+        { name: 'Learn New Word', icon: '📝', type: 'regular', category: 'learning', color: '#F97316', schedule: { type: 'daily' }, primarySkills: ['foc', 'grt'], secondarySkills: ['dsc'] },
+        { name: 'Online Course', icon: '🎓', type: 'numerical', category: 'learning', color: '#10B981', schedule: { type: 'weekly', daysOfWeek: [1, 3, 5] }, goalValue: 45, unit: 'min', primarySkills: ['foc', 'dsc', 'grt'], secondarySkills: ['bal'] },
     ],
     productivity: [
-        { name: 'Morning Routine', icon: '☀️', type: 'regular', category: 'productivity', color: '#F59E0B', schedule: { type: 'daily' } },
-        { name: 'Plan Tomorrow', icon: '📝', type: 'regular', category: 'productivity', color: '#2563EB', schedule: { type: 'daily' } },
-        { name: 'No Social Media', icon: '📱', type: 'infinite', category: 'productivity', color: '#EF4444', schedule: { type: 'daily' } },
-        { name: 'Deep Work', icon: '⚡', type: 'numerical', category: 'productivity', color: '#8B5CF6', schedule: { type: 'daily' }, goalValue: 120, unit: 'min', dailyTarget: 60 },
+        { name: 'Morning Routine', icon: '☀️', type: 'regular', category: 'productivity', color: '#F59E0B', schedule: { type: 'daily' }, primarySkills: ['dsc', 'foc'], secondarySkills: ['stk'] },
+        { name: 'Plan Tomorrow', icon: '📝', type: 'regular', category: 'productivity', color: '#2563EB', schedule: { type: 'daily' }, primarySkills: ['dsc', 'foc'], secondarySkills: ['grt'] },
+        { name: 'No Social Media', icon: '📱', type: 'infinite', category: 'productivity', color: '#EF4444', schedule: { type: 'daily' }, primarySkills: ['dsc', 'foc', 'grt'], secondarySkills: ['stk'] },
+        { name: 'Deep Work', icon: '⚡', type: 'numerical', category: 'productivity', color: '#8B5CF6', schedule: { type: 'daily' }, goalValue: 120, unit: 'min', dailyTarget: 60, primarySkills: ['foc', 'dsc'], secondarySkills: ['grt', 'bal'] },
     ],
     mindfulness: [
-        { name: 'Meditate', icon: '🧘‍♂️', type: 'numerical', category: 'mindfulness', color: '#14B8A6', schedule: { type: 'daily' }, goalValue: 15, unit: 'min', dailyTarget: 5 },
-        { name: 'Journal', icon: '📝', type: 'regular', category: 'mindfulness', color: '#8B5CF6', schedule: { type: 'daily' } },
-        { name: 'Gratitude List', icon: '🌿', type: 'regular', category: 'mindfulness', color: '#10B981', schedule: { type: 'daily' } },
-        { name: 'Digital Detox', icon: '📵', type: 'regular', category: 'mindfulness', color: '#EF4444', schedule: { type: 'weekly', daysOfWeek: [0] } },
+        { name: 'Meditate', icon: '🧘‍♂️', type: 'numerical', category: 'mindfulness', color: '#14B8A6', schedule: { type: 'daily' }, goalValue: 15, unit: 'min', dailyTarget: 5, primarySkills: ['foc', 'dsc', 'vit'], secondarySkills: ['grt'] },
+        { name: 'Journal', icon: '📝', type: 'regular', category: 'mindfulness', color: '#8B5CF6', schedule: { type: 'daily' }, primarySkills: ['foc', 'dsc'], secondarySkills: ['grt', 'bal'] },
+        { name: 'Gratitude List', icon: '🌿', type: 'regular', category: 'mindfulness', color: '#10B981', schedule: { type: 'daily' }, primarySkills: ['dsc', 'foc'], secondarySkills: ['grt', 'bal'] },
+        { name: 'Digital Detox', icon: '📵', type: 'regular', category: 'mindfulness', color: '#EF4444', schedule: { type: 'weekly', daysOfWeek: [0] }, primarySkills: ['dsc', 'foc', 'bal'], secondarySkills: ['grt'] },
     ],
     social: [
-        { name: 'Call Family', icon: '📞', type: 'regular', category: 'social', color: '#EC4899', schedule: { type: 'weekly', daysOfWeek: [0, 6] } },
-        { name: 'Connect with Friend', icon: '👥', type: 'regular', category: 'social', color: '#2563EB', schedule: { type: 'weekly', daysOfWeek: [3] } },
-        { name: 'Random Act of Kindness', icon: '💝', type: 'regular', category: 'social', color: '#F59E0B', schedule: { type: 'daily' } },
+        { name: 'Call Family', icon: '📞', type: 'regular', category: 'social', color: '#EC4899', schedule: { type: 'weekly', daysOfWeek: [0, 6] }, primarySkills: ['bal', 'dsc'], secondarySkills: ['foc', 'grt'] },
+        { name: 'Connect with Friend', icon: '👥', type: 'regular', category: 'social', color: '#2563EB', schedule: { type: 'weekly', daysOfWeek: [3] }, primarySkills: ['bal', 'dsc', 'foc'], secondarySkills: ['grt'] },
+        { name: 'Random Act of Kindness', icon: '💝', type: 'regular', category: 'social', color: '#F59E0B', schedule: { type: 'daily' }, primarySkills: ['bal', 'dsc', 'foc'], secondarySkills: ['grt'] },
     ],
     finance: [
-        { name: 'Track Expenses', icon: '💰', type: 'regular', category: 'finance', color: '#10B981', schedule: { type: 'daily' } },
-        { name: 'Save Money', icon: '💎', type: 'numerical', category: 'finance', color: '#F59E0B', schedule: { type: 'monthly', daysOfMonth: [1] }, goalValue: 500, unit: 'TL' },
-        { name: 'No Impulse Buying', icon: '🛑', type: 'infinite', category: 'finance', color: '#EF4444', schedule: { type: 'daily' } },
+        { name: 'Track Expenses', icon: '💰', type: 'regular', category: 'finance', color: '#10B981', schedule: { type: 'daily' }, primarySkills: ['foc', 'dsc'], secondarySkills: ['grt'] },
+        { name: 'Save Money', icon: '💎', type: 'numerical', category: 'finance', color: '#F59E0B', schedule: { type: 'monthly', daysOfMonth: [1] }, goalValue: 500, unit: 'TL', primarySkills: ['dsc', 'foc', 'grt'], secondarySkills: ['bal'] },
+        { name: 'No Impulse Buying', icon: '🛑', type: 'infinite', category: 'finance', color: '#EF4444', schedule: { type: 'daily' }, primarySkills: ['dsc', 'grt', 'foc'], secondarySkills: ['stk'] },
     ],
     creativity: [
-        { name: 'Draw / Sketch', icon: '🎨', type: 'regular', category: 'creativity', color: '#EC4899', schedule: { type: 'daily' } },
-        { name: 'Practice Music', icon: '🎵', type: 'numerical', category: 'creativity', color: '#8B5CF6', schedule: { type: 'daily' }, goalValue: 30, unit: 'min', dailyTarget: 15 },
-        { name: 'Write / Blog', icon: '✍️', type: 'numerical', category: 'creativity', color: '#2563EB', schedule: { type: 'daily' }, goalValue: 500, unit: 'words' },
+        { name: 'Draw / Sketch', icon: '🎨', type: 'regular', category: 'creativity', color: '#EC4899', schedule: { type: 'daily' }, primarySkills: ['foc', 'grt'], secondarySkills: ['dsc', 'bal'] },
+        { name: 'Practice Music', icon: '🎵', type: 'numerical', category: 'creativity', color: '#8B5CF6', schedule: { type: 'daily' }, goalValue: 30, unit: 'min', dailyTarget: 15, primarySkills: ['foc', 'grt', 'vit'], secondarySkills: ['dsc'] },
+        { name: 'Write / Blog', icon: '✍️', type: 'numerical', category: 'creativity', color: '#2563EB', schedule: { type: 'daily' }, goalValue: 500, unit: 'words', primarySkills: ['foc', 'grt', 'dsc'], secondarySkills: ['bal'] },
     ],
     other: [
-        { name: 'Clean Room', icon: '🧹', type: 'regular', category: 'other', color: '#14B8A6', schedule: { type: 'weekly', daysOfWeek: [6] } },
-        { name: 'Skincare Routine', icon: '🧴', type: 'regular', category: 'other', color: '#EC4899', schedule: { type: 'daily' } },
-        { name: 'Water Plants', icon: '🌱', type: 'regular', category: 'other', color: '#10B981', schedule: { type: 'weekly', daysOfWeek: [1, 4] } },
+        { name: 'Clean Room', icon: '🧹', type: 'regular', category: 'other', color: '#14B8A6', schedule: { type: 'weekly', daysOfWeek: [6] }, primarySkills: ['dsc', 'grt'], secondarySkills: ['foc', 'bal'] },
+        { name: 'Skincare Routine', icon: '🧴', type: 'regular', category: 'other', color: '#EC4899', schedule: { type: 'daily' }, primarySkills: ['vit', 'dsc'], secondarySkills: ['stk'] },
+        { name: 'Water Plants', icon: '🌱', type: 'regular', category: 'other', color: '#10B981', schedule: { type: 'weekly', daysOfWeek: [1, 4] }, primarySkills: ['dsc', 'grt'], secondarySkills: ['foc', 'bal'] },
     ],
 };

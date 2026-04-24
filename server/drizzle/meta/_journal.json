@@ -15,6 +15,13 @@
       "when": 1775224239240,
       "tag": "0001_community",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1775224300000,
+      "tag": "0002_skill_focus",
+      "breakpoints": true
     }
   ]
 }

@@ -15,16 +15,22 @@ export function habitPayloadFromTemplate(
         icon: template.icon,
         schedule: template.schedule,
     };
+    const skills = {
+        primarySkills: template.primarySkills,
+        ...(template.secondarySkills?.length ? { secondarySkills: template.secondarySkills } : {}),
+    };
+
     if (type === 'numerical') {
         return {
             ...base,
+            ...skills,
             dailyTarget: template.dailyTarget,
             goalValue: template.goalValue,
             unit: template.unit,
         };
     }
     if (type === 'infinite') {
-        return base;
+        return { ...base, ...skills };
     }
-    return base;
+    return { ...base, ...skills };
 }

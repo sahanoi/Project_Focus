@@ -143,7 +143,12 @@ const habitStoreImpl: StateCreator<HabitStore, [], [], HabitStore> = (set, get) 
         recalculateStats: () => {
             const state = get();
             const { habits, achievements, stats: currentStats } = state;
-            const newStats = calculateCharacterStats(habits, get().stats?.accountCreatedDate, get().stats?.unlockedCollectibles);
+            const newStats = calculateCharacterStats(
+                habits,
+                get().stats?.accountCreatedDate,
+                get().stats?.unlockedCollectibles,
+                get().goals
+            );
             const { unlocked, newlyUnlocked } = evaluateAchievements(habits, achievements);
 
             const leveledUp = newStats.level > currentStats.level;
@@ -195,7 +200,12 @@ const habitStoreImpl: StateCreator<HabitStore, [], [], HabitStore> = (set, get) 
                 const newHabits = [...state.habits, newHabit];
                 return {
                     habits: newHabits,
-                    stats: calculateCharacterStats(newHabits, get().stats?.accountCreatedDate, get().stats?.unlockedCollectibles)
+                    stats: calculateCharacterStats(
+                        newHabits,
+                        get().stats?.accountCreatedDate,
+                        get().stats?.unlockedCollectibles,
+                        get().goals
+                    ),
                 };
             });
 
@@ -212,7 +222,12 @@ const habitStoreImpl: StateCreator<HabitStore, [], [], HabitStore> = (set, get) 
                 );
                 return {
                     habits: newHabits,
-                    stats: calculateCharacterStats(newHabits, get().stats?.accountCreatedDate, get().stats?.unlockedCollectibles)
+                    stats: calculateCharacterStats(
+                        newHabits,
+                        get().stats?.accountCreatedDate,
+                        get().stats?.unlockedCollectibles,
+                        get().goals
+                    ),
                 };
             });
         },
@@ -227,7 +242,12 @@ const habitStoreImpl: StateCreator<HabitStore, [], [], HabitStore> = (set, get) 
                         ...r,
                         habitIds: r.habitIds.filter(hid => hid !== id)
                     })),
-                    stats: calculateCharacterStats(newHabits, get().stats?.accountCreatedDate, get().stats?.unlockedCollectibles)
+                    stats: calculateCharacterStats(
+                        newHabits,
+                        get().stats?.accountCreatedDate,
+                        get().stats?.unlockedCollectibles,
+                        get().goals
+                    ),
                 };
             });
         },
@@ -264,7 +284,12 @@ const habitStoreImpl: StateCreator<HabitStore, [], [], HabitStore> = (set, get) 
                 const newHabits = [...state.habits, duplicate];
                 return {
                     habits: newHabits,
-                    stats: calculateCharacterStats(newHabits, get().stats?.accountCreatedDate, get().stats?.unlockedCollectibles)
+                    stats: calculateCharacterStats(
+                        newHabits,
+                        get().stats?.accountCreatedDate,
+                        get().stats?.unlockedCollectibles,
+                        get().goals
+                    ),
                 };
             });
 
@@ -331,7 +356,12 @@ const habitStoreImpl: StateCreator<HabitStore, [], [], HabitStore> = (set, get) 
 
                 return {
                     habits: newHabits,
-                    stats: calculateCharacterStats(newHabits, get().stats?.accountCreatedDate, get().stats?.unlockedCollectibles)
+                    stats: calculateCharacterStats(
+                        newHabits,
+                        get().stats?.accountCreatedDate,
+                        get().stats?.unlockedCollectibles,
+                        get().goals
+                    ),
                 };
             });
         },
@@ -351,7 +381,12 @@ const habitStoreImpl: StateCreator<HabitStore, [], [], HabitStore> = (set, get) 
 
                 return {
                     habits: newHabits,
-                    stats: calculateCharacterStats(newHabits, get().stats?.accountCreatedDate, get().stats?.unlockedCollectibles)
+                    stats: calculateCharacterStats(
+                        newHabits,
+                        get().stats?.accountCreatedDate,
+                        get().stats?.unlockedCollectibles,
+                        get().goals
+                    ),
                 };
             });
         },
@@ -425,12 +460,14 @@ const habitStoreImpl: StateCreator<HabitStore, [], [], HabitStore> = (set, get) 
                     g.id === id ? { ...g, ...updates } : g
                 ),
             }));
+            get().recalculateStats();
         },
 
         deleteGoal: (id) => {
             set((state) => ({
                 goals: state.goals.filter((g) => g.id !== id),
             }));
+            get().recalculateStats();
         },
 
         // ==========================================
@@ -479,7 +516,12 @@ const habitStoreImpl: StateCreator<HabitStore, [], [], HabitStore> = (set, get) 
             const habits = generateDummyHabits();
             const goals = generateDummyGoals(habits);
             const routines = generateDummyRoutines(habits);
-            const stats = calculateCharacterStats(habits, get().stats?.accountCreatedDate, get().stats?.unlockedCollectibles);
+            const stats = calculateCharacterStats(
+                habits,
+                get().stats?.accountCreatedDate,
+                get().stats?.unlockedCollectibles,
+                goals
+            );
 
             set({ habits, goals, routines, stats });
         },

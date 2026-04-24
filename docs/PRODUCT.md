@@ -345,11 +345,11 @@ The app maintains a **`CharacterStats`** object: **level**, **XP**, **next level
 | **GRT** | Grit | **Longest streak** history averaged across habits. |
 | **VIT** | Vitality | Performance in **Health** and **Fitness** categories. |
 
-**Implementation:** Derived in `src/utils/gamificationUtils.ts` from `Habit[]` and exposed through the global store.
+**Implementation:** `src/utils/gamificationUtils.ts` combines **legacy heuristics** (same behaviors as the rows above) with **per-habit skill tags**: each `Habit` and every row in `HABIT_TEMPLATES` has `primarySkills` / optional `secondarySkills` (keys: `dsc` … `vit`, see `SkillAttributeKey` in `src/types/index.ts`). For **Discipline, Focus, Grit, and Vitality**, a **blended** score is used—weighted toward tag-based completion when tagged habits exist; **Streak** and **Balance** stay **global** (current streaks and life-category spread). **Custom habits** without tags get a default mapping from category + type via `src/utils/skillFocusUtils.ts`. The global store applies this on every relevant update.
 
 ### Season XP and level
 
-- **XP** is **recomputed** from all habits’ valid completions: **50** XP per completion, multiplied by **difficulty** (`easy` 1×, `medium` 1.5×, `hard` 2×) and a **streak bonus** (up to 2× at a 30-day current streak). Claimed **onboarding missions** add lump sums tracked via `localStorage` (`mission_claimed_*`). See `src/utils/gamificationUtils.ts`.
+- **XP** is **recomputed** from all habits’ valid completions: **50** XP per completion, multiplied by **difficulty** (`easy` 1×, `medium` 1.5×, `hard` 2×) and a **streak bonus** (up to 2× at a 30-day current streak). **Each achieved goal (milestone)** adds a fixed bonus (`MILESTONE_XP_PER_GOAL` in `gamificationUtils.ts`). Claimed **onboarding missions** add lump sums tracked via `localStorage` (`mission_claimed_*`). See `src/utils/gamificationUtils.ts`.
 - **Level** uses a **linear threshold** (**1000** XP per level; `LEVEL_THRESHOLD` in `gamificationUtils.ts`).
 - The dashboard surfaces this as **season-style progress** (header widgets such as `XPProgress`).
 

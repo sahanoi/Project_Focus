@@ -129,6 +129,12 @@ export async function loadFullStateForUser(userId: string): Promise<ApiState> {
             ...(h.unit ? { unit: h.unit } : {}),
             ...(h.startDate ? { startDate: h.startDate } : {}),
             ...(h.endDate ? { endDate: h.endDate } : {}),
+            ...(h.skillFocus?.primarySkills?.length
+                ? { primarySkills: h.skillFocus.primarySkills as ('dsc' | 'foc' | 'stk' | 'bal' | 'grt' | 'vit')[] }
+                : {}),
+            ...(h.skillFocus?.secondarySkills?.length
+                ? { secondarySkills: h.skillFocus.secondarySkills as ('dsc' | 'foc' | 'stk' | 'bal' | 'grt' | 'vit')[] }
+                : {}),
             completions,
             createdAt: toIsoTimestamp(h.createdAt),
             archived: h.archived,

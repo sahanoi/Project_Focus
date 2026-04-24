@@ -4,8 +4,10 @@ import { useHabitStore } from '../../store/habitStore';
 import {
     Habit, HabitType, HabitCategory, HABIT_CATEGORIES, HABIT_COLORS,
     HABIT_EMOJIS, HABIT_TEMPLATES, HabitTemplate, HabitSchedule, ScheduleType,
+    SkillAttributeKey, SKILL_LABELS,
 } from '../../types';
 import { getMinLevelForHabitType, isHabitTypeAvailable } from '../../utils/featureGateUtils';
+import { inferSkillFocusFromCategoryType } from '../../utils/skillFocusUtils';
 import { X, Check, Target, Infinity, Timer, Hash, Calendar, Sparkles, Lock } from 'lucide-react';
 
 interface HabitModalProps {
@@ -58,6 +60,9 @@ export default function HabitModal({ isOpen, onClose, editHabit }: HabitModalPro
     // Goal linking
     const [linkedGoalId, setLinkedGoalId] = useState<string>('');
 
+    const [primarySkills, setPrimarySkills] = useState<SkillAttributeKey[]>([]);
+    const [secondarySkills, setSecondarySkills] = useState<SkillAttributeKey[]>([]);
+
     useEffect(() => {
         if (editHabit) {
             setName(editHabit.name);
@@ -76,10 +81,24 @@ export default function HabitModal({ isOpen, onClose, editHabit }: HabitModalPro
             setSelectedDays(sched.daysOfWeek || []);
             setSelectedMonthDays(sched.daysOfMonth || []);
             setCustomInterval(sched.customInterval || 2);
+            const inf = editHabit.primarySkills?.length || editHabit.secondarySkills?.length
+                ? null
+                : inferSkillFocusFromCategoryType(editHabit.category, editHabit.type);
+            setPrimarySkills(editHabit.primarySkills?.length ? editHabit.primarySkills : inf?.primarySkills ?? []);
+            setSecondarySkills(
+                editHabit.secondarySkills?.length ? editHabit.secondarySkills : inf?.secondarySkills ?? []
+            );
         } else {
             resetForm();
         }
     }, [editHabit, isOpen]);
+
+    useEffect(() => {
+        if (editHabit || !isOpen) return;
+        const i = inferSkillFocusFromCategoryType(category, type);
+        setPrimarySkills(i.primarySkills);
+        setSecondarySkills(i.secondarySkills);
+    }, [category, type, editHabit, isOpen]);
 
     const resetForm = () => {
         setName('');
@@ -99,6 +118,9 @@ export default function HabitModal({ isOpen, onClose, editHabit }: HabitModalPro
         setShowEmojiPicker(false);
         setShowTemplates(false);
         setLinkedGoalId('');
+        const d = inferSkillFocusFromCategoryType('health', 'regular');
+        setPrimarySkills(d.primarySkills);
+        setSecondarySkills(d.secondarySkills);
     };
 
     const buildSchedule = (): HabitSchedule => {
@@ -118,6 +140,12 @@ export default function HabitModal({ isOpen, onClose, editHabit }: HabitModalPro
         e.preventDefault();
         if (!name.trim()) return;
 
+        const inferred = inferSkillFocusFromCategoryType(category, type);
+        const prim = primarySkills.length > 0 ? primarySkills : inferred.primarySkills;
+        const sec = (secondarySkills.length > 0 ? secondarySkills : inferred.secondarySkills).filter(
+            (s) => !prim.includes(s)
+        );
+
         const habitData: any = {
             name: name.trim(),
             type,
@@ -125,6 +153,8 @@ export default function HabitModal({ isOpen, onClose, editHabit }: HabitModalPro
             color,
             icon,
             schedule: buildSchedule(),
+            primarySkills: prim,
+            ...(sec.length > 0 && { secondarySkills: sec }),
             ...(dailyTarget > 0 && { dailyTarget }),
             ...(type === 'numerical' && { goalValue, unit }),
             ...(type === 'challenge' && { startDate, endDate }),
@@ -170,7 +200,29 @@ export default function HabitModal({ isOpen, onClose, editHabit }: HabitModalPro
         setSelectedDays(t.schedule.daysOfWeek || []);
         setSelectedMonthDays(t.schedule.daysOfMonth || []);
         setCustomInterval(t.schedule.customInterval || 2);
+        setPrimarySkills(t.primarySkills);
+        setSecondarySkills(t.secondarySkills ?? []);
         setShowTemplates(false);
+    };
+
+    const skillKeys = useMemo(() => Object.keys(SKILL_LABELS) as SkillAttributeKey[], []);
+
+    const togglePrimarySkill = (k: SkillAttributeKey) => {
+        setPrimarySkills((prev) => {
+            if (prev.includes(k)) return prev.filter((x) => x !== k);
+            if (prev.length >= 4) return prev;
+            setSecondarySkills((s) => s.filter((x) => x !== k));
+            return [...prev, k];
+        });
+    };
+
+    const toggleSecondarySkill = (k: SkillAttributeKey) => {
+        if (primarySkills.includes(k)) return;
+        setSecondarySkills((prev) => {
+            if (prev.includes(k)) return prev.filter((x) => x !== k);
+            if (prev.length >= 4) return prev;
+            return [...prev, k];
+        });
     };
 
     const toggleDay = (day: number) => {
@@ -249,6 +301,24 @@ export default function HabitModal({ isOpen, onClose, editHabit }: HabitModalPro
                                                         {t.type} • {t.schedule.type === 'weekly' ? `${t.schedule.daysOfWeek?.map(d => DAY_LABELS[d]).join(', ')}` : t.schedule.type}
                                                         {t.goalValue ? ` • ${t.goalValue} ${t.unit}` : ''}
                                                     </p>
+                                                    <div className="flex flex-wrap gap-1 mt-1.5">
+                                                        {t.primarySkills.map((sk) => (
+                                                            <span
+                                                                key={sk}
+                                                                className="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded-md bg-primary/15 text-primary dark:text-primary-light border border-primary/25"
+                                                            >
+                                                                {SKILL_LABELS[sk].short}
+                                                            </span>
+                                                        ))}
+                                                        {(t.secondarySkills ?? []).map((sk) => (
+                                                            <span
+                                                                key={`s-${sk}`}
+                                                                className="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded-md bg-gray-200/80 dark:bg-night-border text-dark-lighter dark:text-night-text-muted"
+                                                            >
+                                                                +{SKILL_LABELS[sk].short}
+                                                            </span>
+                                                        ))}
+                                                    </div>
                                                 </div>
                                                 <div className="w-3 h-3 rounded-full" style={{ backgroundColor: t.color }} />
                                             </button>
@@ -466,6 +536,62 @@ export default function HabitModal({ isOpen, onClose, editHabit }: HabitModalPro
                                             style={{ backgroundColor: c }}
                                         />
                                     ))}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Skill areas — which RPG attributes this habit trains */}
+                        <div className="p-5 rounded-2xl border border-gray-100 dark:border-night-border bg-gray-50/50 dark:bg-night-surface/60 space-y-3">
+                            <p className="text-sm font-bold text-dark dark:text-night-text">Skill areas</p>
+                            <p className="text-[11px] text-dark-lighter dark:text-night-text-muted">
+                                Primary and supporting skills (Discipline, Focus, Vitality, etc.). Drives your profile stats when you complete this habit.
+                            </p>
+                            <div>
+                                <p className="text-[10px] font-bold uppercase tracking-wider text-primary mb-1.5">Primary</p>
+                                <div className="flex flex-wrap gap-1.5">
+                                    {skillKeys.map((k) => {
+                                        const on = primarySkills.includes(k);
+                                        return (
+                                            <button
+                                                key={`p-${k}`}
+                                                type="button"
+                                                onClick={() => togglePrimarySkill(k)}
+                                                className={`text-[10px] font-bold px-2 py-1 rounded-lg border transition-colors ${
+                                                    on
+                                                        ? 'bg-primary text-white border-primary'
+                                                        : 'bg-surface dark:bg-night-bg border-gray-200 dark:border-night-border text-dark-lighter dark:text-night-text-muted hover:border-primary/40'
+                                                }`}
+                                            >
+                                                {SKILL_LABELS[k].icon} {SKILL_LABELS[k].short}
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                            <div>
+                                <p className="text-[10px] font-bold uppercase tracking-wider text-dark-lighter dark:text-night-text-muted mb-1.5">Supporting</p>
+                                <div className="flex flex-wrap gap-1.5">
+                                    {skillKeys.map((k) => {
+                                        const on = secondarySkills.includes(k);
+                                        const dis = primarySkills.includes(k);
+                                        return (
+                                            <button
+                                                key={`s-${k}`}
+                                                type="button"
+                                                disabled={dis}
+                                                onClick={() => toggleSecondarySkill(k)}
+                                                className={`text-[10px] font-bold px-2 py-1 rounded-lg border transition-colors ${
+                                                    dis
+                                                        ? 'opacity-40 cursor-not-allowed border-transparent'
+                                                        : on
+                                                            ? 'bg-primary/20 text-primary border-primary/30 dark:text-primary-light'
+                                                            : 'bg-surface dark:bg-night-bg border-gray-200 dark:border-night-border text-dark-lighter dark:text-night-text-muted hover:border-primary/40'
+                                                }`}
+                                            >
+                                                {SKILL_LABELS[k].icon} {SKILL_LABELS[k].short}
+                                            </button>
+                                        );
+                                    })}
                                 </div>
                             </div>
                         </div>

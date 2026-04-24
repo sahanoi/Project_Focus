@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { HABIT_TEMPLATES } from '../../types';
+import { HABIT_TEMPLATES, HabitCategory } from '../../types';
 import { habitPayloadFromTemplate } from '../habitPayloadFromTemplate';
 import { STARTER_QUEST_HABIT_NAME } from '../starterQuestUtils';
 
@@ -22,6 +22,14 @@ const apprenticeStats = {
 };
 
 describe('habitPayloadFromTemplate', () => {
+    it('every predefined template lists at least one primary skill', () => {
+        (Object.keys(HABIT_TEMPLATES) as HabitCategory[]).forEach((cat) => {
+            HABIT_TEMPLATES[cat].forEach((t) => {
+                expect(t.primarySkills.length).toBeGreaterThan(0);
+            });
+        });
+    });
+
     it('keeps health[0] aligned with starter quest habit name', () => {
         expect(HABIT_TEMPLATES.health[0].name).toBe(STARTER_QUEST_HABIT_NAME);
     });
@@ -41,5 +49,6 @@ describe('habitPayloadFromTemplate', () => {
         expect(p.goalValue).toBe(8);
         expect(p.unit).toBe('glasses');
         expect(p.dailyTarget).toBe(6);
+        expect(p.primarySkills?.length).toBeGreaterThan(0);
     });
 });

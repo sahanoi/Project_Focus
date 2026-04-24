@@ -49,6 +49,11 @@ export const habits = pgTable('habits', {
     endDate: date('end_date', { mode: 'string' }),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull(),
     archived: boolean('archived').notNull().default(false),
+    /** { primarySkills: SkillAttributeKey[], secondarySkills?: SkillAttributeKey[] } */
+    skillFocus: jsonb('skill_focus').$type<{
+        primarySkills: string[];
+        secondarySkills?: string[];
+    } | null>(),
 });
 
 export const habitCompletions = pgTable(

@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+const skillAttributeKey = z.enum(['dsc', 'foc', 'stk', 'bal', 'grt', 'vit']);
+
 const completionSchema = z.object({
     completed: z.boolean(),
     value: z.number().optional(),
@@ -21,6 +23,8 @@ export const habitSchema = z.object({
     unit: z.string().optional(),
     startDate: z.string().optional(),
     endDate: z.string().optional(),
+    primarySkills: z.array(skillAttributeKey).optional(),
+    secondarySkills: z.array(skillAttributeKey).optional(),
     completions: z.record(z.string(), completionSchema),
     createdAt: z.string(),
     archived: z.boolean(),

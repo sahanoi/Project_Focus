@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useModalClose } from '../../hooks/useModalClose';
 import { useHabitStore } from '../../store/habitStore';
 import { useAuth } from '../../contexts/AuthContext';
@@ -7,6 +7,8 @@ import { Award, Star, Edit3, Check, X, Camera, Info, Lock } from 'lucide-react';
 import { getUserTierName } from '../../utils/featureGateUtils';
 import { COLLECTIBLES } from '../../data/collectibles';
 import { motion, AnimatePresence } from 'framer-motion';
+import { SKILL_LABELS, SkillAttributeKey } from '../../types';
+import { SKILL_ATTRIBUTE_KEYS, habitSkillWeight, hasAnySkillFocus } from '../../utils/skillFocusUtils';
 
 // ─────────────────────────────────────────────
 //  Hexagonal GPI Radar Chart (pure SVG)
@@ -18,6 +20,8 @@ const AVATAR_SEEDS = [
     'Kai', 'Priya', 'Ethan', 'Ava', 'Oscar',
     'Nadia', 'Leo', 'Maya', 'Rishi', 'Elena',
 ];
+
+const DEFAULT_PROFILE_BIO = 'Ready to build consistency. 🔥';
 
 function polarToCartesian(cx: number, cy: number, r: number, angleDeg: number) {
     const rad = ((angleDeg - 90) * Math.PI) / 180;
@@ -134,8 +138,7 @@ interface EditModalProps {
 }
 
 function EditProfileModal({ currentUsername, currentBio, currentAvatarSeed, onClose, onSave }: EditModalProps) {
-    const stableOnClose = useCallback(onClose, [onClose]);
-    useModalClose(true, stableOnClose);
+    useModalClose(true, onClose);
     const [username, setUsername] = useState(currentUsername);
     const [bio, setBio] = useState(currentBio);
     const [avatarSeed, setAvatarSeed] = useState(currentAvatarSeed);
@@ -185,7 +188,7 @@ function EditProfileModal({ currentUsername, currentBio, currentAvatarSeed, onCl
                         <Camera size={12} className="inline mr-1" />
                         Choose Avatar
                     </label>
-                    <div className="flex gap-2 flex-wrap">
+                    <div className="flex gap-2 flex-wrap max-h-36 overflow-y-auto pr-1 -mr-1 custom-scrollbar">
                         {AVATAR_SEEDS.map(seed => (
                             <button
                                 key={seed}
@@ -277,42 +280,46 @@ export default function ProfilePage() {
     const progressPercent = Math.min(100, Math.round((stats.xp / stats.nextLevelXp) * 100));
 
     const [showEdit, setShowEdit] = useState(false);
+    const closeEditModal = useCallback(() => setShowEdit(false), []);
     const [showGPIInfo, setShowGPIInfo] = useState(false);
 
     // Profile fields — persisted in user_metadata
     const [displayName, setDisplayName] = useState(
         user?.user_metadata?.display_name || user?.email?.split('@')[0] || 'Focus Explorer'
     );
-    const [bio, setBio] = useState(user?.user_metadata?.bio || 'Ready to build consistency. 🔥');
+    const [bio, setBio] = useState(user?.user_metadata?.bio ?? '');
     const [avatarSeed, setAvatarSeed] = useState(
         user?.user_metadata?.avatar_seed || 'Felix'
     );
 
-    // Sync whenever user metadata changes (e.g. after save)
+    // Sync whenever user / session changes (e.g. after refreshAuth)
     useEffect(() => {
-        if (user?.user_metadata) {
-            setDisplayName(user.user_metadata.display_name || user.email?.split('@')[0] || 'Focus Explorer');
-            setBio(user.user_metadata.bio || 'Ready to build consistency. 🔥');
-            setAvatarSeed(user.user_metadata.avatar_seed || 'Felix');
-        }
+        if (!user) return;
+        const meta = user.user_metadata;
+        setDisplayName(meta?.display_name || user.email?.split('@')[0] || 'Focus Explorer');
+        setBio(meta?.bio ?? '');
+        setAvatarSeed(meta?.avatar_seed || 'Felix');
     }, [user]);
 
     const handleSaveProfile = async (newName: string, newBio: string, newSeed: string) => {
         try {
-            await patchProfileApi({
+            const { user: me } = await patchProfileApi({
                 display_name: newName,
                 bio: newBio,
                 avatar_seed: newSeed,
             });
+            const meta = me.user_metadata;
+            setDisplayName(meta?.display_name || me.email?.split('@')[0] || 'Focus Explorer');
+            setBio(meta?.bio ?? '');
+            setAvatarSeed(meta?.avatar_seed || 'Felix');
             await refreshAuth();
         } catch (e) {
             console.error(e);
             throw e;
         }
-        setDisplayName(newName);
-        setBio(newBio);
-        setAvatarSeed(newSeed);
     };
+
+    const bioDisplay = bio.trim() ? bio : DEFAULT_PROFILE_BIO;
 
     const avatarUrl = `https://api.dicebear.com/7.x/notionists/svg?seed=${avatarSeed}&backgroundColor=b6e3f4,c0aede,ffdfbf,E6DDF2`;
 
@@ -335,6 +342,20 @@ export default function ProfilePage() {
         for (const c of sorted) { if (c.completed) { streak++; best = Math.max(best, streak); } else streak = 0; }
         return Math.max(max, best);
     }, 0);
+
+    const habitsTrainingSkill = useMemo(() => {
+        const out: Record<SkillAttributeKey, string[]> = {
+            dsc: [], foc: [], stk: [], bal: [], grt: [], vit: [],
+        };
+        const active = habits.filter((h) => !h.archived);
+        for (const h of active) {
+            if (!hasAnySkillFocus(h)) continue;
+            for (const k of SKILL_ATTRIBUTE_KEYS) {
+                if (habitSkillWeight(h, k) > 0) out[k].push(h.name);
+            }
+        }
+        return out;
+    }, [habits]);
 
     return (
         <div className="max-w-5xl mx-auto px-4 py-8 animate-fade-in-up">
@@ -363,13 +384,14 @@ export default function ProfilePage() {
                                 {tierName} • Lvl {stats.level}
                             </span>
                         </div>
-                        <p className="text-sm text-dark-lighter dark:text-night-text-muted transition-colors">{bio}</p>
+                        <p className="text-sm text-dark-lighter dark:text-night-text-muted transition-colors">{bioDisplay}</p>
                         <p className="text-xs text-dark-lighter/60 dark:text-night-text-muted/60 mt-1 transition-colors">{user?.email}</p>
                     </div>
 
                     {/* Actions */}
                     <div className="flex gap-2 flex-shrink-0">
                         <button
+                            type="button"
                             onClick={() => setShowEdit(true)}
                             className="flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 border-gray-200 dark:border-night-border bg-white dark:bg-night-bg text-dark dark:text-night-text font-bold hover:border-primary dark:hover:border-primary-light hover:text-primary dark:hover:text-primary-light transition-colors text-sm"
                         >
@@ -509,6 +531,51 @@ export default function ProfilePage() {
                 </div>
             </div>
 
+            {/* Skill areas — habits tagged in editor */}
+            <div className="card dark:bg-night-surface dark:border-night-border transition-colors mb-6 p-5 md:p-6">
+                <h2 className="text-sm font-black text-dark dark:text-night-text tracking-tight mb-1 transition-colors">Skill training</h2>
+                <p className="text-xs text-dark-lighter dark:text-night-text-muted mb-4 max-w-2xl transition-colors">
+                    Each habit can train primary and supporting skills. That feeds the hybrid stats above. <strong className="text-dark dark:text-night-text">Streak</strong> and{' '}
+                    <strong className="text-dark dark:text-night-text">Balance</strong> also reflect all habits (streak strength and category mix).
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {SKILL_ATTRIBUTE_KEYS.map((k) => {
+                        const names = habitsTrainingSkill[k];
+                        const meta = SKILL_LABELS[k];
+                        const hint =
+                            k === 'stk' && names.length === 0
+                                ? 'Global: average current streaks across all habits.'
+                                : k === 'bal' && names.length === 0
+                                  ? 'Global: reward for using many life categories.'
+                                  : null;
+                        return (
+                            <div
+                                key={k}
+                                className="rounded-2xl border border-gray-100 dark:border-night-border bg-gray-50/50 dark:bg-night-bg/50 p-4"
+                            >
+                                <div className="flex items-center gap-2 mb-2">
+                                    <span className="text-lg" aria-hidden>{meta.icon}</span>
+                                    <span className="text-xs font-black text-dark dark:text-night-text uppercase tracking-wider">
+                                        {meta.short} · {meta.label}
+                                    </span>
+                                </div>
+                                {names.length > 0 ? (
+                                    <ul className="text-[11px] text-dark-lighter dark:text-night-text-muted space-y-1 list-disc list-inside">
+                                        {names.map((n) => (
+                                            <li key={n}>{n}</li>
+                                        ))}
+                                    </ul>
+                                ) : (
+                                    <p className="text-[11px] text-dark-lighter dark:text-night-text-muted leading-relaxed">
+                                        {hint ?? 'Add skill tags on habits, or use templates — this list fills automatically.'}
+                                    </p>
+                                )}
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
+
             {/* ── Collectibles Showcase ── */}
             <h2 className="text-lg font-bold text-dark dark:text-night-text mb-4 flex items-center gap-2 transition-colors">
                 <Star className="text-warning" size={20} />
@@ -580,10 +647,11 @@ export default function ProfilePage() {
             <AnimatePresence>
                 {showEdit && (
                     <EditProfileModal
+                        key="edit-profile"
                         currentUsername={displayName}
                         currentBio={bio}
                         currentAvatarSeed={avatarSeed}
-                        onClose={() => setShowEdit(false)}
+                        onClose={closeEditModal}
                         onSave={handleSaveProfile}
                     />
                 )}

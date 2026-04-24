@@ -27,6 +27,13 @@ export async function replaceUserState(userId: string, body: PutStateBody): Prom
                 endDate: h.endDate ?? null,
                 createdAt: new Date(h.createdAt),
                 archived: h.archived,
+                skillFocus:
+                    h.primarySkills?.length || h.secondarySkills?.length
+                        ? {
+                              primarySkills: h.primarySkills ?? [],
+                              ...(h.secondarySkills?.length ? { secondarySkills: h.secondarySkills } : {}),
+                          }
+                        : null,
             });
 
             for (const [completedDate, comp] of Object.entries(h.completions)) {
