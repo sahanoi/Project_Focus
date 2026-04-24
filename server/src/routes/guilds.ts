@@ -1,5 +1,5 @@
 import { Hono } from 'hono';
-import { eq, and, ne, desc, sql, ilike } from 'drizzle-orm';
+import { eq, and, ne, desc, sql, ilike, lt } from 'drizzle-orm';
 import { z } from 'zod';
 import { db } from '../db/index.js';
 import * as schema from '../db/schema.js';
@@ -59,6 +59,11 @@ guildRoutes.get('/', async (c) => {
     const search = c.req.query('search');
     const communityHabitId = c.req.query('communityHabitId');
     const mine = c.req.query('mine') === 'true';
+    const showFull = c.req.query('showFull') === 'true';
+
+    if (mine) {
+        if (!user) return c.json({ error: 'Unauthorized' }, 401);
+    }
 
     if (mine && user) {
         const myGuilds = await db
@@ -104,6 +109,7 @@ guildRoutes.get('/', async (c) => {
         .where(
             and(
                 eq(schema.guilds.isPublic, true),
+                !showFull ? lt(schema.guilds.memberCount, schema.guilds.maxMembers) : undefined,
                 search ? ilike(schema.guilds.name, `%${search}%`) : undefined,
                 communityHabitId
                     ? eq(schema.guilds.communityHabitId, communityHabitId)
@@ -212,6 +218,22 @@ guildRoutes.get('/:id', async (c) => {
         .limit(1);
     const guild = rows[0];
     if (!guild) return c.json({ error: 'Not found' }, 404);
+
+    if (!guild.isPublic) {
+        if (!user) {
+            return c.json({ error: 'Forbidden' }, 403);
+        }
+        const membership = await db
+            .select({ id: schema.guildMembers.id })
+            .from(schema.guildMembers)
+            .where(
+                and(eq(schema.guildMembers.guildId, id), eq(schema.guildMembers.userId, user.id)),
+            )
+            .limit(1);
+        if (membership.length === 0) {
+            return c.json({ error: 'Forbidden' }, 403);
+        }
+    }
 
     const members = await db
         .select({
@@ -326,6 +348,10 @@ guildRoutes.post('/:id/join', async (c) => {
         return c.json({ error: 'Guild is full' }, 400);
     }
 
+    if (!guild.isPublic) {
+        return c.json({ error: 'This guild is private' }, 403);
+    }
+
     const existing = await db
         .select({ id: schema.guildMembers.id })
         .from(schema.guildMembers)
@@ -397,12 +423,30 @@ guildRoutes.get('/:id/leaderboard', async (c) => {
     const week = c.req.query('week') ?? 'current';
     const weekStart = week === 'prev' ? getWeekStart(-1) : getWeekStart();
 
+    const user = await resolveUserFromRequest(c);
     const guildRows = await db
-        .select({ id: schema.guilds.id })
+        .select()
         .from(schema.guilds)
         .where(eq(schema.guilds.id, id))
         .limit(1);
     if (guildRows.length === 0) return c.json({ error: 'Not found' }, 404);
+    const gRow = guildRows[0]!;
+
+    if (!gRow.isPublic) {
+        if (!user) {
+            return c.json({ error: 'Forbidden' }, 403);
+        }
+        const membership = await db
+            .select({ id: schema.guildMembers.id })
+            .from(schema.guildMembers)
+            .where(
+                and(eq(schema.guildMembers.guildId, id), eq(schema.guildMembers.userId, user.id)),
+            )
+            .limit(1);
+        if (membership.length === 0) {
+            return c.json({ error: 'Forbidden' }, 403);
+        }
+    }
 
     const entries = await db
         .select({

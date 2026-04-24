@@ -1,5 +1,5 @@
 import { Hono } from 'hono';
-import { eq, and, isNull, desc, asc, sql, inArray } from 'drizzle-orm';
+import { eq, and, isNull, desc, asc, sql, inArray, gt, count } from 'drizzle-orm';
 import { z } from 'zod';
 import { db } from '../db/index.js';
 import * as schema from '../db/schema.js';
@@ -24,6 +24,21 @@ function getYesterdayString(): string {
     const d = new Date();
     d.setDate(d.getDate() - 1);
     return d.toISOString().split('T')[0];
+}
+
+/** Rank = 1 + count of users with a strictly higher score in the same slice (tie-aware). */
+async function rankInWeeklySlice(whereSlice: ReturnType<typeof and>, userId: string): Promise<number | null> {
+    const [u] = await db
+        .select({ score: schema.weeklyLeaderboard.score })
+        .from(schema.weeklyLeaderboard)
+        .where(and(whereSlice, eq(schema.weeklyLeaderboard.userId, userId)))
+        .limit(1);
+    if (!u) return null;
+    const [row] = await db
+        .select({ n: count() })
+        .from(schema.weeklyLeaderboard)
+        .where(and(whereSlice, gt(schema.weeklyLeaderboard.score, u.score)));
+    return (row?.n ?? 0) + 1;
 }
 
 function computeTier(xp: number): string {
@@ -473,7 +488,11 @@ communityRoutes.get('/habits/:slug/leaderboard', async (c) => {
     const weekStart = week === 'prev' ? getWeekStart(-1) : getWeekStart();
 
     let memberFilter: string[] | null = null;
-    if (scope === 'guild' && guildId) {
+    if (scope === 'guild') {
+        if (!guildId) {
+            return c.json({ error: 'guildId is required for guild scope' }, 400);
+        }
+        if (!user) return c.json({ error: 'Unauthorized' }, 401);
         const guildMemberRows = await db
             .select({ userId: schema.guildMembers.userId })
             .from(schema.guildMembers)
@@ -481,6 +500,9 @@ communityRoutes.get('/habits/:slug/leaderboard', async (c) => {
         memberFilter = guildMemberRows.map((m) => m.userId);
         if (memberFilter.length === 0) {
             return c.json({ entries: [], weekStart, userRank: null, totalParticipants: 0 });
+        }
+        if (!memberFilter.includes(user.id)) {
+            return c.json({ error: 'Not a member of this guild' }, 403);
         }
     }
 
@@ -531,8 +553,11 @@ communityRoutes.get('/habits/:slug/leaderboard', async (c) => {
         isCurrentUser: user ? r.userId === user.id : false,
     }));
 
-    const userRankIndex = user ? entries.findIndex((e) => e.userId === user.id) : -1;
-    const userRank = userRankIndex >= 0 ? userRankIndex + 1 : null;
+    let userRank: number | null = null;
+    if (user) {
+        const r = await rankInWeeklySlice(baseWhere, user.id);
+        userRank = r;
+    }
 
     return c.json({
         entries,
@@ -547,6 +572,33 @@ communityRoutes.get('/leaderboard', async (c) => {
     const user = await resolveUserFromRequest(c);
     const week = c.req.query('week') ?? 'current';
     const weekStart = week === 'prev' ? getWeekStart(-1) : getWeekStart();
+    const scope = c.req.query('scope') ?? 'global';
+
+    const globalBase = and(
+        isNull(schema.weeklyLeaderboard.communityHabitId),
+        isNull(schema.weeklyLeaderboard.guildId),
+        eq(schema.weeklyLeaderboard.weekStart, weekStart),
+    );
+
+    let friendsOnly: string[] | null = null;
+    if (scope === 'friends') {
+        if (!user) return c.json({ error: 'Unauthorized' }, 401);
+        const accepted = eq(schema.friendships.status, 'accepted');
+        const out = await db
+            .select({ id: schema.friendships.friendId })
+            .from(schema.friendships)
+            .where(and(accepted, eq(schema.friendships.userId, user.id)));
+        const inc = await db
+            .select({ id: schema.friendships.userId })
+            .from(schema.friendships)
+            .where(and(accepted, eq(schema.friendships.friendId, user.id)));
+        const set = new Set<string>([user.id, ...out.map((o) => o.id), ...inc.map((i) => i.id)]);
+        friendsOnly = Array.from(set);
+    }
+
+    const sliceWhere = friendsOnly
+        ? and(globalBase, inArray(schema.weeklyLeaderboard.userId, friendsOnly))
+        : globalBase;
 
     const rows = await db
         .select({
@@ -561,26 +613,14 @@ communityRoutes.get('/leaderboard', async (c) => {
         .from(schema.weeklyLeaderboard)
         .innerJoin(schema.users, eq(schema.weeklyLeaderboard.userId, schema.users.id))
         .leftJoin(schema.userStats, eq(schema.weeklyLeaderboard.userId, schema.userStats.userId))
-        .where(
-            and(
-                isNull(schema.weeklyLeaderboard.communityHabitId),
-                isNull(schema.weeklyLeaderboard.guildId),
-                eq(schema.weeklyLeaderboard.weekStart, weekStart),
-            ),
-        )
+        .where(sliceWhere)
         .orderBy(desc(schema.weeklyLeaderboard.score))
         .limit(50);
 
     const [totalRow] = await db
         .select({ count: sql<number>`cast(count(*) as int)` })
         .from(schema.weeklyLeaderboard)
-        .where(
-            and(
-                isNull(schema.weeklyLeaderboard.communityHabitId),
-                isNull(schema.weeklyLeaderboard.guildId),
-                eq(schema.weeklyLeaderboard.weekStart, weekStart),
-            ),
-        );
+        .where(sliceWhere);
 
     const entries = rows.map((r, i) => ({
         rank: i + 1,
@@ -595,8 +635,10 @@ communityRoutes.get('/leaderboard', async (c) => {
         movement: 'same' as const,
     }));
 
-    const userRankIndex = user ? entries.findIndex((e) => e.userId === user.id) : -1;
-    const userRank = userRankIndex >= 0 ? userRankIndex + 1 : null;
+    let userRank: number | null = null;
+    if (user) {
+        userRank = await rankInWeeklySlice(sliceWhere, user.id);
+    }
 
     return c.json({
         entries,

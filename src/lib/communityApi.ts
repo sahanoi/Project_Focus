@@ -184,7 +184,14 @@ export interface CreateGuildData {
 // Feed & Social Types
 // ==========================================
 
-export type FeedEventType = 'habit_completed' | 'level_up' | 'streak_milestone' | 'guild_joined' | 'tier_up' | 'challenge_completed';
+export type FeedEventType =
+    | 'habit_completed'
+    | 'level_up'
+    | 'streak_milestone'
+    | 'guild_joined'
+    | 'guild_created'
+    | 'tier_up'
+    | 'challenge_completed';
 
 export interface FeedEvent {
     id: string;
@@ -282,8 +289,9 @@ export async function fetchHabitLeaderboard(slug: string, scope?: 'global' | 'gu
     return getJson<WeeklyLeaderboardData>(`/api/community/habits/${slug}/leaderboard${qs}`);
 }
 
-export async function fetchGlobalLeaderboard(): Promise<WeeklyLeaderboardData> {
-    return getJson<WeeklyLeaderboardData>('/api/community/leaderboard');
+export async function fetchGlobalLeaderboard(scope: 'global' | 'friends' = 'global'): Promise<WeeklyLeaderboardData> {
+    const q = scope === 'friends' ? '?scope=friends' : '';
+    return getJson<WeeklyLeaderboardData>(`/api/community/leaderboard${q}`);
 }
 
 export async function fetchGuilds(params?: { communityHabitId?: string; search?: string; showFull?: boolean; mine?: boolean }): Promise<Guild[]> {
@@ -291,6 +299,7 @@ export async function fetchGuilds(params?: { communityHabitId?: string; search?:
     if (params?.search) qs.set('search', params.search);
     if (params?.communityHabitId) qs.set('communityHabitId', params.communityHabitId);
     if (params?.mine) qs.set('mine', 'true');
+    if (params?.showFull) qs.set('showFull', 'true');
     const q = qs.toString() ? `?${qs.toString()}` : '';
     const data = await getJson<{ guilds: Guild[] }>(`/api/guilds${q}`);
     return data.guilds;

@@ -74,7 +74,11 @@ export default function Sidebar({ activeTab, setActiveTab, onAddHabit, isCollaps
 
             {/* Navigation */}
             <nav className="flex-1 px-4 space-y-2 py-4">
-                {!isCollapsed && <div className="text-xs font-bold text-dark-lighter uppercase px-2 mb-2 tracking-wider">Menu</div>}
+                {!isCollapsed && (
+                    <div className="text-xs font-bold text-purple-dark/85 dark:text-primary-light/50 uppercase px-2 mb-2 tracking-wider">
+                        Menu
+                    </div>
+                )}
 
                 {navItems.map((item) => {
                     const Icon = item.icon;

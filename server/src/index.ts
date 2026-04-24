@@ -36,8 +36,9 @@ app.onError((err, c) => {
             503,
         );
     }
-    const message = err instanceof Error ? err.message : 'Internal Server Error';
-    return c.json({ error: message }, 500);
+    const isProd = process.env.NODE_ENV === 'production';
+    const message = err instanceof Error ? err.message : 'Internal server error';
+    return c.json({ error: isProd ? 'Internal server error' : message }, 500);
 });
 
 app.notFound((c) => c.json({ error: 'Not Found' }, 404));

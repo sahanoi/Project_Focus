@@ -6,6 +6,7 @@ import {
     TrendingUp, UserPlus, Flame, Zap,
 } from 'lucide-react';
 import {
+    type Guild,
     CommunityHabit,
     FeedEvent,
     FeedEventType,
@@ -21,6 +22,7 @@ import {
 import HabitXPCard from '../community/HabitXPCard';
 import { CommunityHabitDetailPage } from '../community/CommunityHabitDetailPage';
 import { GuildBrowserPageContent } from '../community/GuildBrowserPage';
+import GuildDetailPage from '../community/GuildDetailPage';
 
 // ==========================================
 // Constants & helpers
@@ -35,9 +37,12 @@ const FEED_EVENT_CONFIG: Record<FeedEventType, { icon: string; build: (e: FeedEv
     level_up:        { icon: '🏆', build: e => `${e.displayName} leveled up in ${e.communityHabitIcon ?? ''} ${e.communityHabitName ?? 'a habit'} → Lv.${(e.metadata.level as number) ?? '?'}` },
     streak_milestone:{ icon: '🔥', build: e => `${e.displayName} hit a ${(e.metadata.streak as number) ?? '?'}-day streak on ${e.communityHabitIcon ?? ''} ${e.communityHabitName ?? 'a habit'}!` },
     guild_joined:    { icon: '⚔️', build: e => `${e.displayName} joined the guild "${e.guildName ?? 'a guild'}"` },
+    guild_created:  { icon: '⚔️', build: e => `${e.displayName} created the guild "${(e.metadata.guildName as string) ?? e.guildName ?? 'a guild'}"` },
     tier_up:         { icon: '✨', build: e => `${e.displayName} reached ${(e.metadata.tier as string) ?? ''} tier in ${e.communityHabitIcon ?? ''} ${e.communityHabitName ?? 'a habit'}!` },
     challenge_completed: { icon: '🎯', build: e => `${e.displayName} completed the ${(e.metadata.challengeName as string) ?? 'challenge'}!` },
 };
+
+const FEED_EVENT_FALLBACK = { icon: '💬', build: (e: FeedEvent) => `${e.displayName} had community activity` };
 
 // ==========================================
 // Subcomponents
@@ -134,7 +139,7 @@ function PodiumEntry({ rank, displayName, score, tier, avatarSeed, isCurrentUser
 }
 
 function FeedCard({ event, index }: { event: FeedEvent; index: number }) {
-    const config = FEED_EVENT_CONFIG[event.eventType];
+    const config = FEED_EVENT_CONFIG[event.eventType] ?? FEED_EVENT_FALLBACK;
     return (
         <motion.div
             initial={{ opacity: 0, x: -16 }}
@@ -324,11 +329,12 @@ function LeaderboardTab() {
     const load = useCallback(() => {
         setLoading(true);
         setError(null);
-        fetchGlobalLeaderboard()
+        const req = scope === 'friends' ? fetchGlobalLeaderboard('friends') : fetchGlobalLeaderboard('global');
+        req
             .then(d => { setData(d); })
             .catch(e => { setData(null); setError(e instanceof Error ? e.message : 'Failed to load leaderboard'); })
             .finally(() => { setLoading(false); });
-    }, []);
+    }, [scope]);
 
     useEffect(() => { load(); }, [load, scope]);
 
@@ -384,14 +390,12 @@ function LeaderboardTab() {
                     <div className="bg-white dark:bg-night-surface rounded-3xl border border-[#D4C8E8] dark:border-night-border p-6 transition-colors">
                         <h3 className="text-sm font-black text-dark-lighter dark:text-night-text-muted uppercase tracking-widest text-center mb-6">Top 3 This Week</h3>
                         <div className="flex items-end justify-center gap-6">
-                            {(podiumEntries as typeof podiumEntries).map((entry, i) => {
-                                const rank = (i === 0 ? 1 : i === 1 ? 2 : 3) as 1 | 2 | 3;
-                                // Visual order: 2nd, 1st, 3rd
-                                const visualRank = [2, 1, 3][i] as 1 | 2 | 3;
+                            {podiumEntries.map((entry) => {
+                                const r = (entry.rank >= 1 && entry.rank <= 3 ? entry.rank : 1) as 1 | 2 | 3;
                                 return (
                                     <PodiumEntry
                                         key={entry.userId}
-                                        rank={visualRank}
+                                        rank={r}
                                         displayName={entry.displayName}
                                         score={entry.score}
                                         tier={entry.tier}
@@ -556,7 +560,29 @@ function useSeasonCountdown() {
 
 export default function CommunityPage() {
     const [activeTab, setActiveTab] = useState<CommunityTab>('habits');
+    const [viewGuild, setViewGuild] = useState<Guild | null>(null);
+    const [headerLb, setHeaderLb] = useState<{ userRank: number | null; total: number } | null>(null);
     const seasonCountdown = useSeasonCountdown();
+
+    useEffect(() => {
+        if (activeTab !== 'guilds') setViewGuild(null);
+    }, [activeTab]);
+
+    useEffect(() => {
+        let cancelled = false;
+        fetchGlobalLeaderboard('global')
+            .then((d) => {
+                if (!cancelled) {
+                    setHeaderLb({ userRank: d.userRank ?? null, total: d.totalParticipants });
+                }
+            })
+            .catch(() => {
+                if (!cancelled) setHeaderLb(null);
+            });
+        return () => {
+            cancelled = true;
+        };
+    }, []);
 
     const tabs: { id: CommunityTab; label: string; icon: React.ReactNode }[] = [
         { id: 'habits',      label: 'Habits',      icon: <Zap size={15} /> },
@@ -590,8 +616,18 @@ export default function CommunityPage() {
                             <div className="text-left">
                                 <p className="text-[10px] font-bold text-dark-lighter dark:text-night-text-muted uppercase tracking-wider mb-0.5 transition-colors">Global Rank</p>
                                 <p className="text-primary dark:text-primary-light font-black tracking-tight flex items-center gap-1 transition-colors">
-                                    <Trophy size={13} /> Top 5%
+                                    <Trophy size={13} />
+                                    {headerLb === null
+                                        ? '…'
+                                        : headerLb.userRank != null
+                                        ? `#${headerLb.userRank}`
+                                        : 'Unranked'}
                                 </p>
+                                {headerLb != null && headerLb.total > 0 && (
+                                    <p className="text-[9px] text-dark-lighter dark:text-night-text-muted font-medium">
+                                        of {headerLb.total.toLocaleString()} this week
+                                    </p>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -628,7 +664,11 @@ export default function CommunityPage() {
                         >
                             {activeTab === 'habits'      && <HabitsTab />}
                             {activeTab === 'leaderboard' && <LeaderboardTab />}
-                            {activeTab === 'guilds'      && <GuildBrowserPageContent />}
+                            {activeTab === 'guilds'      && (viewGuild ? (
+                                <GuildDetailPage guild={viewGuild} onBack={() => setViewGuild(null)} />
+                            ) : (
+                                <GuildBrowserPageContent onSelectGuild={setViewGuild} />
+                            ))}
                             {activeTab === 'feed'        && <FeedTab />}
                         </motion.div>
                     </AnimatePresence>

@@ -29,6 +29,7 @@ const EVENT_CONFIG: Record<FeedEventType, EventConfig> = {
     level_up:        { icon: '⭐', bgColor: 'bg-yellow-100 dark:bg-yellow-500/15', textColor: 'text-yellow-600 dark:text-yellow-400' },
     streak_milestone: { icon: '🔥', bgColor: 'bg-orange-100 dark:bg-orange-500/15', textColor: 'text-orange-600 dark:text-orange-400' },
     guild_joined:    { icon: '⚔️', bgColor: 'bg-indigo-100 dark:bg-indigo-500/15', textColor: 'text-indigo-600 dark:text-indigo-400' },
+    guild_created:   { icon: '⚔️', bgColor: 'bg-indigo-100 dark:bg-indigo-500/15', textColor: 'text-indigo-600 dark:text-indigo-400' },
     tier_up:         { icon: '✨', bgColor: 'bg-purple-100 dark:bg-purple-500/15', textColor: 'text-purple-600 dark:text-purple-400' },
     challenge_completed: { icon: '🏆', bgColor: 'bg-blue-100 dark:bg-blue-500/15', textColor: 'text-blue-600 dark:text-blue-400' },
 };
@@ -50,10 +51,14 @@ function buildEventMessage(event: FeedEvent): { main: string; detail?: string } 
             };
         case 'guild_joined':
             return { main: `joined the ⚔️ ${event.guildName ?? 'Unknown'} guild` };
+        case 'guild_created':
+            return { main: `created the guild ${String(event.metadata.guildName ?? event.guildName ?? 'Unknown')} ⚔️` };
         case 'tier_up':
             return { main: `upgraded to ${String(event.metadata.tier ?? '?')} tier on ${habit} ✨` };
         case 'challenge_completed':
             return { main: `completed a challenge on ${habit} 🏆` };
+        default:
+            return { main: 'had community activity' };
     }
 }
 
